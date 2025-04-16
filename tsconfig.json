@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    // paths가 생성할때 없어서 global.css에서 경로에러
+    "paths": {
+        "@*" : ["./*"],
+    },
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx"
+, "app/components/ui/three.js/main2.tsx"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,171 @@
+ gsap.registerPlugin(
+    useGSAP,
+    ScrollTrigger,
+    TextPlugin,
+    Draggable,
+    Flip,
+    MotionPathPlugin,
+    Observer,
+    PixiPlugin,
+    ScrollToPlugin
+  );
+
+  const container = useRef<HTMLDivElement | null>(null);
+
+  const { contextSafe } = useGSAP({ scope: container });
+
+  const onClick = contextSafe(({ currentTarget }) => {
+    document.querySelectorAll(".box").forEach((box) => {
+      gsap.to(".box", {
+        duration: 0.5,
+        opacity: 0,
+        y: -100,
+        stagger: 0.1,
+        ease: "back.in",
+      });
+    });
+  });
+
+  //   useEffect(() => {
+  //     function buildGrid(vars) {
+  //       vars = vars || {};
+  //       var container = document.createElement("div"),
+  //         rows = vars.grid[0] || 5,
+  //         cols = vars.grid[1] || 5,
+  //         width = vars.width || 100,
+  //         gutter = vars.gutter || 1,
+  //         className = vars.className || "",
+  //         w = (width - cols * gutter) / cols,
+  //         parent =
+  //           typeof vars.parent === "string"
+  //             ? document.querySelector(vars.parent)
+  //             : vars.parent
+  //             ? vars.parent
+  //             : document.body,
+  //         css =
+  //           "display: inline-block; margin: 0 " +
+  //           (gutter / width) * 100 +
+  //           "% " +
+  //           (gutter / width) * 100 +
+  //           "% 0; width: " +
+  //           (w / width) * 100 +
+  //           "%;",
+  //         l = rows * cols,
+  //         i,
+  //         box;
+  //       for (i = 0; i < l; i++) {
+  //         box = document.createElement("div");
+  //         box.style.cssText = css;
+  //         box.setAttribute("class", className);
+  //         box.index = i;
+  //         box.setAttribute("data-index", i);
+  //         // if (vars.onCellClick) {
+  //         //   box.addEventListener("click", vars.onCellClick);
+  //         // }
+  //         container.appendChild(box);
+  //       }
+  //       container.style.cssText =
+  //         "width:" +
+  //         width +
+  //         "px; line-height: 0; padding:" +
+  //         gutter +
+  //         "px 0 0 " +
+  //         gutter +
+  //         "px; display:inline-block;";
+  //       parent.appendChild(container);
+  //       console.log(container);
+  //       return container;
+  //     }
+
+  //     buildGrid({
+  //       grid: [5, 13], // a
+  //       className: "box",
+  //       width: 1000,
+  //       gutter: 15,
+  //       parent: "#container",
+  //     });
+
+  //     const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+  //     // 딜레이를 주는 시퀀싱도구
+
+  //     function animateBoxes() {
+  //       //one stagger call does all the animation:
+  //       tl.to(".box", {
+  //         duration: 1,
+  //         scale: 0.1,
+  //         y: 60,
+  //         yoyo: true,
+  //         repeat: 1,
+  //         ease: "power1.inOut",
+  //         stagger: {
+  //           amount: 1.5,
+  //           grid: [5, 13], // a값과 동일
+  //           axis: null,
+  //           ease: "none",
+  //           from: "edges",
+  //         },
+  //       });
+  //     }
+
+  //     animateBoxes();
+  //     gsap.set(".box", { rotation: 0.5, force3D: true });
+  //   }, []);
+
+  //this just helps avoid the pixel-snapping that some browsers do.
+
+  useGSAP(
+    () => {
+      // repeat이 -1이면 계속반복
+      //   let tl = gsap.timeline({ repeat: 3, repeatDelay: 0.5, yoyo: true });
+
+      //   tl.to(".box", {
+      //     duration: 1,
+      //     scale: 0.1,
+      //     y: 40,
+      //     ease: "power1.inOut",
+      //     stagger: {
+      //       grid: [1, 5],
+      //       from: "center",
+      //       amount: 1.5,
+      //     },
+      //   });
+
+      gsap.to(".box", {
+        // duration: 1,
+        // rotation: 360,
+        // opacity: 1,
+        // backgroundColor: `#f3f`,
+        // xPercent: -100,
+        // repeat: 2,
+        // yoyo: true,
+        // repeatDelay: 1,
+        // delay: 1, // 언제 시작할지
+        // attr: {
+        //   fill: "#8d3dae",
+        //   rx: 50,
+        // },
+        // stagger: 0.1, // 시작된 후 각각의 box에 얼마나 텀을 줄지
+        // ease: "sine.out",
+        // force3D: true,
+        x: 800,
+        scrollTrigger: {
+          start: 0, // 스크롤 위치 애니메이션 시작
+          end: 100, // 스크롤 위치 애니메이션 끝
+          scrub: true,
+          snap: {
+            snapTo: "labels", // snap to the closest label in the timeline
+            duration: { min: 0.2, max: 3 }, // the snap animation should be at least 0.2 seconds, but no more than 3 seconds (determined by velocity)
+            delay: 0.2, // wait 0.2 seconds from the last scroll event before doing the snapping
+            ease: "power1.inOut", // the ease of the snap animation ("power3" by default)
+          },
+        },
+        // in,out,inOut
+        // power1,2,3,4
+        // back
+        // bounce, circ,elastic, expo,sine,steps,rough,slow,expoScale
+        // CustomEase.create("custom","0.532,0,0.925,0.862")
+        // CustomBounce.create("custom") ,CustomWiggle
+      });
+    },
+    { scope: container }
+  ); // <-- scope for selector text (optional)
