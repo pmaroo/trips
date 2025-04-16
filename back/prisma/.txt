@@ -1,0 +1,7 @@
+#schema.prisma 사용법
+1. npx prisma init
+2. datasource db{provider 수정}
+3. .env수정
+4. schema.prisma 모델 정의
+5. npx prisma migrate dev --name 
+6. npx prisma generate

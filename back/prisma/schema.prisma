@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Prisma Client를 생성할때 특정 위치에 파일을 출력하도록 지정
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 유저
+model User {
+  id          Int         @id @default(autoincrement())
+  email       String      @unique @db.VarChar(700)
+  password    String      @db.VarChar(700)
+  userName    String      @db.VarChar(100)
+  nickName    String      @db.VarChar(100)
+  type        String      @db.VarChar(100)
+  plans       Plan[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// 일정
+model Plan {
+  id          Int         @id @default(autoincrement())
+  UserId      Int         
+  CategoryId  Int
+  region      String      @db.VarChar(700)      
+  schedule    String      @db.VarChar(700)
+  date        DateTime    @db.DateTime()
+  traffic     String      @db.VarChar(100)
+  User        User        @relation(fields: [UserId], references: [id])
+  Category    Category    @relation(fields: [CategoryId], references: [id])
+  Place       Place[]     @relation("PlacePlan")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// 유명한 장소
+model Place {
+  id              Int         @id @default(autoincrement())
+  name            String      @db.VarChar(700)
+  address         String      @db.VarChar(700)
+  detailAddress   String      @db.VarChar(700)
+  postcode        String      @db.VarChar(100)
+  lat             Decimal     @db.Decimal(10,7)
+  lng             Decimal     @db.Decimal(10,7)
+  descript        String      @db.Text
+  image           String?     @db.Text
+  source          String      @db.VarChar(100) //AI 출처
+  Tag             Tag[]       @relation("PlaceTag")
+  Plan            Plan[]      @relation("PlacePlan")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// 해쉬태그
+// 감성카페, 이쁜카페, 이색카페, 관광명소 등
+model Tag{
+  id              Int         @id @default(autoincrement())
+  tag             String      @db.VarChar(700)
+  Category        Category[]  @relation("CategoryTag")
+  Place           Place[]     @relation("PlaceTag")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// 카테고리
+// 커플여행, 가족여행 등
+model Category{
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(700)
+  Tag           Tag[]         @relation("CategoryTag")
+  Plan          Plan[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
