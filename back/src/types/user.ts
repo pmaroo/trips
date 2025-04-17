@@ -22,6 +22,7 @@ export interface CreateUser {
   password: string;
   userName: string;
   nickName: string;
+  isAdmin: boolean;
   type: string;
 }
 

@@ -182,17 +182,7 @@ export default function IndexClient() {
         ref={container}
       >
         <ul
-          className="
-            flex
-            flex-row
-            items-center
-            justify-center
-            w-full
-            sticky
-            top-0
-            left-0
-            h-screen
-          "
+          className="sticky top-0 left-0 flex flex-row items-center justify-center w-full h-screen "
         >
           <li
             className="
@@ -534,10 +524,7 @@ export default function IndexClient() {
             {SLIDES.map((index) => {
               return (
                 <div
-                  className="
-                border
-                border-white
-              "
+                  className="border border-white "
                   key={index}
                 >
                   {index + 1}

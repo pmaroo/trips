@@ -1,5 +1,3 @@
-import { Button } from "@app/components/ui/shadcn/button";
-import { GetStaticProps } from "@node_modules/next";
 import { notFound } from "@node_modules/next/navigation";
 import IndexClient from "./clientPage";
 // import { useRouter } from "@node_modules/next/router";

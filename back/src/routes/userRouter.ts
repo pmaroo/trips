@@ -1,4 +1,4 @@
-import express, { RequestHandler } from "express";
+import express from "express";
 import {
   createUser,
   exitUser,
@@ -6,7 +6,7 @@ import {
   getUserById,
   updateUser,
 } from "../controllers/user.controller";
-import { isAmdin, isLoggedin } from "../middlewares/passport";
+import { isAdmin, isLoggedin } from "../middlewares/passport";
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post("/update", isLoggedin, updateUser);
 router.post("/create", createUser);
 
 // 전체회원조회
-router.post("/all", isAmdin, getAllUsers);
+router.post("/all", isAdmin, getAllUsers);
 
 // 회원조회
 router.post("/:id", isLoggedin, getUserById);

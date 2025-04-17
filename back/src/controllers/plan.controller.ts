@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { errorConsole } from "../utils/error";
-import { getAllPlaceModel } from "../models/place.model";
-import { DeletePlan, PlanDTO } from "../types/plan";
+import { createPlaceModel, getAllPlaceModel } from "../models/place.model";
+import { DeletePlan } from "../types/plan";
 import {
   createPlanModel,
   deletePlanModel,
@@ -63,6 +63,8 @@ export const createPlan = async (req: Request, res: Response) => {
         connect: Place.map((place: PlaceDTO) => place),
       },
     };
+
+    await createPlaceModel(Place);
 
     const data = await createPlanModel(result);
     res.json(data);

@@ -1,5 +1,9 @@
 import express, { Request, Response, NextFunction } from "express";
 import userRouter from "./routes/userRouter";
+import tagRouter from "./routes/tagRouter";
+import planRouter from "./routes/planRouter";
+import placeRouter from "./routes/placeRouter";
+import categoryRouter from "./routes/categoryRouter";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
@@ -33,6 +37,10 @@ if (process.env.NODE_ENV === "production") {
 
 // 라우터
 app.use("/api/user", userRouter);
+app.use("/api/tag", tagRouter);
+app.use("/api/plan", planRouter);
+app.use("/api/place", placeRouter);
+app.use("/api/category", categoryRouter);
 
 // 에러 핸들링
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

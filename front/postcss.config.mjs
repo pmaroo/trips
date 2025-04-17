@@ -6,7 +6,7 @@ const config = {
   // },
   // tailwindcss ver3
   plugins: {
-    tailwindcss: {},
+    tailwindcss: { config: "./tailwind.config.js" },
     autoprefixer: {},
   },
 };

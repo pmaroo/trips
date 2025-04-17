@@ -2,16 +2,13 @@
 // 그대신 app 라우팅은 폴더 형식으로 제공됨
 
 import "@/styles/global.css";
-import "@/styles/embla/base.css";
-import "@/styles/embla/embla.css";
-import Header from "./components/ui/header";
-import Footer from "./components/ui/footer";
+// import "@/styles/embla/base.css";
+// import "@/styles/embla/embla.css";
 import Leins from "./lib/lenis";
 
 // next/navigation 공부
 // notFound 강제 404 띄워버리는 함수
 // next/navigation 클라이언트 컴포넌트에서만 가능
-import { notFound } from "next/navigation";
 import { Metadata } from "@node_modules/next";
 import Providers from "./clinetLayout";
 
@@ -34,11 +31,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <header>
-          <Header />
-        </header>
         <Providers>{children}</Providers>
-        <footer>{/* <Footer /> */}</footer>
 
         <Leins />
       </body>

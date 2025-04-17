@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { JwtUserDTO } from "../types/user";
 
-export const isAmdin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.jwtUser;
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const user: JwtUserDTO = req.body;
 
   if (user && user.isAdmin) {
     next();
@@ -11,7 +12,7 @@ export const isAmdin = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const isLoggedin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.jwtUser;
+  const user: JwtUserDTO = req.body;
 
   if (user) {
     next();
