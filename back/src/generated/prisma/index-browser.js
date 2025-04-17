@@ -124,6 +124,9 @@ exports.Prisma.UserScalarFieldEnum = {
   userName: 'userName',
   nickName: 'nickName',
   type: 'type',
+  isAdmin: 'isAdmin',
+  isDelete: 'isDelete',
+  reason: 'reason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -174,23 +177,24 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password',
   userName: 'userName',
   nickName: 'nickName',
-  type: 'type'
+  type: 'type',
+  reason: 'reason'
 };
 
 exports.Prisma.PlanOrderByRelevanceFieldEnum = {
   region: 'region',
   schedule: 'schedule',
   traffic: 'traffic'
-};
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
 };
 
 exports.Prisma.PlaceOrderByRelevanceFieldEnum = {

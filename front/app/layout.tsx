@@ -13,6 +13,7 @@ import Leins from "./lib/lenis";
 // next/navigation 클라이언트 컴포넌트에서만 가능
 import { notFound } from "next/navigation";
 import { Metadata } from "@node_modules/next";
+import Providers from "./clinetLayout";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -36,7 +37,7 @@ export default function RootLayout({
         <header>
           <Header />
         </header>
-        <section className="bg-black">{children}</section>
+        <Providers>{children}</Providers>
         <footer>{/* <Footer /> */}</footer>
 
         <Leins />

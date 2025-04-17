@@ -1,9 +1,9 @@
-const app = require("./src/app");
+import app from "./src/app";
 import dotenv from "dotenv";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 서버 실행 중 - [${process.env.NODE_ENV}] 모드`);
 });

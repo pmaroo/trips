@@ -1,19 +1,28 @@
-import express, { Request, Response } from "express";
-import prisma from "../middlewares/client";
+import express, { RequestHandler } from "express";
+import {
+  createUser,
+  exitUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+} from "../controllers/user.controller";
+import { isAmdin, isLoggedin } from "../middlewares/passport";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany({
-      where: { userName: "aa" },
-    });
-    console.log(users);
-    res.json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(401).json({ error: "에러" });
-  }
-});
+// 회원탈퇴
+router.post("/exit", isLoggedin, exitUser);
+
+// 회원수정
+router.post("/update", isLoggedin, updateUser);
+
+// 회원가입
+router.post("/create", createUser);
+
+// 전체회원조회
+router.post("/all", isAmdin, getAllUsers);
+
+// 회원조회
+router.post("/:id", isLoggedin, getUserById);
 
 export default router;

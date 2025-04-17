@@ -1,0 +1,20 @@
+# BACK 구조
+-prisma
+    schema.prisma // DB설계
+-src
+    - config 
+    - controllers // CRUS모듈화 사용
+    - generated // prisma
+    - middelwares 
+    - models // DB 접근함수 CRUD 모듈화
+    - routes // router 통신
+    - types // API type정의
+    - utils
+    app.ts
+.env
+.gitignore
+nodemone.json.txt
+package.json
+server.ts
+tsconfig.json
+    
