@@ -1,12 +1,12 @@
-import { Button } from "@app/components/ui/shadcn/button";
-
 export default function Footer() {
   return (
-    <div className="flex items-center justify-center">
-      <Button className="p-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-        Footer
-      </Button>
-    </div>
+    <div
+      className="
+      flex
+      items-center
+      justify-center
+    "
+    ></div>
   );
 }
 // 주의점

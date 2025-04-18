@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --adminAni: adminAni 1s ease-in forward;
+
+  @keyframes adminAni {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+}
