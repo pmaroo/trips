@@ -1,33 +1,50 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/ui/header";
 import Footer from "./components/ui/footer";
 import { usePathname } from "next/navigation";
 import Layout from "./components/ui/admin/layout";
 import Components from "./components/ui/shadcn";
+import { MenuDTO, Menus } from "./types/menu";
+import { DayChart } from "./components/ui/admin/dayChart";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const {
     SidebarProvider,
     SidebarTrigger,
-    SidebarHeader,
-    SidebarContent,
-    SidebarFooter,
-    Sidebar,
     SidebarInset,
     Separator,
     Breadcrumb,
     BreadcrumbList,
     BreadcrumbItem,
-    BreadcrumbLink,
     BreadcrumbSeparator,
     BreadcrumbPage,
   } = Components;
 
   const [queryClient] = useState(() => new QueryClient());
+  const [url, setUrl] = useState<{ title: string }>({ title: "" });
+  const [subUrl, setSubUrl] = useState<{ title: string }>({ title: "" });
   const path = usePathname();
+
+  useEffect(() => {
+    if (path.includes("admin")) {
+      const urlResult =
+        path === "/admin"
+          ? { title: "홈" }
+          : Menus.navMain.find((value) => path.includes(value.url));
+      const subUrlResult =
+        path === "/admin"
+          ? { title: "" }
+          : Menus.navMain
+              .find((value) => path.includes(value.url))
+              .items.find((value) => path.includes(value.url));
+
+      setUrl(urlResult);
+      setSubUrl(subUrlResult);
+    }
+  }, []);
 
   return (
     <>
@@ -48,100 +65,43 @@ export default function Providers({ children }: { children: React.ReactNode }) {
               "
             >
               <div
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  px-4
-                "
+                className="flex items-center gap-2 px-4 "
               >
                 <SidebarTrigger
-                  className="
-                    -ml-1
-                  "
+                  className="-ml-1 "
                 />
                 <Separator
                   orientation="vertical"
-                  className="
-                    h-4
-                    mr-2
-                  "
+                  className="h-4 mr-2 "
                 />
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem
-                      className="
-                        hidden
-                        md:block
-                      "
+                      className="hidden  md:block"
                     >
-                      <BreadcrumbLink href="#">
-                        Building Your Application
-                      </BreadcrumbLink>
+                      {url.title}
                     </BreadcrumbItem>
-                    <BreadcrumbSeparator
-                      className="
-                        hidden
-                        md:block
-                      "
-                    />
+                    {path !== "/admin" && (
+                      <BreadcrumbSeparator
+                        className="hidden  md:block"
+                      />
+                    )}
                     <BreadcrumbItem>
-                      <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                      <BreadcrumbPage>{subUrl.title}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>
             </header>
-            <div
+
+            <section
               className="
-                flex
-                flex-col
-                p-4
-                flex-1
-                gap-4
-                pt-0
+                px-[20px]
+                size-full
               "
             >
-              <div
-                className="
-                  grid
-                  gap-4
-                  auto-rows-min
-                  md:grid-cols-3
-                "
-              >
-                <div
-                  className="
-                    aspect-video
-                    rounded-xl
-                    bg-muted/50
-                  "
-                />
-                <div
-                  className="
-                    aspect-video
-                    rounded-xl
-                    bg-muted/50
-                  "
-                />
-                <div
-                  className="
-                    aspect-video
-                    rounded-xl
-                    bg-muted/50
-                  "
-                />
-              </div>
-              <div
-                className="
-                  min-h-[100vh]
-                  flex-1
-                  rounded-xl
-                  bg-muted/50
-                  md:min-h-min
-                "
-              />
-            </div>
+              {children}
+            </section>
           </SidebarInset>
         </SidebarProvider>
       ) : (

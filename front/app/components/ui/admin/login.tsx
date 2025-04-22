@@ -38,32 +38,20 @@ export default function Login({
           top: `0`,
           left: `0`,
           zIndex: `1000`,
+          background: `#fff`,
         }}
       >
         <div
-          className="
-            flex
-            items-center
-            justify-center
-            w-full
-            p-6
-            min-h-svh
-            md:p-10
-          "
+          className="flex items-center justify-center w-full p-6  min-h-svh md:p-10"
         >
           <div
-            className="
-              w-full
-              max-w-sm
-            "
+            className="w-full max-w-sm "
           >
             <div className={cn("flex flex-col gap-6", className)} {...props}>
               <Card>
                 <CardHeader>
                   <CardTitle
-                    className="
-                      text-2xl
-                    "
+                    className="text-2xl "
                   >
                     Login
                   </CardTitle>
@@ -74,17 +62,10 @@ export default function Login({
                 <CardContent>
                   <form>
                     <div
-                      className="
-                        flex
-                        flex-col
-                        gap-6
-                      "
+                      className="flex flex-col gap-6 "
                     >
                       <div
-                        className="
-                          grid
-                          gap-2
-                        "
+                        className="grid gap-2 "
                       >
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -95,27 +76,15 @@ export default function Login({
                         />
                       </div>
                       <div
-                        className="
-                          grid
-                          gap-2
-                        "
+                        className="grid gap-2 "
                       >
                         <div
-                          className="
-                            flex
-                            items-center
-                          "
+                          className="flex items-center "
                         >
                           <Label htmlFor="password">Password</Label>
                           <a
                             href="#"
-                            className="
-                              inline-block
-                              text-sm
-                              ml-auto
-                              underline-offset-4
-                              hover:underline
-                            "
+                            className="inline-block ml-auto text-sm  underline-offset-4 hover:underline"
                           >
                             Forgot your password?
                           </a>
@@ -124,35 +93,25 @@ export default function Login({
                       </div>
                       <Button
                         type="submit"
-                        className="
-                          w-full
-                        "
+                        className="w-full "
+                        onClick={loginHandler}
                       >
                         Login
                       </Button>
                       <Button
                         variant="outline"
-                        className="
-                          w-full
-                        "
+                        className="w-full "
                       >
                         Login with Google
                       </Button>
                     </div>
                     <div
-                      className="
-                        text-center
-                        text-sm
-                        mt-4
-                      "
+                      className="mt-4 text-sm text-center "
                     >
                       Don&apos;t have an account?{" "}
                       <a
                         href="#"
-                        className="
-                          underline
-                          underline-offset-4
-                        "
+                        className="underline  underline-offset-4"
                       >
                         Sign up
                       </a>
