@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Components from "../shadcn";
+import Components from "../../shadcn";
 
 export function Header() {
   const { SidebarMenu, SidebarMenuButton, SidebarMenuItem } = Components;

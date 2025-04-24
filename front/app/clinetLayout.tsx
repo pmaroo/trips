@@ -7,10 +7,14 @@ import Footer from "./components/ui/footer";
 import { usePathname } from "next/navigation";
 import Layout from "./components/ui/admin/layout";
 import Components from "./components/ui/shadcn";
-import { MenuDTO, Menus } from "./types/menu";
-import { DayChart } from "./components/ui/admin/dayChart";
+import { Menus } from "./types/menu";
+import { ThemeProvider } from "next-themes";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const {
     SidebarProvider,
     SidebarTrigger,
@@ -46,77 +50,89 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const [isMount, setMount] = useState(false);
+
+  useEffect(() => {
+    setMount(true);
+  }, []);
+
+  if (!isMount) {
+    return null;
+  }
+
   return (
     <>
-      {path.includes("admin") ? (
-        <SidebarProvider>
-          <Layout />
-          <SidebarInset>
-            <header
-              className="
-                flex
-                items-center
-                h-16
-                shrink-0
-                gap-2
-                transition-[width,height]
-                ease-linear
-                group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
-              "
-            >
-              <div
-                className="flex items-center gap-2 px-4 "
+      <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
+        {path.includes("admin") ? (
+          <SidebarProvider>
+            <Layout />
+            <SidebarInset>
+              <header
+                className="
+                  flex
+                  items-center
+                  h-16
+                  shrink-0
+                  gap-2
+                  transition-[width,height]
+                  ease-linear
+                  group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
+                "
               >
-                <SidebarTrigger
-                  className="-ml-1 "
-                />
-                <Separator
-                  orientation="vertical"
-                  className="h-4 mr-2 "
-                />
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem
-                      className="hidden  md:block"
-                    >
-                      {url.title}
-                    </BreadcrumbItem>
-                    {path !== "/admin" && (
-                      <BreadcrumbSeparator
+                <div
+                  className="flex items-center gap-2 px-4 "
+                >
+                  <SidebarTrigger
+                    className="-ml-1 "
+                  />
+                  <Separator
+                    orientation="vertical"
+                    className="h-4 mr-2 "
+                  />
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem
                         className="hidden  md:block"
-                      />
-                    )}
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{subUrl.title}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-            </header>
+                      >
+                        {url.title}
+                      </BreadcrumbItem>
+                      {path !== "/admin" && (
+                        <BreadcrumbSeparator
+                          className="hidden  md:block"
+                        />
+                      )}
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>{subUrl.title}</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
+              </header>
 
-            <section
-              className="
-                px-[20px]
-                size-full
-              "
-            >
-              {children}
-            </section>
-          </SidebarInset>
-        </SidebarProvider>
-      ) : (
-        <>
-          <header>
-            <Header />
-          </header>
-          <QueryClientProvider client={queryClient}>
-            <section>{children}</section>
-          </QueryClientProvider>
-          <footer>
-            <Footer />
-          </footer>
-        </>
-      )}
+              <section
+                className="
+                  px-[20px]
+                  size-full
+                "
+              >
+                {children}
+              </section>
+            </SidebarInset>
+          </SidebarProvider>
+        ) : (
+          <>
+            <header>
+              <Header />
+            </header>
+            <QueryClientProvider client={queryClient}>
+              <section>{children}</section>
+            </QueryClientProvider>
+            <footer>
+              <Footer />
+            </footer>
+          </>
+        )}
+      </ThemeProvider>
     </>
   );
 }

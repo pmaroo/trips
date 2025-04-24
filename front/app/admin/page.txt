@@ -1,0 +1,25 @@
+### page.tsx
+
+import ClientPage from "./clientPage";
+
+export default async function Page() {
+  return (
+    <>
+      <ClientPage />
+    </>
+  );
+}
+
+### clientPage.tsx
+
+"use client";
+
+export default function ClientPage() {
+  return (
+    <>
+      <article
+        className="flex flex-col items-center justify-center  size-full"
+      ></article>
+    </>
+  );
+}

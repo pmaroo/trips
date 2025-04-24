@@ -10,7 +10,7 @@ import Leins from "./lib/lenis";
 // notFound 강제 404 띄워버리는 함수
 // next/navigation 클라이언트 컴포넌트에서만 가능
 import { Metadata } from "@node_modules/next";
-import Providers from "./clinetLayout";
+import ClientLayout from "./clinetLayout";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Providers>{children}</Providers>
+        <ClientLayout>{children}</ClientLayout>
 
         <Leins />
       </body>

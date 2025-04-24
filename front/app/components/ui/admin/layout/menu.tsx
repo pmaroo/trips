@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, Home, type LucideIcon } from "lucide-react";
-import Components from "../shadcn";
+import Components from "../../shadcn";
 import { usePathname } from "@node_modules/next/navigation";
 
 export function Menu({ items }) {

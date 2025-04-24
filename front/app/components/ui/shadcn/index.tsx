@@ -85,6 +85,84 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./components/ui/pagination";
+import { Checkbox } from "./components/ui/checkbox";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+  DialogOverlay,
+  DialogPortal,
+} from "./components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./components/ui/sheet";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "./components/ui/form";
+import { useFormContext } from "react-hook-form";
+import { XCircle } from "@deemlol/next-icons";
+import { Badge } from "./components/ui/badge";
+
+// CustomFormMessage.tsx
+
+const CustomFormMessage = ({ name }: { name: string }) => {
+  const {
+    formState: { errors },
+  } = useFormContext();
+
+  const error = errors?.[name];
+
+  if (!error) return null;
+
+  return (
+    <ul
+      className="flex flex-row items-center justify-start "
+    >
+      <li
+        className="
+          text-[13px]
+          text-[red]
+          mr-[5px]
+        "
+      >
+        <XCircle size={16} color="red" />
+      </li>
+      <li
+        className="
+          text-[13px]
+          text-[red]
+        "
+      >
+        {error.message?.toString()}
+      </li>
+    </ul>
+  );
+};
 
 const Components = {
   Button,
@@ -159,6 +237,39 @@ const Components = {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  Checkbox,
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+  DialogOverlay,
+  DialogPortal,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  CustomFormMessage,
+  Badge,
 };
 
 export type { ChartConfig };

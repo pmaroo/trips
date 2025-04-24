@@ -13,6 +13,8 @@ export interface UserDTO {
   type: string;
   Plan: PlanDTO[];
   isAdmin: boolean;
+  isDelete: boolean;
+  reason: string;
   createdAt: Date;
   updatedAt: Date;
 }

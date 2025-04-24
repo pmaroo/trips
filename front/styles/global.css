@@ -63,3 +63,21 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
+
+@layer utilities {
+  .kakao {
+    @apply bg-[#FEE500] text-[#3A1D1D];
+  }
+
+  .naver {
+    @apply bg-[#03C75A] text-white;
+  }
+
+  .google {
+    @apply bg-white text-[#4285F4] border border-gray-300;
+  }
+
+  .git {
+    @apply bg-[#1d1b1b] text-white;
+  }
+}

@@ -8,7 +8,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import Components from "../shadcn";
+import Components from "../../shadcn";
 
 export function NavUser({
   user,

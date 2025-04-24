@@ -1,6 +1,6 @@
 "use client";
 
-import Components from "../shadcn";
+import Components from "../../shadcn";
 import { Header } from "./header";
 import { Menu } from "./menu";
 import { NavUser } from "./navUser";
