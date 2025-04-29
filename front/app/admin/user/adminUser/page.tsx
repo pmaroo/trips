@@ -1,7 +1,25 @@
 // Page.jsx (서버 컴포넌트)
 import { Metadata } from "@node_modules/next";
 import ClientPage from "./clientPage";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { adminUserList } from "@lib/api/user";
 
-export default function Page() {
-  return <ClientPage />;
+export default async function Page() {
+  const queryClient = new QueryClient();
+
+  // SSR
+  await queryClient.prefetchQuery({
+    queryKey: ["adminUser"],
+    queryFn: () => adminUserList(true),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ClientPage />
+    </HydrationBoundary>
+  );
 }

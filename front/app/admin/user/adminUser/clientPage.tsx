@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Components from "../../../components/ui/shadcn";
+import { useEffect, useMemo, useState } from "react";
+import Components from "../../../../components/shadcn";
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,20 +10,26 @@ import {
   createColumnHelper,
   ColumnDef,
 } from "@tanstack/react-table";
-import { TestUser, userSchema } from "@app/types/user";
-import { DragHandle, DragTable } from "@app/components/ui/admin/table";
+import {
+  CreateUser,
+  ExitUser,
+  UpdateUser,
+  UserDTO,
+} from "../../../../types/user";
+import { DragHandle, DragTable } from "@components/admin/table";
 import { PlusCircle } from "@deemlol/next-icons";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-type TestUserType = z.infer<typeof userSchema>;
-
-const data: TestUser[] = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  name: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  email: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
-}));
+import {
+  useAdminUser,
+  useCreateUser,
+  useExitUser,
+  useUpdateUser,
+} from "@hooks/reactQuery/useUser";
+import {
+  useCreateUserForm,
+  useExitUserForm,
+  useUpdateUserForm,
+  useUserDTOForm,
+} from "../../../../hooks/form/useUserForm";
 
 export default function ClientPage() {
   const {
@@ -48,12 +54,109 @@ export default function ClientPage() {
     FormControl,
     Input,
     CustomFormMessage,
+    Badge,
+    SheetFooter,
+    DialogFooter,
   } = Components;
 
-  const [dataResult, setDataResult] = useState(data);
-  const columnHelper = createColumnHelper<TestUser>();
+  //////////////////////////////////////////////////////////////
+  // STATE
+  //////////////////////////////////////////////////////////////
 
-  const columns = useMemo<ColumnDef<TestUser>[]>(
+  const [dataResult, setDataResult] = useState<UserDTO[]>([]);
+  const [isCreate, setIsCreate] = useState<boolean>(false);
+  const [isExit, setIsExit] = useState<number | null>(null);
+
+  //////////////////////////////////////////////////////////////
+  // HOOK
+  //////////////////////////////////////////////////////////////
+
+  const adminUserData = useAdminUser(true);
+  const createUserData = useCreateUser(() => {
+    setIsCreate(false);
+  });
+  const updateUserData = useUpdateUser(() => {
+    setIsExit(null);
+  });
+  const exitUserData = useExitUser(() => {});
+
+  //////////////////////////////////////////////////////////////
+  //  FORM
+  //////////////////////////////////////////////////////////////
+
+  const createUserForm = useCreateUserForm();
+  const updateUserForm = useUpdateUserForm();
+  const exitUserForm = useExitUserForm();
+
+  //////////////////////////////////////////////////////////////
+  // USEEFFECT
+  //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    if (adminUserData.isSuccess) {
+      setDataResult(adminUserData.data);
+    }
+  }, [adminUserData.isSuccess, adminUserData.data]);
+
+  //////////////////////////////////////////////////////////////
+  // TOGGLE
+  //////////////////////////////////////////////////////////////
+
+  const exitToggle = (data: number) => {
+    if (data === isExit) {
+      setIsExit(null);
+    } else {
+      setIsExit(data);
+    }
+  };
+
+  //////////////////////////////////////////////////////////////
+  // HANDLER
+  //////////////////////////////////////////////////////////////
+
+  const createUserHandler = (data: CreateUser) => {
+    const userData = {
+      email: data.email,
+      password: data.password,
+      userName: data.userName,
+      nickName: data.nickName,
+      isAdmin: true,
+      type: "관리자회원가입",
+    };
+
+    createUserData.mutate(userData);
+  };
+
+  const updateUserHandler = (data: UpdateUser) => {
+    const userData = {
+      id: data.id,
+      email: data.email,
+      password: data.password,
+      userName: data.userName,
+      nickName: data.nickName,
+    };
+
+    updateUserData.mutate(userData);
+  };
+
+  const exitUserHandler = (data: ExitUser) => {
+    const userData = {
+      id: data.id,
+      createdAt: data.createdAt,
+      userName: data.userName,
+      isDelete: true,
+      reason: data.reason,
+    };
+
+    exitUserData.mutate(userData);
+  };
+
+  //////////////////////////////////////////////////////////////
+  //  TABLE
+  //////////////////////////////////////////////////////////////
+
+  const columnHelper = createColumnHelper<UserDTO>();
+  const columns = useMemo<ColumnDef<UserDTO>[]>(
     () => [
       columnHelper.display({
         id: "drag",
@@ -71,8 +174,24 @@ export default function ClientPage() {
         minSize: 10,
         maxSize: 10,
       }),
-      columnHelper.accessor("name", { header: "이름" }),
-      columnHelper.accessor("email", { header: "이메일" }),
+      columnHelper.accessor("userName", {
+        header: "이름",
+        size: 80,
+        minSize: 80,
+        maxSize: 80,
+      }),
+      columnHelper.accessor("email", {
+        header: "이메일",
+        size: 80,
+        minSize: 80,
+        maxSize: 80,
+      }),
+      columnHelper.accessor("nickName", {
+        header: "닉네임",
+        size: 80,
+        minSize: 80,
+        maxSize: 80,
+      }),
       columnHelper.display({
         id: "actions",
         header: "",
@@ -81,7 +200,7 @@ export default function ClientPage() {
         maxSize: 20,
         cell: ({ row }) => (
           <>
-            <Sheet key={"right"}>
+            <Sheet key="right">
               <SheetTrigger asChild>
                 <Button
                   className="
@@ -90,18 +209,156 @@ export default function ClientPage() {
                     h-[20px]
                     p-[0]
                   "
+                  onClick={() => {
+                    updateUserForm.reset(row.original);
+                  }}
+                  tabIndex={-1}
                 >
                   회원정보
                 </Button>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>Are you absolutely sure?</SheetTitle>
+                  <SheetTitle>관리자 회원정보</SheetTitle>
                   <SheetDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    관리자 회원의 정보를 확인할 수 있습니다.
                   </SheetDescription>
                 </SheetHeader>
+
+                <Form {...updateUserForm}>
+                  <form
+                    onSubmit={updateUserForm.handleSubmit(
+                      updateUserHandler,
+                      (err) => {
+                        console.log(err);
+                      },
+                    )}
+                  >
+                    <FormField
+                      control={updateUserForm.control}
+                      name="id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ID</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge>{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateUserForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>이메일</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="이메일을 입력하세요"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="email" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateUserForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>비밀번호</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="비밀번호를 입력하세요"
+                              type="password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="password" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateUserForm.control}
+                      name="userName"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>이름</FormLabel>
+                          <FormControl>
+                            <Input placeholder="이름을 입력하세요" {...field} />
+                          </FormControl>
+                          <CustomFormMessage name="userName" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateUserForm.control}
+                      name="nickName"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>닉네임</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="닉네임을 입력하세요"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="nickName" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateUserForm.control}
+                      name="createdAt"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>가입날짜</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge>{field.value.toString()}</Badge>
+                          </FormControl>
+                          <CustomFormMessage name="nickName" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <SheetFooter
+                      className="
+                        mt-[30px]
+                      "
+                    >
+                      <Button type="submit">수정하기</Button>
+                    </SheetFooter>
+                  </form>
+                </Form>
               </SheetContent>
             </Sheet>
           </>
@@ -115,7 +372,10 @@ export default function ClientPage() {
         maxSize: 20,
         cell: ({ row }) => (
           <>
-            <Dialog>
+            <Dialog
+              open={row.original.id === isExit ? true : false}
+              onOpenChange={() => exitToggle(row.original.id)}
+            >
               <DialogTrigger asChild>
                 <Button
                   className="
@@ -125,27 +385,121 @@ export default function ClientPage() {
                     p-[0]
                   "
                   variant="destructive"
+                  onClick={() => {
+                    exitUserForm.reset({
+                      ...row.original,
+                      createdAt: new Date(row.original.createdAt),
+                      reason: "블랙리스트 및 홈페이지 이용 불가",
+                    });
+                  }}
+                  tabIndex={-1}
                 >
                   회원탈퇴
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogTitle>정말 회원탈퇴 하시겠습니까?</DialogTitle>
                   <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    회원탈퇴 후 해당 이메일은 사용할 수 없습니다.
                   </DialogDescription>
                 </DialogHeader>
+
+                <Form {...exitUserForm}>
+                  <form
+                    onSubmit={exitUserForm.handleSubmit(
+                      exitUserHandler,
+                      (err) => console.log(err),
+                    )}
+                  >
+                    <FormField
+                      control={exitUserForm.control}
+                      name="id"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>ID</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge>{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={exitUserForm.control}
+                      name="userName"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>회원이름</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge>{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={exitUserForm.control}
+                      name="reason"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>탈퇴이유</FormLabel>
+                          <FormControl>
+                            <Input
+                              autoFocus
+                              {...field}
+                              placeholder="탈퇴 이유를 작성해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="reason" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <DialogFooter
+                      className="
+                        mt-[20px]
+                      "
+                    >
+                      <Button
+                        variant="destructive"
+                        type="submit"
+                        className="w-full "
+                      >
+                        탈퇴하기
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </>
         ),
       }),
     ],
-    [],
+    [updateUserForm, exitUserForm, dataResult, isExit],
   );
 
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 15, //default page size
@@ -166,20 +520,6 @@ export default function ClientPage() {
     },
   });
 
-  const form = useForm<TestUserType>({
-    resolver: zodResolver(userSchema),
-    defaultValues: {
-      id: 0,
-      name: "",
-      email: "",
-    },
-  });
-
-  const onSubmit = (data: TestUser) => {
-    console.log(data);
-    console.log(form);
-  };
-
   return (
     <article
       className="flex flex-col items-end justify-center "
@@ -197,7 +537,7 @@ export default function ClientPage() {
         <li
           className="w-auto "
         >
-          <Dialog>
+          <Dialog open={isCreate} onOpenChange={() => setIsCreate(!isCreate)}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
@@ -219,10 +559,12 @@ export default function ClientPage() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                <Form {...createUserForm}>
+                  <form
+                    onSubmit={createUserForm.handleSubmit(createUserHandler)}
+                  >
                     <FormField
-                      control={form.control}
+                      control={createUserForm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
@@ -238,19 +580,60 @@ export default function ClientPage() {
                       )}
                     />
                     <FormField
-                      control={form.control}
-                      name="name"
+                      control={createUserForm.control}
+                      name="password"
                       render={({ field }) => (
                         <FormItem
                           className="
-                            mt-[20px]
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>비밀번호</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="비밀번호를 입력하세요"
+                              type="password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="password" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createUserForm.control}
+                      name="userName"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
                           "
                         >
                           <FormLabel>이름</FormLabel>
                           <FormControl>
                             <Input placeholder="이름을 입력하세요" {...field} />
                           </FormControl>
-                          <CustomFormMessage name="name" />
+                          <CustomFormMessage name="userName" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createUserForm.control}
+                      name="nickName"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mt-[10px]
+                          "
+                        >
+                          <FormLabel>닉네임</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="닉네임을 입력하세요"
+                              {...field}
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="nickName" />
                         </FormItem>
                       )}
                     />
@@ -271,13 +654,18 @@ export default function ClientPage() {
           </Dialog>
         </li>
       </ul>
-      <DragTable<TestUser>
-        table={table}
-        dataResult={dataResult}
-        setDataResult={setDataResult}
-        pagination={pagination}
-        columns={columns}
-      />
+
+      {adminUserData.isLoading ? (
+        <Badge>로딩중</Badge>
+      ) : (
+        <DragTable<UserDTO>
+          table={table}
+          dataResult={dataResult}
+          setDataResult={setDataResult}
+          pagination={pagination}
+          columns={columns}
+        />
+      )}
     </article>
   );
 }

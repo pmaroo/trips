@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useContext, useState } from "react";
-import { Theme } from "../components/ui/theme";
+import { Theme } from "../../components/theme";
 
 export default function ClientPage({ user }) {
   const [stat, setStat] = useState(user);

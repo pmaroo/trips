@@ -1,6 +1,6 @@
 "use client";
 
-import Components, { ChartConfig } from "@app/components/ui/shadcn";
+import Components, { ChartConfig } from "@components/shadcn";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 export default function ClientPage() {

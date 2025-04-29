@@ -1,8 +1,7 @@
 "use client";
 
-import { DayChart } from "@app/components/ui/admin/dayChart";
-import Login from "../components/ui/admin/layout/login";
-import { ThemeProvider } from "next-themes";
+import { DayChart } from "@components/admin/dayChart";
+import Login from "../../components/admin/layout/login";
 
 export default function ClientPage() {
   return (
@@ -13,23 +12,23 @@ export default function ClientPage() {
       >
         <ul
           className="
-              flex
-              flex-row
-              items-center
-              w-full
-              justify-between
-              h-[50%]
-            "
+            flex
+            flex-row
+            items-center
+            w-full
+            justify-between
+            h-[50%]
+          "
         >
           <li
             className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                h-full
-                w-[calc(100%/3-10px)]
-              "
+              flex
+              flex-col
+              items-center
+              justify-center
+              h-full
+              w-[calc(100%/3-10px)]
+            "
           >
             <DayChart />
           </li>
@@ -38,13 +37,13 @@ export default function ClientPage() {
         </ul>
         <ul
           className="
-              flex
-              flex-row
-              items-center
-              w-full
-              justify-between
-              h-[50%]
-            "
+            flex
+            flex-row
+            items-center
+            w-full
+            justify-between
+            h-[50%]
+          "
         ></ul>
       </article>
     </>

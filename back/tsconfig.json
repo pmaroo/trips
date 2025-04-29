@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./src/types"],
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
@@ -112,6 +113,6 @@
   },
   "include": [
     "src/**/*", // 프로젝트의 소스 코드 경로
-    "types/**/*.d.ts" // 타입 정의 파일 경로 추가
+    "src/types/**/*.d.ts" // 타입 정의 파일 경로 추가
   ]
 }

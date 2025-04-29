@@ -1,13 +1,12 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import Header from "./components/ui/header";
-import Footer from "./components/ui/footer";
+import Header from "../components/layout/header";
+import Footer from "../components/layout/footer";
 import { usePathname } from "next/navigation";
-import Layout from "./components/ui/admin/layout";
-import Components from "./components/ui/shadcn";
-import { Menus } from "./types/menu";
+import Layout from "../components/admin/layout";
+import Components from "../components/shadcn";
+import { Menus } from "../types/menu";
 import { ThemeProvider } from "next-themes";
 
 export default function ClientLayout({
@@ -27,10 +26,28 @@ export default function ClientLayout({
     BreadcrumbPage,
   } = Components;
 
-  const [queryClient] = useState(() => new QueryClient());
+  //////////////////////////////////////////////////////////////
+  // STATE
+  //////////////////////////////////////////////////////////////
+
   const [url, setUrl] = useState<{ title: string }>({ title: "" });
+  const [isMount, setMount] = useState(false);
   const [subUrl, setSubUrl] = useState<{ title: string }>({ title: "" });
+
   const path = usePathname();
+
+  //////////////////////////////////////////////////////////////
+  // HOOK
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  // STORE
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  // FORM
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  // USEEFFECT
+  //////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (path.includes("admin")) {
@@ -50,11 +67,21 @@ export default function ClientLayout({
     }
   }, []);
 
-  const [isMount, setMount] = useState(false);
-
   useEffect(() => {
     setMount(true);
   }, []);
+
+  //////////////////////////////////////////////////////////////
+  // TOGGLE
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  // HANDLER
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  //  TABLE
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////
 
   if (!isMount) {
     return null;
@@ -124,9 +151,7 @@ export default function ClientLayout({
             <header>
               <Header />
             </header>
-            <QueryClientProvider client={queryClient}>
-              <section>{children}</section>
-            </QueryClientProvider>
+            <section>{children}</section>
             <footer>
               <Footer />
             </footer>

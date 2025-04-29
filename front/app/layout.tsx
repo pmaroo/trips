@@ -4,13 +4,16 @@
 import "@/styles/global.css";
 // import "@/styles/embla/base.css";
 // import "@/styles/embla/embla.css";
-import Leins from "./lib/lenis";
+import Leins from "../lib/lenis";
 
 // next/navigation 공부
 // notFound 강제 404 띄워버리는 함수
 // next/navigation 클라이언트 컴포넌트에서만 가능
 import { Metadata } from "@node_modules/next";
 import ClientLayout from "./clinetLayout";
+import Providers from "@components/layout/providers";
+import Components from "@components/shadcn";
+import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -23,16 +26,24 @@ export const metadata: Metadata = {
 // 전체 애플리케이션의 기본 레이아웃을 정의
 // 따라서 useClient에서 사용 불가능
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { Toaster } = Components;
+  const cookieStore = await cookies();
+  const jwt = cookieStore.get("jwt")?.value;
+
+  console.log(jwt);
+
   return (
     <html lang="ko">
       <body>
-        <ClientLayout>{children}</ClientLayout>
-
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
+        <Toaster />
         <Leins />
       </body>
     </html>

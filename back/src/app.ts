@@ -4,6 +4,7 @@ import tagRouter from "./routes/tagRouter";
 import planRouter from "./routes/planRouter";
 import placeRouter from "./routes/placeRouter";
 import categoryRouter from "./routes/categoryRouter";
+import authRouter from "./routes/authRouter";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
@@ -33,7 +34,10 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev")); // 요청 메서드,URL,응답 시간 등을 로그로 출력
   // CORS 허용 (front-back 달라서)
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use(cors({ origin: "*", credentials: true }));
 }
+
+app.use("/api/auth", authRouter);
 
 // 라우터
 app.use("/api/user", userRouter);

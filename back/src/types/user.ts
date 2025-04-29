@@ -37,9 +37,10 @@ export interface UpdateUser {
 }
 
 export interface JwtUserDTO {
+  id: number;
   email: string;
   userName: string;
-  nickNmae: string;
+  nickName: string;
   isAdmin: boolean;
 }
 
@@ -47,4 +48,15 @@ export interface ExitUser {
   id: number;
   isDelete: boolean;
   reason: string;
+}
+
+export interface LoginUser {
+  email: string;
+  password: string;
+}
+
+export interface AdminLoginUser {
+  email: string;
+  password: string;
+  isAdmin: boolean;
 }

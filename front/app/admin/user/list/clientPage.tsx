@@ -1,7 +1,7 @@
 "use client";
 
-import { useContext, useMemo, useState } from "react";
-import Components from "../../../components/ui/shadcn";
+import { useMemo, useState } from "react";
+import Components from "../../../../components/shadcn";
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,9 +10,8 @@ import {
   createColumnHelper,
   ColumnDef,
 } from "@tanstack/react-table";
-
-import { UserDTO, userDTOSchema } from "@app/types/user";
-import { DragHandle, DragTable } from "@app/components/ui/admin/table";
+import { UserDTO, userDTOSchema } from "../../../../types/user";
+import { DragHandle, DragTable } from "@components/admin/table";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +28,7 @@ const data: UserDTO[] = Array.from({ length: 20 }, (_, i) => ({
   createdAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
   updatedAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
   isDelete: false,
-  reason: null,
+  reason: "",
 }));
 
 export default function ClientPage() {
@@ -40,13 +39,14 @@ export default function ClientPage() {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
+    DialogFooter,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetFooter,
     Button,
     Badge,
     Form,
@@ -56,6 +56,7 @@ export default function ClientPage() {
     FormControl,
     CustomFormMessage,
     Input,
+    Textarea,
   } = Components;
 
   const [dataResult, setDataResult] = useState(data);
@@ -63,9 +64,16 @@ export default function ClientPage() {
 
   const userDTOForm = useForm<UserDTOType>({
     resolver: zodResolver(userDTOSchema),
+    defaultValues: {
+      reason: "",
+    },
   });
 
-  const userDTOOnSubmit = (data: UserDTO) => {
+  const userDTOOnSubmit = (data: UserDTOType) => {
+    console.log(data);
+  };
+
+  const exitSubmit = (data: UserDTOType) => {
     console.log(data);
   };
 
@@ -124,8 +132,8 @@ export default function ClientPage() {
         minSize: 15,
         cell: ({ row }) => (
           <>
-            <Drawer direction="right">
-              <DrawerTrigger asChild>
+            <Sheet>
+              <SheetTrigger asChild>
                 <Button
                   className="
                     text-[11px]
@@ -140,24 +148,29 @@ export default function ClientPage() {
                 >
                   회원정보
                 </Button>
-              </DrawerTrigger>
-              <DrawerContent
+              </SheetTrigger>
+              <SheetContent
                 className="
-                  w-[500px]
-                  h-screen
-                  inset-x-auto
-                  right-[0]
+                  w-[600px]
+                  sm:max-w-none
                 "
               >
-                <DrawerHeader>
-                  <DrawerTitle>회원정보</DrawerTitle>
-                  <DrawerDescription>
-                    회원가입한 회원의 정보를 확인할 수 있습니다.
-                  </DrawerDescription>
-                </DrawerHeader>
-
                 <Form {...userDTOForm}>
-                  <form onSubmit={userDTOForm.handleSubmit(userDTOOnSubmit)}>
+                  <form
+                    onSubmit={userDTOForm.handleSubmit(
+                      userDTOOnSubmit,
+                      (errors) => {
+                        console.log("유효성 에러 발생:", errors);
+                      },
+                    )}
+                  >
+                    <SheetHeader>
+                      <SheetTitle>회원정보</SheetTitle>
+                      <SheetDescription>
+                        회원가입한 회원의 정보를 확인할 수 있습니다.
+                      </SheetDescription>
+                    </SheetHeader>
+
                     <FormField
                       control={userDTOForm.control}
                       name="id"
@@ -195,7 +208,6 @@ export default function ClientPage() {
                               placeholder="이메일을 입력하세요"
                               {...field}
                               disabled={true}
-                              autoFocus
                             />
                           </FormControl>
                           <CustomFormMessage name="email" />
@@ -263,7 +275,9 @@ export default function ClientPage() {
                             "
                           >
                             <Badge
-                              className=" kakao"
+                              className="
+                                kakao
+                              "
                             >
                               {field.value}
                             </Badge>
@@ -292,15 +306,14 @@ export default function ClientPage() {
                         </FormItem>
                       )}
                     />
+
+                    <SheetFooter>
+                      <Button type="submit">수정하기</Button>
+                    </SheetFooter>
                   </form>
                 </Form>
-                <DrawerFooter>
-                  <Button onClick={() => console.log("submit")}>
-                    수정하기
-                  </Button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+              </SheetContent>
+            </Sheet>
           </>
         ),
       }),
@@ -322,6 +335,10 @@ export default function ClientPage() {
                     p-[0]
                   "
                   variant="destructive"
+                  onClick={() => {
+                    userDTOForm.reset(row.original); // form 초기화
+                  }}
+                  tabIndex={-1}
                 >
                   회원탈퇴
                 </Button>
@@ -333,6 +350,79 @@ export default function ClientPage() {
                     회원탈퇴를 진행 후 동일한 계정은 사용할 수 없습니다.
                   </DialogDescription>
                 </DialogHeader>
+                <Form {...userDTOForm}>
+                  <form
+                    onSubmit={userDTOForm.handleSubmit(exitSubmit, (errors) => {
+                      console.log("유효성 에러 발생:", errors);
+                    })}
+                  >
+                    <FormField
+                      control={userDTOForm.control}
+                      name="id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ID</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={userDTOForm.control}
+                      name="userName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>회원이름</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={userDTOForm.control}
+                      name="reason"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>탈퇴이유</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="탈퇴이유를 작성해주세요."
+                              className="
+                                resize-none
+                              "
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <DialogFooter
+                      className="
+                        mt-[10px]
+                      "
+                    >
+                      <Button
+                        type="submit"
+                        className="
+                          w-full
+                        "
+                      >
+                        탈퇴하기
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </>
@@ -363,7 +453,12 @@ export default function ClientPage() {
 
   return (
     <article
-      className="flex flex-col items-end justify-center "
+      className="
+        flex
+        flex-col
+        justify-center
+        items-end
+      "
     >
       <DragTable<UserDTO>
         table={table}

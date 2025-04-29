@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/components/ui/three.js/main2.tsx"
+    "components/ui/three.js/main2.tsx"
   ],
   "exclude": ["node_modules"]
 }
