@@ -1,5 +1,4 @@
 import express from "express";
-import { isAdmin, isLoggedin } from "../middlewares/passport";
 import {
   createTag,
   deleteTag,
@@ -10,15 +9,15 @@ import {
 const router = express.Router();
 
 // 태그삭제
-router.post("/delete", isAdmin, deleteTag);
+router.post("/delete", deleteTag);
 
 // 태그수정
-router.post("/update", isAdmin, updateTag);
+router.post("/update", updateTag);
 
 // 태그생성
-router.post("/create", isAdmin, createTag);
+router.post("/create", createTag);
 
 // 태그리스트
-router.post("/", isLoggedin, getAllTag);
+router.post("/", getAllTag);
 
 export default router;

@@ -1,34 +1,32 @@
 "use client";
 
 import { DayChart } from "@components/admin/dayChart";
-import Login from "../../components/admin/layout/login";
 
 export default function ClientPage() {
   return (
     <>
-      <Login />
       <article
         className="flex flex-col items-center justify-center  size-full"
       >
         <ul
           className="
-            flex
-            flex-row
-            items-center
-            w-full
-            justify-between
-            h-[50%]
-          "
+              flex
+              flex-row
+              items-center
+              w-full
+              justify-between
+              h-[50%]
+            "
         >
           <li
             className="
-              flex
-              flex-col
-              items-center
-              justify-center
-              h-full
-              w-[calc(100%/3-10px)]
-            "
+                flex
+                flex-col
+                items-center
+                justify-center
+                h-full
+                w-[calc(100%/3-10px)]
+              "
           >
             <DayChart />
           </li>
@@ -37,13 +35,13 @@ export default function ClientPage() {
         </ul>
         <ul
           className="
-            flex
-            flex-row
-            items-center
-            w-full
-            justify-between
-            h-[50%]
-          "
+              flex
+              flex-row
+              items-center
+              w-full
+              justify-between
+              h-[50%]
+            "
         ></ul>
       </article>
     </>

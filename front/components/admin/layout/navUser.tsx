@@ -9,16 +9,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import Components from "../../shadcn";
+import { useMeState } from "@store/commonStore";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser({}: {}) {
   const {
     Avatar,
     AvatarFallback,
@@ -37,6 +30,8 @@ export function NavUser({
   } = Components;
   const { isMobile } = useSidebar();
 
+  const meStore = useMeState((state) => state);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -50,52 +45,30 @@ export function NavUser({
               "
             >
               <Avatar
-                className="
-                  w-8
-                  h-8
-                  rounded-lg
-                "
+                className="w-8 h-8 rounded-lg "
               >
-                <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback
-                  className="
-                    rounded-lg
-                  "
+                  className="rounded-lg "
                 >
                   FTW
                 </AvatarFallback>
               </Avatar>
               <div
-                className="
-                  grid
-                  text-left
-                  text-sm
-                  flex-1
-                  leading-tight
-                "
+                className="grid flex-1 text-sm leading-tight text-left "
               >
                 <span
-                  className="
-                    font-semibold
-                    truncate
-                  "
+                  className="font-semibold truncate "
                 >
-                  {user.name}
+                  {meStore.me.userName}
                 </span>
                 <span
-                  className="
-                    text-xs
-                    truncate
-                  "
+                  className="text-xs truncate "
                 >
-                  {user.email}
+                  {meStore.me.email}
                 </span>
               </div>
               <ChevronsUpDown
-                className="
-                  ml-auto
-                  size-4
-                "
+                className="ml-auto  size-4"
               />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -110,10 +83,7 @@ export function NavUser({
             sideOffset={4}
           >
             <DropdownMenuLabel
-              className="
-                p-0
-                font-normal
-              "
+              className="p-0 font-normal "
             >
               <div
                 className="
@@ -127,45 +97,26 @@ export function NavUser({
                 "
               >
                 <Avatar
-                  className="
-                    w-8
-                    h-8
-                    rounded-lg
-                  "
+                  className="w-8 h-8 rounded-lg "
                 >
-                  <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback
-                    className="
-                      rounded-lg
-                    "
+                    className="rounded-lg "
                   >
                     FTW
                   </AvatarFallback>
                 </Avatar>
                 <div
-                  className="
-                    grid
-                    text-left
-                    text-sm
-                    flex-1
-                    leading-tight
-                  "
+                  className="grid flex-1 text-sm leading-tight text-left "
                 >
                   <span
-                    className="
-                      font-semibold
-                      truncate
-                    "
+                    className="font-semibold truncate "
                   >
-                    {user.name}
+                    {meStore.me.userName}
                   </span>
                   <span
-                    className="
-                      text-xs
-                      truncate
-                    "
+                    className="text-xs truncate "
                   >
-                    {user.email}
+                    {meStore.me.email}
                   </span>
                 </div>
               </div>

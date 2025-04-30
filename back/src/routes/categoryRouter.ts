@@ -1,5 +1,4 @@
 import express from "express";
-import { isAdmin, isLoggedin } from "../middlewares/passport";
 import {
   createCategory,
   deleteCategory,
@@ -10,15 +9,15 @@ import {
 const router = express.Router();
 
 // 카테고리삭제
-router.post("/delete", isAdmin, deleteCategory);
+router.post("/delete", deleteCategory);
 
 // 카테고리수정
-router.post("/update", isAdmin, updateCategory);
+router.post("/update", updateCategory);
 
 // 카테고리생성
-router.post("/create", isAdmin, createCategory);
+router.post("/create", createCategory);
 
 // 카테고리리스트
-router.post("/", isLoggedin, getAllCategory);
+router.post("/", getAllCategory);
 
 export default router;

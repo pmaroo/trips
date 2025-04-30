@@ -14,6 +14,8 @@ import ClientLayout from "./clinetLayout";
 import Providers from "@components/layout/providers";
 import Components from "@components/shadcn";
 import { cookies } from "next/headers";
+import axios from "axios";
+import { JwtUserDTO } from "../types/user";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -33,15 +35,38 @@ export default async function RootLayout({
 }) {
   const { Toaster } = Components;
   const cookieStore = await cookies();
-  const jwt = cookieStore.get("jwt")?.value;
+  const token = cookieStore.get("jwt")?.value;
 
-  console.log(jwt);
+  // let user = null;
+
+  const apiClient = axios.create({
+    baseURL: "http://localhost:8080/api/auth", // api 주소
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `jwt=${token}`,
+    },
+    withCredentials: true, // ✅ 쿠키 포함 요청
+  });
+
+  const verify = async () => {
+    try {
+      const { data } = await apiClient.get("/verify");
+
+      return data;
+    } catch (error) {
+      console.log(error.response.data.message || error);
+    }
+  };
+
+  const user = token ? await verify() : null;
 
   return (
     <html lang="ko">
       <body>
         <Providers>
-          <ClientLayout>{children}</ClientLayout>
+          <ClientLayout token={token} me={user}>
+            {children}
+          </ClientLayout>
         </Providers>
         <Toaster />
         <Leins />

@@ -7,9 +7,12 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { adminUserList } from "@lib/api/user";
+import { cookies } from "next/headers";
 
 export default async function Page() {
   const queryClient = new QueryClient();
+  const cookieStore = await cookies();
+  const token = cookieStore.get("jwt")?.value;
 
   // SSR
   await queryClient.prefetchQuery({

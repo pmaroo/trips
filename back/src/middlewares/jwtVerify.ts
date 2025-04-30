@@ -9,7 +9,7 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers[`authorization`]?.split(" ")[1];
+  const token = req.body.token;
 
   if (!token) {
     res.status(401).json({ message: "토큰이 없습니다." });
@@ -20,6 +20,9 @@ export const authenticateToken = (
     // as <== 특정 타입임을 확신
     const user = verifyToken(token) as JwtUserDTO;
     req.jwtUser = user;
+
+    console.log("회원확인");
+
     next();
   } catch (error) {
     errorConsole(error);
@@ -33,10 +36,10 @@ export const optionalAuthenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers[`authorization`]?.split(" ")[1];
+  const token = req.body.token;
 
   if (!token) {
-    // res.status(401).json({ message: "토큰이 없습니다." });
+    console.log("로그아웃");
     next();
     return;
   }
@@ -45,10 +48,77 @@ export const optionalAuthenticateToken = (
     // as <== 특정 타입임을 확신
     const user = verifyToken(token) as JwtUserDTO;
     req.jwtUser = user;
+    console.log("회원확인");
+    next();
+  } catch (error) {
+    console.log("비회원");
+    next();
+  }
+};
+
+// 무조건적 관리자 검증
+export const adminAuthenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers.cookie?.split("jwt=")[1];
+
+  if (!token) {
+    res.status(401).json({ message: "토큰이 없습니다." });
+    return;
+  }
+
+  try {
+    // as <== 특정 타입임을 확신
+    const user = verifyToken(token) as JwtUserDTO;
+    req.jwtUser = user;
+
+    if (!user.isAdmin) {
+      res.status(401).json({ message: "접근 권한이 없습니다." });
+      return;
+    }
+
+    console.log("관리자확인");
+
+    next();
+  } catch (error) {
+    errorConsole(error);
+    res.status(403).json({ message: "토큰이 유효하지 않습니다." });
+  }
+};
+
+// 선택적 관리자 검증
+export const adminOptionalAuthenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.body.token;
+
+  if (!token) {
+    console.log("토큰없음");
+    next();
+    return;
+  }
+
+  try {
+    // as <== 특정 타입임을 확신
+    const user = verifyToken(token) as JwtUserDTO;
+    req.jwtUser = user;
+
+    if (!user.isAdmin) {
+      res.status(401).json({ message: "접근 권한이 없습니다." });
+      return;
+    }
+
+    console.log("관리자확인");
+
     next();
   } catch (error) {
     // errorConsole(error);
     // res.status(403).json({ message: "토큰이 유효하지 않습니다." });
+    console.log("토큰유효지남");
     next();
   }
 };

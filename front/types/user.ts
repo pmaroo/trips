@@ -46,6 +46,14 @@ export interface LoginUser {
   password: string;
 }
 
+export interface JwtUserDTO {
+  id: number;
+  email: string;
+  userName: string;
+  nickName: string;
+  isAdmin: boolean;
+}
+
 // SCHEMA
 export const createUserSchema = z.object({
   password: z.string().min(1, "비밀번호는 필수입니다."),

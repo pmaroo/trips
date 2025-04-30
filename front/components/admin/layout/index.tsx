@@ -22,7 +22,7 @@ export default function Layout({
           <Menu items={Menus.navMain} />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={Menus.user} />
+          <NavUser />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

@@ -6,7 +6,7 @@ export const apiClient = axios.create({
   withCredentials: true, // ✅ 쿠키 포함 요청
 });
 
-export const verify = async (token: string) => {
-  const { data } = await apiClient.post("/verify", token);
+export const verify = async () => {
+  const { data } = await apiClient.get("/verify");
   return data;
 };

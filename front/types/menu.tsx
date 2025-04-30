@@ -1,11 +1,8 @@
+"use client";
+
 import { MapPin, Users } from "@deemlol/next-icons";
 
 export interface MenuDTO {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
   navMain: {
     title: string;
     url: string;
@@ -19,12 +16,6 @@ export interface MenuDTO {
 }
 
 export const Menus: MenuDTO = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-
   navMain: [
     {
       title: "회원관리",

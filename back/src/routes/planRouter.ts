@@ -1,5 +1,4 @@
 import express from "express";
-import { isAdmin, isLoggedin } from "../middlewares/passport";
 import {
   createPlan,
   deletePlan,
@@ -11,18 +10,18 @@ import {
 const router = express.Router();
 
 // 일정 삭제
-router.post("/delete", isLoggedin, deletePlan);
+router.post("/delete", deletePlan);
 
 // 일정수정
-router.post("/update", isLoggedin, updatePlan);
+router.post("/update", updatePlan);
 
 // 일정생성
-router.post("/create", isLoggedin, createPlan);
+router.post("/create", createPlan);
 
 // 일정상세
-router.post("/:id", isLoggedin, getPlanById);
+router.post("/:id", getPlanById);
 
 // 일정리스트
-router.post("/", isLoggedin, getAllPlan);
+router.post("/", getAllPlan);
 
 export default router;

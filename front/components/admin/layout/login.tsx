@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import Components from "@components/shadcn/index";
 import { cn } from "../../shadcn/lib/utils";
 import { useLoginUserForm } from "@hooks/form/useUserForm";
 import { LoginUser } from "../../../types/user";
 import { useAdminLoginUser } from "@hooks/reactQuery/useUser";
-import { useJwtStore } from "@store/jwtStore";
+import { useMeState } from "@store/commonStore";
+import { useEffect, useState } from "react";
 
 export default function Login({
   className,
@@ -32,6 +32,8 @@ export default function Login({
   // STATE
   //////////////////////////////////////////////////////////////
 
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
@@ -42,7 +44,7 @@ export default function Login({
   // STORE
   //////////////////////////////////////////////////////////////
 
-  const jwtStore = useJwtStore((state) => state);
+  const meStore = useMeState((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -53,6 +55,13 @@ export default function Login({
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    if (meStore.me) {
+      setIsLogin(true);
+    }
+  }, []);
+
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
@@ -67,6 +76,7 @@ export default function Login({
     };
 
     adminLoginUser.mutate(userData);
+    setIsLogin(true);
   };
 
   //////////////////////////////////////////////////////////////
@@ -76,8 +86,13 @@ export default function Login({
   return (
     <>
       <motion.div
+        initial={{
+          transform: meStore.me?.isAdmin
+            ? `translateX(-100%)`
+            : `translateX(0)`,
+        }}
         animate={{
-          transform: jwtStore.isJwt ? `translateX(-100%)` : `translateX(0)`,
+          transform: isLogin ? `translateX(-100%)` : `translateX(0)`,
         }}
         transition={{ duration: 0.7, ease: "ease" }}
         style={{

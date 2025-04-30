@@ -2,9 +2,12 @@
 
 import * as React from "react";
 import Components from "../../shadcn";
+import { useMeState } from "@store/commonStore";
 
 export function Header() {
   const { SidebarMenu, SidebarMenuButton, SidebarMenuItem } = Components;
+
+  const meStore = useMeState((state) => state);
 
   return (
     <SidebarMenu>
@@ -32,27 +35,15 @@ export function Header() {
             FTW
           </div>
           <div
-            className="
-              grid
-              text-left
-              text-sm
-              flex-1
-              leading-tight
-            "
+            className="grid flex-1 text-sm leading-tight text-left "
           >
             <span
-              className="
-                font-semibold
-                truncate
-              "
+              className="font-semibold truncate "
             >
-              관리자님
+              {meStore.me.nickName}님
             </span>
             <span
-              className="
-                text-xs
-                truncate
-              "
+              className="text-xs truncate "
             >
               환영합니다
             </span>

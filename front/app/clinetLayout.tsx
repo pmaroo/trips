@@ -8,11 +8,19 @@ import Layout from "../components/admin/layout";
 import Components from "../components/shadcn";
 import { Menus } from "../types/menu";
 import { ThemeProvider } from "next-themes";
+import { JwtUserDTO } from "../types/user";
+import { useMeState, useTokenState } from "@store/commonStore";
+import Login from "@components/admin/layout/login";
+import axios from "axios";
 
 export default function ClientLayout({
   children,
+  me,
+  token,
 }: {
   children: React.ReactNode;
+  me: JwtUserDTO;
+  token: string;
 }) {
   const {
     SidebarProvider,
@@ -42,12 +50,28 @@ export default function ClientLayout({
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
+
+  const meStore = useMeState((state) => state);
+  const tokenStore = useTokenState((state) => state);
+
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    if (token) {
+      tokenStore.setToken(token);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (me) {
+      meStore.setMe(me);
+    }
+  }, [me]);
 
   useEffect(() => {
     if (path.includes("admin")) {
@@ -91,61 +115,65 @@ export default function ClientLayout({
     <>
       <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
         {path.includes("admin") ? (
-          <SidebarProvider>
-            <Layout />
-            <SidebarInset>
-              <header
-                className="
-                  flex
-                  items-center
-                  h-16
-                  shrink-0
-                  gap-2
-                  transition-[width,height]
-                  ease-linear
-                  group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
-                "
-              >
-                <div
-                  className="flex items-center gap-2 px-4 "
+          me ? (
+            <SidebarProvider>
+              <Layout />
+              <SidebarInset>
+                <header
+                  className="
+                    flex
+                    items-center
+                    h-16
+                    shrink-0
+                    gap-2
+                    transition-[width,height]
+                    ease-linear
+                    group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12
+                  "
                 >
-                  <SidebarTrigger
-                    className="-ml-1 "
-                  />
-                  <Separator
-                    orientation="vertical"
-                    className="h-4 mr-2 "
-                  />
-                  <Breadcrumb>
-                    <BreadcrumbList>
-                      <BreadcrumbItem
-                        className="hidden  md:block"
-                      >
-                        {url.title}
-                      </BreadcrumbItem>
-                      {path !== "/admin" && (
-                        <BreadcrumbSeparator
+                  <div
+                    className="flex items-center gap-2 px-4 "
+                  >
+                    <SidebarTrigger
+                      className="-ml-1 "
+                    />
+                    <Separator
+                      orientation="vertical"
+                      className="h-4 mr-2 "
+                    />
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem
                           className="hidden  md:block"
-                        />
-                      )}
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>{subUrl.title}</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </BreadcrumbList>
-                  </Breadcrumb>
-                </div>
-              </header>
+                        >
+                          {url.title}
+                        </BreadcrumbItem>
+                        {path !== "/admin" && (
+                          <BreadcrumbSeparator
+                            className="hidden  md:block"
+                          />
+                        )}
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>{subUrl.title}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
+                  </div>
+                </header>
 
-              <section
-                className="
-                  px-[20px]
-                  size-full
-                "
-              >
-                {children}
-              </section>
-            </SidebarInset>
-          </SidebarProvider>
+                <section
+                  className="
+                    px-[20px]
+                    size-full
+                  "
+                >
+                  {children}
+                </section>
+              </SidebarInset>
+            </SidebarProvider>
+          ) : (
+            <Login />
+          )
         ) : (
           <>
             <header>

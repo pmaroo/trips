@@ -48,10 +48,10 @@ export const adminLoginUser = async (req: Request, res: Response) => {
     const toeknData = await generateToken(jwtData);
 
     res.cookie("jwt", toeknData, {
-      httpOnly: true,
-      secure: true, // HTTPS 환경에서만 전달
+      // httpOnly: true,
+      secure: false, // HTTPS 환경에서만 전달
       sameSite: "lax", // 혹은 strict, none 등
-      maxAge: 60 * 60 * 1000, // 1시간
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3일
     });
 
     res.json({ data: true });
