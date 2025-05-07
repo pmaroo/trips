@@ -12,6 +12,7 @@ import { DeleteTag } from "../types/tag";
 
 export const deleteTag = async (req: Request, res: Response) => {
   const deleteData: DeleteTag = req.body;
+  console.log(deleteData);
   try {
     if (!deleteData) {
       res.status(401).json({ message: "태그 정보가 없습니다." });
@@ -37,21 +38,14 @@ export const deleteTag = async (req: Request, res: Response) => {
 };
 
 export const updateTag = async (req: Request, res: Response) => {
-  const { Category, ...tagData } = req.body;
+  const { tagData } = req.body;
   try {
-    if (!tagData || Array(Category).length === 0) {
+    if (!tagData) {
       res.status(401).json({ message: "태그 정보가 없습니다." });
       return;
     }
 
-    const result = {
-      ...tagData,
-      Category: {
-        set: Category.map((cate: CategoryDTO) => cate),
-      },
-    };
-
-    const data = await updateTagModel(result);
+    const data = await updateTagModel(tagData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
@@ -62,21 +56,14 @@ export const updateTag = async (req: Request, res: Response) => {
 };
 
 export const createTag = async (req: Request, res: Response) => {
-  const { Category, ...tagData } = req.body;
+  const { tagData } = req.body;
   try {
-    if (!tagData || Array(Category).length === 0) {
+    if (!tagData) {
       res.status(401).json({ message: "태그 정보가 없습니다." });
       return;
     }
 
-    const result = {
-      ...tagData,
-      Category: {
-        connect: Category.map((cate: CategoryDTO) => cate),
-      },
-    };
-
-    const data = await createTagModel(result);
+    const data = await createTagModel(tagData);
     res.json(data);
   } catch (error) {
     errorConsole(error);

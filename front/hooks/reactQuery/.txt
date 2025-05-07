@@ -1,0 +1,71 @@
+"use client";
+
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+
+import { toast } from "sonner";
+import { CreateResult, DeleteResult, ResultDTO, UpdateResult } from "@/types/data";
+import {
+  createResult,
+  deleteResult,
+  dataList,
+  updateResult,
+} from "@lib/api/data.api";
+
+// 이름 삭제하기
+export const useDeleteResult = (onSuccessCallback: () => void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dataData: DeleteResult) => deleteResult(dataData),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["dataList"] });
+      toast("이름를 삭제했습니다.");
+      onSuccessCallback?.();
+    },
+    onError: (error: any) => {
+      toast(error?.response.data.message);
+    },
+  });
+};
+
+// 이름 수정하기
+export const useUpdateResult = (onSuccessCallback: () => void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dataData: UpdateResult) => updateResult(dataData),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["dataList"] });
+      toast("이름를 수정했습니다.");
+      onSuccessCallback?.();
+    },
+    onError: (error: any) => {
+      toast(error?.response.data.message);
+    },
+  });
+};
+
+// 이름 만들기
+export const useCreateResult = (onSuccessCallback: () => void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dataData: CreateResult) => createResult(dataData),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["dataList"] });
+      toast("이름를 생성했습니다.");
+      onSuccessCallback?.();
+    },
+    onError: (error: any) => {
+      toast(error?.response.data.message);
+    },
+  });
+};
+
+// 이름 가져오기
+export const useResultList = () => {
+  return useQuery<ResultDTO[]>({
+    queryKey: ["dataList"],
+    queryFn: () => dataList(),
+  });
+};

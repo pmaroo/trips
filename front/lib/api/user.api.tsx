@@ -2,6 +2,7 @@ import {
   CreateUser,
   ExitUser,
   LoginUser,
+  LogoutUser,
   UpdateUser,
   UserDTO,
 } from "../../types/user";
@@ -37,5 +38,10 @@ export const exitUser = async (userData: ExitUser): Promise<ExitUser> => {
 
 export const adminLoginUser = async (userData: LoginUser) => {
   const { data } = await apiClient.post("/adminLogin", userData);
+  return data;
+};
+
+export const logoutUser = async (userData: LogoutUser) => {
+  const { data } = await apiClient.post("/logout", userData);
   return data;
 };

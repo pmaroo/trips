@@ -6,7 +6,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { adminUserList } from "@lib/api/user";
+import { adminUserList } from "@lib/api/user.api";
 import { cookies } from "next/headers";
 
 export default async function Page() {

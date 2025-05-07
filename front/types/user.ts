@@ -9,7 +9,7 @@ export interface UserDTO {
   nickName: string;
   type: string;
   Plan: PlanDTO[];
-  isAdmin: string;
+  isAdmin: boolean;
   isDelete: boolean;
   reason?: string;
   createdAt: Date;
@@ -52,6 +52,10 @@ export interface JwtUserDTO {
   userName: string;
   nickName: string;
   isAdmin: boolean;
+}
+
+export interface LogoutUser {
+  id: number;
 }
 
 // SCHEMA

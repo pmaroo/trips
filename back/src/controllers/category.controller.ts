@@ -20,11 +20,9 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
     const verify = await getPlanCategoryByIdModel(deleteData);
     if (verify.length !== 0) {
-      res
-        .status(401)
-        .json({
-          message: "카테고리를 가지고 있는 일정이 있어 삭제가 불가합니다.",
-        });
+      res.status(401).json({
+        message: "카테고리를 가지고 있는 일정이 있어 삭제가 불가합니다.",
+      });
       return;
     }
 
@@ -39,22 +37,15 @@ export const deleteCategory = async (req: Request, res: Response) => {
 };
 
 export const updateCategory = async (req: Request, res: Response) => {
-  const { Tag, ...categoryData } = req.body;
+  const { categoryData } = req.body;
 
   try {
-    if (!categoryData || Array(Tag).length === 0) {
+    if (!categoryData) {
       res.status(401).json({ message: "카테고리 정보가 없습니다." });
       return;
     }
 
-    const result = {
-      ...categoryData,
-      Tag: {
-        set: Tag.map((tag: TagDTO) => tag),
-      },
-    };
-
-    const data = await updateCategoryModel(result);
+    const data = await updateCategoryModel(categoryData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
@@ -63,22 +54,15 @@ export const updateCategory = async (req: Request, res: Response) => {
 };
 
 export const createCategory = async (req: Request, res: Response) => {
-  const { Tag, ...categoryData } = req.body;
+  const { categoryData } = req.body;
 
   try {
-    if (!categoryData || Array(Tag).length === 0) {
+    if (!categoryData) {
       res.status(401).json({ message: "카테고리 정보가 없습니다." });
       return;
     }
 
-    const result = {
-      ...categoryData,
-      Tag: {
-        connect: Tag.map((tag: TagDTO) => tag),
-      },
-    };
-
-    const data = await createCategoryModel(result);
+    const data = await createCategoryModel(categoryData);
     res.json(data);
   } catch (error) {
     errorConsole(error);

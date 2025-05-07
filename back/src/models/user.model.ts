@@ -1,6 +1,39 @@
 import prisma from "../config/db";
-import { CreateUser, ExitUser, UpdateUser } from "../types/user";
+import {
+  CreateUser,
+  ExitUser,
+  LogoutUser,
+  RefreshTokenUser,
+  UpdateUser,
+} from "../types/user";
 import bcrypt from "bcrypt";
+
+export const logoutModel = async (logoutData: LogoutUser) => {
+  return prisma.user.update({
+    where: { id: logoutData.id },
+    data: { refreshToken: null },
+  });
+};
+
+export const refreshTokenDeleteModel = async (refreshToken: string) => {
+  return prisma.user.updateMany({
+    where: { refreshToken },
+    data: { refreshToken: null },
+  });
+};
+
+export const refreshTokenCheckModel = async (refreshToken: string) => {
+  return prisma.user.findFirst({
+    where: { refreshToken },
+  });
+};
+
+export const refreshTokenModel = async (data: RefreshTokenUser) => {
+  return prisma.user.update({
+    where: { id: data.id },
+    data: { refreshToken: data.refreshToken },
+  });
+};
 
 export const emailCheckModel = async (email: string) => {
   return prisma.user.findUnique({

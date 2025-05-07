@@ -6,11 +6,14 @@ import {
   getAllUsers,
   getUserById,
   loginUser,
+  logoutUser,
   updateUser,
 } from "../controllers/user.controller";
-import { adminAuthenticateToken } from "../middlewares/jwtVerify";
 
 const router = express.Router();
+
+// 로그아웃
+router.post("/logout", logoutUser);
 
 // 관리자 로그인
 router.post("/adminLogin", adminLoginUser);
@@ -19,18 +22,18 @@ router.post("/adminLogin", adminLoginUser);
 router.post("/login", loginUser);
 
 // 회원탈퇴
-router.post("/exit", adminAuthenticateToken, exitUser);
+router.post("/exit", exitUser);
 
 // 회원수정
-router.post("/update", adminAuthenticateToken, updateUser);
+router.post("/update", updateUser);
 
 // 회원가입
 router.post("/create", createUser);
 
 // 전체회원조회
-router.post("/all", adminAuthenticateToken, getAllUsers);
+router.post("/all", getAllUsers);
 
 // 회원조회
-router.post("/:id", adminAuthenticateToken, getUserById);
+router.post("/:id", getUserById);
 
 export default router;

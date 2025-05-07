@@ -60,7 +60,7 @@ export default function Login({
     if (meStore.me) {
       setIsLogin(true);
     }
-  }, []);
+  }, [meStore.me]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -94,7 +94,7 @@ export default function Login({
         animate={{
           transform: isLogin ? `translateX(-100%)` : `translateX(0)`,
         }}
-        transition={{ duration: 0.7, ease: "ease" }}
+        transition={{ duration: 0.7, ease: "easeIn" }}
         style={{
           width: `100%`,
           height: `100vh`,

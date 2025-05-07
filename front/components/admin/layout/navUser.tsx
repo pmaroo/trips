@@ -10,18 +10,18 @@ import {
 } from "lucide-react";
 import Components from "../../shadcn";
 import { useMeState } from "@store/commonStore";
+import { useLogoutUser } from "@hooks/reactQuery/useUser";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "@node_modules/@types/react";
 
 export function NavUser({}: {}) {
   const {
     Avatar,
     AvatarFallback,
-    AvatarImage,
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
     SidebarMenu,
     SidebarMenuButton,
@@ -30,7 +30,22 @@ export function NavUser({}: {}) {
   } = Components;
   const { isMobile } = useSidebar();
 
+  const router = useRouter();
+  const path = usePathname();
+
   const meStore = useMeState((state) => state);
+  const logoutUser = useLogoutUser(() => {
+    router.push(`/admin`);
+    meStore.clearMe();
+  });
+
+  const logoutHandler = () => {
+    const data = {
+      id: meStore.me.id,
+    };
+
+    logoutUser.mutate(data);
+  };
 
   return (
     <SidebarMenu>
@@ -122,7 +137,7 @@ export function NavUser({}: {}) {
               </div>
             </DropdownMenuLabel>
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logoutHandler()}>
               <LogOut />
               Log out
             </DropdownMenuItem>

@@ -35,22 +35,21 @@ export default async function RootLayout({
 }) {
   const { Toaster } = Components;
   const cookieStore = await cookies();
-  const token = cookieStore.get("jwt")?.value;
-
-  // let user = null;
+  const accessToken = cookieStore.get("jwt")?.value;
+  const refreshToken = cookieStore.get("refresh")?.value;
 
   const apiClient = axios.create({
     baseURL: "http://localhost:8080/api/auth", // api 주소
     headers: {
       "Content-Type": "application/json",
-      Cookie: `jwt=${token}`,
+      Cookie: `jwt=${accessToken}; refresh=${refreshToken}`,
     },
-    withCredentials: true, // ✅ 쿠키 포함 요청
+    withCredentials: true, // ✅ 쿠키 포함 요청(서버컴포넌트에서 실상 필요X)
   });
 
   const verify = async () => {
     try {
-      const { data } = await apiClient.get("/verify");
+      const { data } = await apiClient.post("/verify");
 
       return data;
     } catch (error) {
@@ -58,13 +57,17 @@ export default async function RootLayout({
     }
   };
 
-  const user = token ? await verify() : null;
+  const user = accessToken && refreshToken ? await verify() : null;
 
   return (
     <html lang="ko">
       <body>
         <Providers>
-          <ClientLayout token={token} me={user}>
+          <ClientLayout
+            accessToken={accessToken}
+            refreshToken={refreshToken}
+            me={user}
+          >
             {children}
           </ClientLayout>
         </Providers>

@@ -1,6 +1,6 @@
 "use client";
 
-import { DragHandle, DragTable } from "@components/admin/table";
+import { DragHandle, DragTable } from "../../../../components/admin/table";
 import { useEffect, useMemo, useState } from "react";
 import {
   ColumnDef,
@@ -10,24 +10,19 @@ import {
   getPaginationRowModel,
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
-import Components from "@components/shadcn";
-import { PlusCircle } from "@deemlol/next-icons";
+import Components from "../../../../components/shadcn";
+import { PlusCircle } from "@node_modules/@deemlol/next-icons/build";
 import {
-  CategoryDTO,
-  CreateCategory,
-  DeleteCategory,
-  UpdateCategory,
-} from "../../../../types/category";
+  useCreatePlaceForm,
+  useUpdatePlaceForm,
+} from "@hooks/form/usePlaceForm";
 import {
-  useCreateCategoryForm,
-  useUpdateCategoryForm,
-} from "@hooks/form/useCategoryForm";
-import {
-  useCategoryList,
-  useCreateCategory,
-  useDeleteCategory,
-  useUpdateCategory,
-} from "@hooks/reactQuery/useCategory";
+  useCreatePlace,
+  useDeletePlace,
+  usePlaceList,
+  useUpdatePlace,
+} from "@hooks/reactQuery/usePlace";
+import { CreatePlace, DeletePlace, PlaceDTO, UpdatePlace } from "@/types/place";
 
 export default function ClientPage(data) {
   const {
@@ -38,7 +33,6 @@ export default function ClientPage(data) {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-    DialogPortal,
     Sheet,
     SheetContent,
     SheetDescription,
@@ -55,13 +49,15 @@ export default function ClientPage(data) {
     FormControl,
     CustomFormMessage,
     Input,
+    Textarea,
+    DialogPortal,
   } = Components;
 
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
 
-  const [dataResult, setDataResult] = useState<CategoryDTO[]>(data.data);
+  const [dataResult, setDataResult] = useState<PlaceDTO[]>(data);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<number | null>(null);
 
@@ -69,12 +65,12 @@ export default function ClientPage(data) {
   // HOOK
   //////////////////////////////////////////////////////////////
 
-  const categoryList = useCategoryList();
-  const createCategory = useCreateCategory(() => {
+  const placeList = usePlaceList();
+  const createPlace = useCreatePlace(() => {
     setIsCreate(false);
   });
-  const updateCategory = useUpdateCategory(() => {});
-  const deleteCategory = useDeleteCategory(() => {
+  const updatePlace = useUpdatePlace(() => {});
+  const deletePlace = useDeletePlace(() => {
     setIsDelete(null);
   });
 
@@ -85,29 +81,24 @@ export default function ClientPage(data) {
   // FORM
   //////////////////////////////////////////////////////////////
 
-  const updateCategoryForm = useUpdateCategoryForm();
-  const createCategoryForm = useCreateCategoryForm();
+  const placeDTOForm = useUpdatePlaceForm();
+  const createPlaceForm = useCreatePlaceForm();
 
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (categoryList.isSuccess) {
-      setDataResult(categoryList.data);
-      return;
+    if (placeList.isSuccess) {
+      setDataResult(placeList.data);
     }
-  }, [categoryList.data]);
+  }, [placeList.data]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
 
-  const createToggle = () => {
-    setIsCreate(!isCreate);
-  };
-
-  const deleteToggle = (data: number) => {
+  const deleteToggle = (data) => {
     if (data === isDelete) {
       setIsDelete(null);
     } else {
@@ -115,33 +106,53 @@ export default function ClientPage(data) {
     }
   };
 
+  const createToggle = () => {
+    setIsCreate(!isCreate);
+  };
+
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const createCategoryHandler = (data: CreateCategory) => {
-    const categoryData: CreateCategory = {
-      name: data.name,
-    };
-
-    createCategory.mutate(categoryData);
-  };
-
-  const updateCategoryHandler = (data: CategoryDTO) => {
-    const categoryData: UpdateCategory = {
-      id: data.id,
-      name: data.name,
-    };
-
-    updateCategory.mutate(categoryData);
-  };
-
-  const deleteCategoryHandler = (data: DeleteCategory) => {
-    const categoryData: DeleteCategory = {
+  const deletePlaceHandler = (data) => {
+    const placeData: DeletePlace = {
       id: data.id,
     };
 
-    deleteCategory.mutate(categoryData);
+    deletePlace.mutate(placeData);
+  };
+
+  const updatePlaceHandler = (data) => {
+    const placeData: UpdatePlace = {
+      id: data.id,
+      name: data.name,
+      address: data.address,
+      detailAddress: data.detailAddress,
+      postcode: data.postcode,
+      lat: data.lat,
+      lng: data.lng,
+      descript: data.descript,
+      image: data.image,
+      source: data.source,
+    };
+
+    updatePlace.mutate(placeData);
+  };
+
+  const createPlaceHandler = (data) => {
+    const placeData: CreatePlace = {
+      name: data.name,
+      address: data.address,
+      detailAddress: data.detailAddress,
+      postcode: data.postcode,
+      lat: data.lat,
+      lng: data.lng,
+      descript: data.descript,
+      image: data.image,
+      source: data.source,
+    };
+
+    createPlace.mutate(placeData);
   };
 
   //////////////////////////////////////////////////////////////
@@ -150,9 +161,9 @@ export default function ClientPage(data) {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
-  const columnHelper = createColumnHelper<CategoryDTO>();
+  const columnHelper = createColumnHelper<PlaceDTO>();
 
-  const columns = useMemo<ColumnDef<CategoryDTO>[]>(
+  const columns = useMemo<ColumnDef<PlaceDTO>[]>(
     () => [
       columnHelper.display({
         id: "drag",
@@ -170,138 +181,23 @@ export default function ClientPage(data) {
         enableColumnFilter: false,
       }),
       columnHelper.accessor("name", {
-        header: "카테고리",
+        header: "장소이름",
         size: 80,
         maxSize: 80,
         minSize: 80,
+      }),
+      columnHelper.accessor("address", {
+        header: "주소",
+        size: 80,
+        maxSize: 80,
+        minSize: 80,
+        cell: ({ row }) => row.original.address + row.original.detailAddress,
       }),
       columnHelper.accessor("createdAt", {
         header: "작성날짜",
         size: 80,
         maxSize: 80,
         minSize: 80,
-      }),
-      columnHelper.display({
-        id: "actions3",
-        header: "",
-        size: 15,
-        maxSize: 15,
-        minSize: 15,
-        cell: ({ row }) => (
-          <>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  className="
-                    text-[11px]
-                    w-[50px]
-                    h-[20px]
-                    p-[0]
-                  "
-                  onClick={() => {
-                    updateCategoryForm.reset(row.original); // form 초기화
-                  }}
-                  tabIndex={-1}
-                >
-                  태그
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                className="
-                  w-[600px]
-                  sm:max-w-none
-                "
-              >
-                <Form {...updateCategoryForm}>
-                  <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      updateCategoryHandler,
-                      (errors) => {
-                        console.log("유효성 에러 발생:", errors);
-                      },
-                    )}
-                  >
-                    <SheetHeader>
-                      <SheetTitle>카테고리 수정</SheetTitle>
-                      <SheetDescription>
-                        카테고리명을 수정할 수 있으며, 수정 시 해당 카테고리를
-                        사용한 곳에서 전부 변경됩니다.
-                      </SheetDescription>
-                    </SheetHeader>
-
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="id"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>ID</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">{field.value}</Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>카테고리명</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="카테고리명을 입력해주세요."
-                            />
-                          </FormControl>
-                          <CustomFormMessage name="name" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="createdAt"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>작성날짜</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">
-                              {String(field.value)}
-                            </Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <SheetFooter>
-                      <Button type="submit">수정하기</Button>
-                    </SheetFooter>
-                  </form>
-                </Form>
-              </SheetContent>
-            </Sheet>
-          </>
-        ),
       }),
       columnHelper.display({
         id: "actions",
@@ -321,10 +217,7 @@ export default function ClientPage(data) {
                     p-[0]
                   "
                   onClick={() => {
-                    updateCategoryForm.reset({
-                      ...row.original,
-                      createdAt: new Date(row.original.createdAt),
-                    }); // form 초기화
+                    placeDTOForm.reset(row.original); // form 초기화
                   }}
                   tabIndex={-1}
                 >
@@ -337,30 +230,30 @@ export default function ClientPage(data) {
                   sm:max-w-none
                 "
               >
-                <Form {...updateCategoryForm}>
+                <Form {...placeDTOForm}>
                   <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      updateCategoryHandler,
+                    onSubmit={placeDTOForm.handleSubmit(
+                      updatePlaceHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <SheetHeader>
-                      <SheetTitle>카테고리 수정</SheetTitle>
+                      <SheetTitle>장소수정</SheetTitle>
                       <SheetDescription>
-                        카테고리명을 수정할 수 있으며, 수정 시 해당 카테고리를
-                        사용한 곳에서 전부 변경됩니다.
+                        장소의 정보를 수정할 수 있습니다.
                       </SheetDescription>
                     </SheetHeader>
 
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={placeDTOForm.control}
                       name="id"
                       render={({ field }) => (
                         <FormItem
                           className="
                             mb-[10px]
+                            px-[20px]
                           "
                         >
                           <FormLabel>ID</FormLabel>
@@ -374,44 +267,25 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>카테고리명</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="카테고리명을 입력해주세요."
-                            />
-                          </FormControl>
-                          <CustomFormMessage name="name" />
-                        </FormItem>
-                      )}
-                    />
 
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={placeDTOForm.control}
                       name="createdAt"
                       render={({ field }) => (
                         <FormItem
                           className="
                             mb-[10px]
+                            px-[20px]
                           "
                         >
-                          <FormLabel>작성날짜</FormLabel>
+                          <FormLabel>회원가입날짜</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]
                             "
                           >
                             <Badge variant="outline">
-                              {String(field.value)}
+                              {field.value.toString()}
                             </Badge>
                           </FormControl>
                         </FormItem>
@@ -450,10 +324,7 @@ export default function ClientPage(data) {
                   "
                   variant="destructive"
                   onClick={() => {
-                    updateCategoryForm.reset({
-                      ...row.original,
-                      createdAt: new Date(row.original.createdAt),
-                    }); // form 초기화
+                    placeDTOForm.reset(row.original); // form 초기화
                   }}
                   tabIndex={-1}
                 >
@@ -462,22 +333,22 @@ export default function ClientPage(data) {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>카테고리 삭제</DialogTitle>
+                  <DialogTitle>장소삭제</DialogTitle>
                   <DialogDescription>
-                    카테고리를 장소에서 사용한 경우 삭제할 수 없습니다.
+                    장소를 삭제하면 회원의 일정에서 안보이게 됩니다.
                   </DialogDescription>
                 </DialogHeader>
-                <Form {...updateCategoryForm}>
+                <Form {...placeDTOForm}>
                   <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      deleteCategoryHandler,
+                    onSubmit={placeDTOForm.handleSubmit(
+                      deletePlaceHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={placeDTOForm.control}
                       name="id"
                       render={({ field }) => (
                         <FormItem>
@@ -492,34 +363,17 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>카테고리명</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">{field.value}</Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
 
                     <DialogFooter
                       className="
-                        mt-[20px]
+                        mt-[10px]
                       "
                     >
                       <Button
                         type="submit"
-                        variant="destructive"
                         className="w-full "
                       >
-                        삭제하기
+                        탈퇴하기
                       </Button>
                     </DialogFooter>
                   </form>
@@ -575,7 +429,7 @@ export default function ClientPage(data) {
             <DialogTrigger asChild>
               <Button
                 onClick={() =>
-                  createCategoryForm.reset({
+                  createPlaceForm.reset({
                     name: "",
                   })
                 }
@@ -586,29 +440,29 @@ export default function ClientPage(data) {
                 "
                 tabIndex={-1}
               >
-                <PlusCircle size={16} /> 카테고리
+                <PlusCircle size={16} /> 장소
               </Button>
             </DialogTrigger>
             <DialogPortal>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>카테고리 추가</DialogTitle>
+                  <DialogTitle>장소 추가</DialogTitle>
                   <DialogDescription>
-                    카테고리를 추가할 수 있습니다.
+                    장소를 추가할 수 있습니다.
                   </DialogDescription>
                 </DialogHeader>
 
-                <Form {...createCategoryForm}>
+                <Form {...createPlaceForm}>
                   <form
-                    onSubmit={createCategoryForm.handleSubmit(
-                      createCategoryHandler,
+                    onSubmit={createPlaceForm.handleSubmit(
+                      createPlaceHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <FormField
-                      control={createCategoryForm.control}
+                      control={createPlaceForm.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem
@@ -616,15 +470,125 @@ export default function ClientPage(data) {
                             mb-[10px]
                           "
                         >
-                          <FormLabel>카테고리명</FormLabel>
+                          <FormLabel>장소명</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="카테고리명을 입력해주세요."
+                              placeholder="장소명을 입력해주세요."
                               autoFocus
                             />
                           </FormControl>
                           <CustomFormMessage name="name" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createPlaceForm.control}
+                      name="postcode"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>우편번호</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="
+                                w-[50%]
+                              "
+                              disabled
+                              {...field}
+                              placeholder="우편번호를 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="postcode" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createPlaceForm.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>주소</FormLabel>
+                          <FormControl>
+                            <Input
+                              disabled
+                              {...field}
+                              placeholder="주소를 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="address" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createPlaceForm.control}
+                      name="detailAddress"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>상세주소</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="상세주소를 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="detailAddress" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createPlaceForm.control}
+                      name="descript"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>설명</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              className="
+                                h-[150px]
+                                resize-none
+                              "
+                              placeholder="설명을 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="descript" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={createPlaceForm.control}
+                      name="image"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>이미지</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Button>업로드</Button>
+                          </FormControl>
+                          <CustomFormMessage name="image" />
                         </FormItem>
                       )}
                     />
@@ -645,11 +609,10 @@ export default function ClientPage(data) {
           </Dialog>
         </li>
       </ul>
-
       <article
         className="flex flex-col items-center justify-start  size-full"
       >
-        <DragTable<CategoryDTO>
+        <DragTable<PlaceDTO>
           table={table}
           dataResult={dataResult}
           setDataResult={setDataResult}

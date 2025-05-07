@@ -1,0 +1,26 @@
+import { useForm } from "react-hook-form";
+import { dataDTOSchema, createResultSchema } from "../../types/data";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type createResultType = z.infer<typeof createResultSchema>;
+type dataDTOType = z.infer<typeof dataDTOSchema>;
+
+export function useCreateResultForm() {
+  return useForm<createResultType>({
+    resolver: zodResolver(createResultSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
+}
+
+export function useUpdateResultForm() {
+  return useForm<dataDTOType>({
+    resolver: zodResolver(dataDTOSchema),
+    defaultValues: {
+      id: 0,
+      name: "",
+    },
+  });
+}

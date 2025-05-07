@@ -1404,6 +1404,7 @@ export namespace Prisma {
     isAdmin: boolean | null
     isDelete: boolean | null
     reason: string | null
+    refreshToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1418,6 +1419,7 @@ export namespace Prisma {
     isAdmin: boolean | null
     isDelete: boolean | null
     reason: string | null
+    refreshToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1432,6 +1434,7 @@ export namespace Prisma {
     isAdmin: number
     isDelete: number
     reason: number
+    refreshToken: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1456,6 +1459,7 @@ export namespace Prisma {
     isAdmin?: true
     isDelete?: true
     reason?: true
+    refreshToken?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1470,6 +1474,7 @@ export namespace Prisma {
     isAdmin?: true
     isDelete?: true
     reason?: true
+    refreshToken?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1484,6 +1489,7 @@ export namespace Prisma {
     isAdmin?: true
     isDelete?: true
     reason?: true
+    refreshToken?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1585,6 +1591,7 @@ export namespace Prisma {
     isAdmin: boolean
     isDelete: boolean
     reason: string | null
+    refreshToken: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1618,6 +1625,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: boolean
+    refreshToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     Plan?: boolean | User$PlanArgs<ExtArgs>
@@ -1636,11 +1644,12 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: boolean
+    refreshToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "userName" | "nickName" | "type" | "isAdmin" | "isDelete" | "reason" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "userName" | "nickName" | "type" | "isAdmin" | "isDelete" | "reason" | "refreshToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Plan?: boolean | User$PlanArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1661,6 +1670,7 @@ export namespace Prisma {
       isAdmin: boolean
       isDelete: boolean
       reason: string | null
+      refreshToken: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -2042,6 +2052,7 @@ export namespace Prisma {
     readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly isDelete: FieldRef<"User", 'Boolean'>
     readonly reason: FieldRef<"User", 'String'>
+    readonly refreshToken: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -6616,6 +6627,7 @@ export namespace Prisma {
     isAdmin: 'isAdmin',
     isDelete: 'isDelete',
     reason: 'reason',
+    refreshToken: 'refreshToken',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -6698,7 +6710,8 @@ export namespace Prisma {
     userName: 'userName',
     nickName: 'nickName',
     type: 'type',
-    reason: 'reason'
+    reason: 'reason',
+    refreshToken: 'refreshToken'
   };
 
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -6803,6 +6816,7 @@ export namespace Prisma {
     isAdmin?: BoolFilter<"User"> | boolean
     isDelete?: BoolFilter<"User"> | boolean
     reason?: StringNullableFilter<"User"> | string | null
+    refreshToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     Plan?: PlanListRelationFilter
@@ -6818,6 +6832,7 @@ export namespace Prisma {
     isAdmin?: SortOrder
     isDelete?: SortOrder
     reason?: SortOrderInput | SortOrder
+    refreshToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     Plan?: PlanOrderByRelationAggregateInput
@@ -6837,6 +6852,7 @@ export namespace Prisma {
     isAdmin?: BoolFilter<"User"> | boolean
     isDelete?: BoolFilter<"User"> | boolean
     reason?: StringNullableFilter<"User"> | string | null
+    refreshToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     Plan?: PlanListRelationFilter
@@ -6852,6 +6868,7 @@ export namespace Prisma {
     isAdmin?: SortOrder
     isDelete?: SortOrder
     reason?: SortOrderInput | SortOrder
+    refreshToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -6874,6 +6891,7 @@ export namespace Prisma {
     isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     isDelete?: BoolWithAggregatesFilter<"User"> | boolean
     reason?: StringNullableWithAggregatesFilter<"User"> | string | null
+    refreshToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -7179,6 +7197,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: string | null
+    refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Plan?: PlanCreateNestedManyWithoutUserInput
@@ -7194,6 +7213,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: string | null
+    refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     Plan?: PlanUncheckedCreateNestedManyWithoutUserInput
@@ -7208,6 +7228,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Plan?: PlanUpdateManyWithoutUserNestedInput
@@ -7223,6 +7244,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Plan?: PlanUncheckedUpdateManyWithoutUserNestedInput
@@ -7238,6 +7260,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: string | null
+    refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -7251,6 +7274,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7265,6 +7289,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7658,6 +7683,7 @@ export namespace Prisma {
     isAdmin?: SortOrder
     isDelete?: SortOrder
     reason?: SortOrder
+    refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7676,6 +7702,7 @@ export namespace Prisma {
     isAdmin?: SortOrder
     isDelete?: SortOrder
     reason?: SortOrder
+    refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7690,6 +7717,7 @@ export namespace Prisma {
     isAdmin?: SortOrder
     isDelete?: SortOrder
     reason?: SortOrder
+    refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8651,6 +8679,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: string | null
+    refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8665,6 +8694,7 @@ export namespace Prisma {
     isAdmin?: boolean
     isDelete?: boolean
     reason?: string | null
+    refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8750,6 +8780,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8764,6 +8795,7 @@ export namespace Prisma {
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

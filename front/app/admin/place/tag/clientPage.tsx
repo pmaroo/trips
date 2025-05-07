@@ -1,6 +1,7 @@
 "use client";
 
-import { DragHandle, DragTable } from "@components/admin/table";
+import { DragHandle, DragTable } from "../../../../components/admin/table";
+import { PlanDTO } from "../../../../types/plan";
 import { useEffect, useMemo, useState } from "react";
 import {
   ColumnDef,
@@ -10,24 +11,43 @@ import {
   getPaginationRowModel,
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
-import Components from "@components/shadcn";
-import { PlusCircle } from "@deemlol/next-icons";
+import Components from "../../../../components/shadcn";
+import { useForm } from "react-hook-form";
+import { PlusCircle } from "@node_modules/@deemlol/next-icons/build";
+import { useCreateTagForm, useUpdateTagForm } from "@hooks/form/useTagForm";
+import { CreateTag, DeleteTag, TagDTO, UpdateTag } from "../../../../types/tag";
 import {
-  CategoryDTO,
-  CreateCategory,
-  DeleteCategory,
-  UpdateCategory,
-} from "../../../../types/category";
-import {
-  useCreateCategoryForm,
-  useUpdateCategoryForm,
-} from "@hooks/form/useCategoryForm";
-import {
-  useCategoryList,
-  useCreateCategory,
-  useDeleteCategory,
-  useUpdateCategory,
-} from "@hooks/reactQuery/useCategory";
+  useCreateTag,
+  useDeleteTag,
+  useTagList,
+  useUpdateTag,
+} from "@hooks/reactQuery/useTag";
+
+// const data: PlanDTO[] = Array.from({ length: 100 }, (_, i) => ({
+//   id: i + 1,
+//   UserId: i + 1,
+//   CategoryId: i + 1,
+//   region: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//   schedule: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//   date: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//   User: {
+//     id: i + 1,
+//     email: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
+//     userName: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//     nickName: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//     type: `${i < 5 ? ["naver", "git", "google", "git", "google"][i] : "kakao"}`,
+//     isAdmin: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
+//     createdAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
+//     updatedAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
+//     isDelete: false,
+//     reason: "",
+//   },
+//   Category: [],
+//   Place: [],
+//   traffic: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//   createdAt: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+//   updatedAt: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
+// }));
 
 export default function ClientPage(data) {
   const {
@@ -38,7 +58,6 @@ export default function ClientPage(data) {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-    DialogPortal,
     Sheet,
     SheetContent,
     SheetDescription,
@@ -55,13 +74,15 @@ export default function ClientPage(data) {
     FormControl,
     CustomFormMessage,
     Input,
+    Textarea,
+    DialogPortal,
   } = Components;
 
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
 
-  const [dataResult, setDataResult] = useState<CategoryDTO[]>(data.data);
+  const [dataResult, setDataResult] = useState<TagDTO[]>(data.data);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<number | null>(null);
 
@@ -69,14 +90,14 @@ export default function ClientPage(data) {
   // HOOK
   //////////////////////////////////////////////////////////////
 
-  const categoryList = useCategoryList();
-  const createCategory = useCreateCategory(() => {
+  const createTag = useCreateTag(() => {
     setIsCreate(false);
   });
-  const updateCategory = useUpdateCategory(() => {});
-  const deleteCategory = useDeleteCategory(() => {
+  const updateTag = useUpdateTag(() => {});
+  const deleteTag = useDeleteTag(() => {
     setIsDelete(null);
   });
+  const tagList = useTagList();
 
   //////////////////////////////////////////////////////////////
   // STORE
@@ -85,29 +106,25 @@ export default function ClientPage(data) {
   // FORM
   //////////////////////////////////////////////////////////////
 
-  const updateCategoryForm = useUpdateCategoryForm();
-  const createCategoryForm = useCreateCategoryForm();
+  const planDTOForm = useForm<PlanDTO>({});
+  const createTagForm = useCreateTagForm();
+  const updateTagForm = useUpdateTagForm();
 
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (categoryList.isSuccess) {
-      setDataResult(categoryList.data);
-      return;
+    if (tagList.isSuccess) {
+      setDataResult(tagList.data);
     }
-  }, [categoryList.data]);
+  }, [tagList.data]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
 
-  const createToggle = () => {
-    setIsCreate(!isCreate);
-  };
-
-  const deleteToggle = (data: number) => {
+  const deleteToggle = (data) => {
     if (data === isDelete) {
       setIsDelete(null);
     } else {
@@ -115,33 +132,37 @@ export default function ClientPage(data) {
     }
   };
 
+  const createToggle = () => {
+    setIsCreate(!isCreate);
+  };
+
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const createCategoryHandler = (data: CreateCategory) => {
-    const categoryData: CreateCategory = {
-      name: data.name,
-    };
-
-    createCategory.mutate(categoryData);
-  };
-
-  const updateCategoryHandler = (data: CategoryDTO) => {
-    const categoryData: UpdateCategory = {
-      id: data.id,
-      name: data.name,
-    };
-
-    updateCategory.mutate(categoryData);
-  };
-
-  const deleteCategoryHandler = (data: DeleteCategory) => {
-    const categoryData: DeleteCategory = {
+  const deleteTagHandler = (data) => {
+    const tagData: DeleteTag = {
       id: data.id,
     };
 
-    deleteCategory.mutate(categoryData);
+    deleteTag.mutate(tagData);
+  };
+
+  const creaetTagHandler = (data) => {
+    const tagData: CreateTag = {
+      tag: data.tag,
+    };
+
+    createTag.mutate(tagData);
+  };
+
+  const updateTagHandler = (data) => {
+    const tagData: UpdateTag = {
+      id: data.id,
+      tag: data.tag,
+    };
+
+    updateTag.mutate(tagData);
   };
 
   //////////////////////////////////////////////////////////////
@@ -150,9 +171,9 @@ export default function ClientPage(data) {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
-  const columnHelper = createColumnHelper<CategoryDTO>();
+  const columnHelper = createColumnHelper<TagDTO>();
 
-  const columns = useMemo<ColumnDef<CategoryDTO>[]>(
+  const columns = useMemo<ColumnDef<TagDTO>[]>(
     () => [
       columnHelper.display({
         id: "drag",
@@ -169,8 +190,9 @@ export default function ClientPage(data) {
         minSize: 10,
         enableColumnFilter: false,
       }),
-      columnHelper.accessor("name", {
-        header: "카테고리",
+
+      columnHelper.accessor("tag", {
+        header: "태그명",
         size: 80,
         maxSize: 80,
         minSize: 80,
@@ -180,128 +202,6 @@ export default function ClientPage(data) {
         size: 80,
         maxSize: 80,
         minSize: 80,
-      }),
-      columnHelper.display({
-        id: "actions3",
-        header: "",
-        size: 15,
-        maxSize: 15,
-        minSize: 15,
-        cell: ({ row }) => (
-          <>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  className="
-                    text-[11px]
-                    w-[50px]
-                    h-[20px]
-                    p-[0]
-                  "
-                  onClick={() => {
-                    updateCategoryForm.reset(row.original); // form 초기화
-                  }}
-                  tabIndex={-1}
-                >
-                  태그
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                className="
-                  w-[600px]
-                  sm:max-w-none
-                "
-              >
-                <Form {...updateCategoryForm}>
-                  <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      updateCategoryHandler,
-                      (errors) => {
-                        console.log("유효성 에러 발생:", errors);
-                      },
-                    )}
-                  >
-                    <SheetHeader>
-                      <SheetTitle>카테고리 수정</SheetTitle>
-                      <SheetDescription>
-                        카테고리명을 수정할 수 있으며, 수정 시 해당 카테고리를
-                        사용한 곳에서 전부 변경됩니다.
-                      </SheetDescription>
-                    </SheetHeader>
-
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="id"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>ID</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">{field.value}</Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>카테고리명</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="카테고리명을 입력해주세요."
-                            />
-                          </FormControl>
-                          <CustomFormMessage name="name" />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={updateCategoryForm.control}
-                      name="createdAt"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>작성날짜</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">
-                              {String(field.value)}
-                            </Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <SheetFooter>
-                      <Button type="submit">수정하기</Button>
-                    </SheetFooter>
-                  </form>
-                </Form>
-              </SheetContent>
-            </Sheet>
-          </>
-        ),
       }),
       columnHelper.display({
         id: "actions",
@@ -321,7 +221,7 @@ export default function ClientPage(data) {
                     p-[0]
                   "
                   onClick={() => {
-                    updateCategoryForm.reset({
+                    updateTagForm.reset({
                       ...row.original,
                       createdAt: new Date(row.original.createdAt),
                     }); // form 초기화
@@ -337,25 +237,24 @@ export default function ClientPage(data) {
                   sm:max-w-none
                 "
               >
-                <Form {...updateCategoryForm}>
+                <Form {...updateTagForm}>
                   <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      updateCategoryHandler,
+                    onSubmit={updateTagForm.handleSubmit(
+                      updateTagHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <SheetHeader>
-                      <SheetTitle>카테고리 수정</SheetTitle>
+                      <SheetTitle>태그정보</SheetTitle>
                       <SheetDescription>
-                        카테고리명을 수정할 수 있으며, 수정 시 해당 카테고리를
-                        사용한 곳에서 전부 변경됩니다.
+                        생성한 태그의 정보를 확인할 수 있습니다.
                       </SheetDescription>
                     </SheetHeader>
 
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={updateTagForm.control}
                       name="id"
                       render={({ field }) => (
                         <FormItem
@@ -374,29 +273,29 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
+
                     <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
+                      control={updateTagForm.control}
+                      name="tag"
                       render={({ field }) => (
                         <FormItem
                           className="
                             mb-[10px]
                           "
                         >
-                          <FormLabel>카테고리명</FormLabel>
+                          <FormLabel>태그명</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="카테고리명을 입력해주세요."
+                              placeholder="태그명을 입력해주세요."
                             />
                           </FormControl>
-                          <CustomFormMessage name="name" />
                         </FormItem>
                       )}
                     />
 
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={updateTagForm.control}
                       name="createdAt"
                       render={({ field }) => (
                         <FormItem
@@ -404,14 +303,14 @@ export default function ClientPage(data) {
                             mb-[10px]
                           "
                         >
-                          <FormLabel>작성날짜</FormLabel>
+                          <FormLabel>생성날짜</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]
                             "
                           >
                             <Badge variant="outline">
-                              {String(field.value)}
+                              {field.value.toString()}
                             </Badge>
                           </FormControl>
                         </FormItem>
@@ -450,7 +349,7 @@ export default function ClientPage(data) {
                   "
                   variant="destructive"
                   onClick={() => {
-                    updateCategoryForm.reset({
+                    updateTagForm.reset({
                       ...row.original,
                       createdAt: new Date(row.original.createdAt),
                     }); // form 초기화
@@ -462,22 +361,22 @@ export default function ClientPage(data) {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>카테고리 삭제</DialogTitle>
+                  <DialogTitle>태그삭제</DialogTitle>
                   <DialogDescription>
-                    카테고리를 장소에서 사용한 경우 삭제할 수 없습니다.
+                    해당 태그가 사용이 되었다면 삭제가 불가능합니다.
                   </DialogDescription>
                 </DialogHeader>
-                <Form {...updateCategoryForm}>
+                <Form {...updateTagForm}>
                   <form
-                    onSubmit={updateCategoryForm.handleSubmit(
-                      deleteCategoryHandler,
+                    onSubmit={updateTagForm.handleSubmit(
+                      deleteTagHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <FormField
-                      control={updateCategoryForm.control}
+                      control={updateTagForm.control}
                       name="id"
                       render={({ field }) => (
                         <FormItem>
@@ -493,11 +392,11 @@ export default function ClientPage(data) {
                       )}
                     />
                     <FormField
-                      control={updateCategoryForm.control}
-                      name="name"
+                      control={updateTagForm.control}
+                      name="tag"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>카테고리명</FormLabel>
+                          <FormLabel>태그명</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]
@@ -511,13 +410,13 @@ export default function ClientPage(data) {
 
                     <DialogFooter
                       className="
-                        mt-[20px]
+                        mt-[10px]
                       "
                     >
                       <Button
                         type="submit"
-                        variant="destructive"
                         className="w-full "
+                        variant="destructive"
                       >
                         삭제하기
                       </Button>
@@ -575,8 +474,8 @@ export default function ClientPage(data) {
             <DialogTrigger asChild>
               <Button
                 onClick={() =>
-                  createCategoryForm.reset({
-                    name: "",
+                  createTagForm.reset({
+                    tag: "",
                   })
                 }
                 variant="outline"
@@ -586,45 +485,45 @@ export default function ClientPage(data) {
                 "
                 tabIndex={-1}
               >
-                <PlusCircle size={16} /> 카테고리
+                <PlusCircle size={16} /> 태그
               </Button>
             </DialogTrigger>
             <DialogPortal>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>카테고리 추가</DialogTitle>
+                  <DialogTitle>태그 추가</DialogTitle>
                   <DialogDescription>
-                    카테고리를 추가할 수 있습니다.
+                    태그를 추가할 수 있습니다.
                   </DialogDescription>
                 </DialogHeader>
 
-                <Form {...createCategoryForm}>
+                <Form {...createTagForm}>
                   <form
-                    onSubmit={createCategoryForm.handleSubmit(
-                      createCategoryHandler,
+                    onSubmit={createTagForm.handleSubmit(
+                      creaetTagHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
                       },
                     )}
                   >
                     <FormField
-                      control={createCategoryForm.control}
-                      name="name"
+                      control={createTagForm.control}
+                      name="tag"
                       render={({ field }) => (
                         <FormItem
                           className="
                             mb-[10px]
                           "
                         >
-                          <FormLabel>카테고리명</FormLabel>
+                          <FormLabel>태그명</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="카테고리명을 입력해주세요."
+                              placeholder="태그명을 입력해주세요."
                               autoFocus
                             />
                           </FormControl>
-                          <CustomFormMessage name="name" />
+                          <CustomFormMessage name="tag" />
                         </FormItem>
                       )}
                     />
@@ -645,11 +544,10 @@ export default function ClientPage(data) {
           </Dialog>
         </li>
       </ul>
-
       <article
         className="flex flex-col items-center justify-start  size-full"
       >
-        <DragTable<CategoryDTO>
+        <DragTable<TagDTO>
           table={table}
           dataResult={dataResult}
           setDataResult={setDataResult}

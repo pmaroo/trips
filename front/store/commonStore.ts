@@ -14,13 +14,19 @@ export const useMeState = create<MeState>((set) => ({
 }));
 
 interface TokenState {
-  token: string | null;
-  setToken: (token: string) => void;
-  clearToken: () => void;
+  accessToken: string | null;
+  setAccessToken: (accessToken: string) => void;
+  clearAccessToken: () => void;
+  refreshToken: string | null;
+  setRefreshToken: (refreshToken: string) => void;
+  clearRefreshToken: () => void;
 }
 
 export const useTokenState = create<TokenState>((set) => ({
-  token: null,
-  setToken: (token) => set({ token }),
-  clearToken: () => set({ token: null }),
+  accessToken: null,
+  setAccessToken: (accessToken) => set({ accessToken }),
+  clearAccessToken: () => set({ accessToken: null }),
+  refreshToken: null,
+  setRefreshToken: (refreshToken) => set({ refreshToken }),
+  clearRefreshToken: () => set({ refreshToken: null }),
 }));

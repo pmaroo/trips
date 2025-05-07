@@ -5,6 +5,8 @@ import {
   exitUserModel,
   getAllUsersModel,
   getUserByIdModel,
+  logoutModel,
+  refreshTokenModel,
   updateUserModel,
 } from "../models/user.model";
 import { errorConsole } from "../utils/error";
@@ -14,13 +16,40 @@ import {
   ExitUser,
   JwtUserDTO,
   LoginUser,
+  LogoutUser,
   UpdateUser,
 } from "../types/user";
 import { PrismaClientKnownRequestError } from "../generated/prisma/runtime/library";
 import bcrypt from "bcrypt";
-import { generateToken } from "./jwt.controller";
+import { generateToken } from "../service/jwt.service";
 import { LocalStorage } from "node-localstorage";
-import { login } from "../middlewares/login";
+import { login } from "../service/login.service";
+import { setAuthToken } from "../utils/token";
+
+export const logoutUser = async (req: Request, res: Response) => {
+  const logoutData: LogoutUser = req.body;
+
+  // 쿠키 삭제
+  await res.clearCookie("jwt", {
+    httpOnly: true, // HTTP Only 쿠키
+    secure: process.env.NODE_ENV === "production", // HTTPS 환경에서만 적용
+    sameSite: "lax", // SameSite 옵션 설정
+  });
+
+  await res.clearCookie("refresh", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  try {
+    const data = await logoutModel(logoutData);
+
+    res.json(data);
+  } catch (error) {
+    errorConsole(error);
+    res.status(401).json({ message: "로그아웃 할 수 없습니다." });
+  }
+};
 
 export const adminLoginUser = async (req: Request, res: Response) => {
   const loginData: AdminLoginUser = req.body;
@@ -45,16 +74,13 @@ export const adminLoginUser = async (req: Request, res: Response) => {
       return;
     }
 
+    // 토큰발급
     const toeknData = await generateToken(jwtData);
 
-    res.cookie("jwt", toeknData, {
-      // httpOnly: true,
-      secure: false, // HTTPS 환경에서만 전달
-      sameSite: "lax", // 혹은 strict, none 등
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3일
-    });
+    // 토큰 쿠키 및 DB 저장
+    const data = await setAuthToken(res, toeknData, jwtData);
 
-    res.json({ data: true });
+    res.json(data);
   } catch (error) {
     errorConsole(error);
     res.status(401).json({ message: "로그인 할 수 없습니다." });

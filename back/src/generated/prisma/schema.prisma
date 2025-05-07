@@ -17,18 +17,19 @@ datasource db {
 
 // 유저
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(700)
-  password  String   @db.VarChar(700)
-  userName  String   @db.VarChar(100)
-  nickName  String   @db.VarChar(100)
-  type      String   @db.VarChar(100)
-  isAdmin   Boolean  @default(false)
-  isDelete  Boolean  @default(false)
-  reason    String?  @db.Text
-  Plan      Plan[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(700)
+  password     String   @db.VarChar(700)
+  userName     String   @db.VarChar(100)
+  nickName     String   @db.VarChar(100)
+  type         String   @db.VarChar(100)
+  isAdmin      Boolean  @default(false)
+  isDelete     Boolean  @default(false)
+  reason       String?  @db.Text
+  refreshToken String?  @db.Text
+  Plan         Plan[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // 일정

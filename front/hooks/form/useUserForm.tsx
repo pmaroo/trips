@@ -30,12 +30,6 @@ export function useCreateUserForm() {
   });
 }
 
-export function useUserDTOForm() {
-  return useForm<userDTOType>({
-    resolver: zodResolver(userDTOSchema),
-  });
-}
-
 export function useUpdateUserForm() {
   return useForm<userDTOType>({
     resolver: zodResolver(updateUserSchema),

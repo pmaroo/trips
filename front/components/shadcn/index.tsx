@@ -144,12 +144,7 @@ const CustomFormMessage = ({ name }: { name: string }) => {
 
   return (
     <ul
-      className="
-        flex
-        flex-row
-        items-center
-        justify-start
-      "
+      className="flex flex-row items-center justify-start "
     >
       <li
         className="

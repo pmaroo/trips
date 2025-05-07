@@ -60,3 +60,12 @@ export interface AdminLoginUser {
   password: string;
   isAdmin: boolean;
 }
+
+export interface RefreshTokenUser {
+  id: number;
+  refreshToken: string;
+}
+
+export interface LogoutUser {
+  id: number;
+}

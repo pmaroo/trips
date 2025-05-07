@@ -16,11 +16,13 @@ import axios from "axios";
 export default function ClientLayout({
   children,
   me,
-  token,
+  accessToken,
+  refreshToken,
 }: {
   children: React.ReactNode;
   me: JwtUserDTO;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }) {
   const {
     SidebarProvider,
@@ -62,16 +64,17 @@ export default function ClientLayout({
   //////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (token) {
-      tokenStore.setToken(token);
+    if (accessToken && refreshToken) {
+      tokenStore.setAccessToken(accessToken);
+      tokenStore.setRefreshToken(refreshToken);
     }
-  }, [token]);
+  }, [accessToken, refreshToken]);
 
   useEffect(() => {
     if (me) {
       meStore.setMe(me);
     }
-  }, [me]);
+  }, []);
 
   useEffect(() => {
     if (path.includes("admin")) {
@@ -115,7 +118,7 @@ export default function ClientLayout({
     <>
       <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
         {path.includes("admin") ? (
-          me ? (
+          meStore.me && meStore.me.isAdmin ? (
             <SidebarProvider>
               <Layout />
               <SidebarInset>

@@ -127,6 +127,7 @@ exports.Prisma.UserScalarFieldEnum = {
   isAdmin: 'isAdmin',
   isDelete: 'isDelete',
   reason: 'reason',
+  refreshToken: 'refreshToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -188,7 +189,8 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   userName: 'userName',
   nickName: 'nickName',
   type: 'type',
-  reason: 'reason'
+  reason: 'reason',
+  refreshToken: 'refreshToken'
 };
 
 exports.Prisma.PlanOrderByRelevanceFieldEnum = {

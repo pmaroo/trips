@@ -9,10 +9,10 @@ import { successToken } from "../controllers/jwt.controller";
 
 const router = express.Router();
 
-// 선택적 JWT검증
+// 선택적회원 JWT검증
 router.post("/verify/optional", optionalAuthenticateToken, successToken);
 
-// 무조건적 JWT검증
-router.get("/verify", adminAuthenticateToken, successToken);
+// 무조건적관리자회원 JWT검증
+router.post("/verify", adminAuthenticateToken, successToken);
 
 export default router;

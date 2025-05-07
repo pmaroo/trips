@@ -2,6 +2,7 @@ import prisma from "../config/db";
 import { CreateTag, DeleteTag, UpdateTag } from "../types/tag";
 
 export const deleteTagModel = async (data: DeleteTag) => {
+  console.log(data);
   return prisma.tag.delete({
     where: { id: data.id },
   });
