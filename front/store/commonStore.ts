@@ -13,6 +13,9 @@ export const useMeState = create<MeState>((set) => ({
   clearMe: () => set({ me: null }),
 }));
 
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
 interface TokenState {
   accessToken: string | null;
   setAccessToken: (accessToken: string) => void;
@@ -29,4 +32,32 @@ export const useTokenState = create<TokenState>((set) => ({
   refreshToken: null,
   setRefreshToken: (refreshToken) => set({ refreshToken }),
   clearRefreshToken: () => set({ refreshToken: null }),
+}));
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+interface Image {
+  id: number;
+  url: string;
+}
+
+interface ImageState {
+  images: Image[];
+  addImages: (image: string) => void;
+  removeImages: (id: number) => void;
+  clearImages: () => void;
+}
+
+export const useImageState = create<ImageState>((set) => ({
+  images: [],
+  addImages: (image) =>
+    set((state) => ({
+      images: [...state.images, { id: Date.now(), url: image }],
+    })),
+  removeImages: (id) =>
+    set((state) => ({
+      images: state.images.filter((image) => image.id !== id),
+    })),
+  clearImages: () => set({ images: null }),
 }));

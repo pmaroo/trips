@@ -8,6 +8,7 @@ const theme = {
   kakaoText: "#371D1E",
   naverBg: "#2AC308",
   black: "#000",
+  red: "#EE0000",
 };
 
 export const Theme = createContext(theme);

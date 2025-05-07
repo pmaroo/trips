@@ -1,7 +1,7 @@
 "use client";
 
 import { DragHandle, DragTable } from "../../../../components/admin/table";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   ColumnDef,
   createColumnHelper,
@@ -11,7 +11,7 @@ import {
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
 import Components from "../../../../components/shadcn";
-import { PlusCircle } from "@node_modules/@deemlol/next-icons/build";
+import { PlusCircle, XCircle } from "@deemlol/next-icons";
 import {
   useCreatePlaceForm,
   useUpdatePlaceForm,
@@ -23,6 +23,10 @@ import {
   useUpdatePlace,
 } from "@hooks/reactQuery/usePlace";
 import { CreatePlace, DeletePlace, PlaceDTO, UpdatePlace } from "@/types/place";
+import { useImageState } from "@store/commonStore";
+import { useImageUpload } from "@hooks/reactQuery/useCommon";
+import { Theme } from "@components/theme";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 export default function ClientPage(data) {
   const {
@@ -60,6 +64,11 @@ export default function ClientPage(data) {
   const [dataResult, setDataResult] = useState<PlaceDTO[]>(data);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<number | null>(null);
+  const [isAddress, setIsAddress] = useState<boolean>(false);
+
+  const imageRef = useRef(null);
+
+  const theme = useContext(Theme);
 
   //////////////////////////////////////////////////////////////
   // HOOK
@@ -73,10 +82,14 @@ export default function ClientPage(data) {
   const deletePlace = useDeletePlace(() => {
     setIsDelete(null);
   });
+  const imageUpload = useImageUpload(() => {});
 
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
+
+  const imageStore = useImageState((state) => state);
+
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
@@ -98,6 +111,14 @@ export default function ClientPage(data) {
   // TOGGLE
   //////////////////////////////////////////////////////////////
 
+  const addressToggle = () => {
+    setIsAddress(!isAddress);
+  };
+
+  const imageToggle = () => {
+    imageRef.current.click();
+  };
+
   const deleteToggle = (data) => {
     if (data === isDelete) {
       setIsDelete(null);
@@ -113,6 +134,19 @@ export default function ClientPage(data) {
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
+  const imageUploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "trips_images"); // 위에서 만든 preset 이름
+    formData.append("cloud_name", "dcgq2sysr"); // 본인의 cloud name
+
+    await imageUpload.mutate(formData);
+  };
 
   const deletePlaceHandler = (data) => {
     const placeData: DeletePlace = {
@@ -371,7 +405,9 @@ export default function ClientPage(data) {
                     >
                       <Button
                         type="submit"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                       >
                         탈퇴하기
                       </Button>
@@ -418,7 +454,9 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog
             open={isCreate}
@@ -431,6 +469,10 @@ export default function ClientPage(data) {
                 onClick={() =>
                   createPlaceForm.reset({
                     name: "",
+                    postcode: "",
+                    address: "",
+                    detailAddress: "",
+                    descript: "",
                   })
                 }
                 variant="outline"
@@ -444,7 +486,12 @@ export default function ClientPage(data) {
               </Button>
             </DialogTrigger>
             <DialogPortal>
-              <DialogContent>
+              <DialogContent
+                className="
+                  h-[80vh]
+                  overflow-auto
+                "
+              >
                 <DialogHeader>
                   <DialogTitle>장소 추가</DialogTitle>
                   <DialogDescription>
@@ -517,11 +564,23 @@ export default function ClientPage(data) {
                         >
                           <FormLabel>주소</FormLabel>
                           <FormControl>
-                            <Input
-                              disabled
-                              {...field}
-                              placeholder="주소를 입력해주세요."
-                            />
+                            <div
+                              className="
+                                flex
+                                items-center
+                                w-full
+                                space-x-2
+                              "
+                            >
+                              <Input
+                                disabled
+                                {...field}
+                                placeholder="주소를 입력해주세요."
+                              />
+                              <Button onClick={addressToggle} type="button">
+                                검색
+                              </Button>
+                            </div>
                           </FormControl>
                           <CustomFormMessage name="address" />
                         </FormItem>
@@ -586,12 +645,48 @@ export default function ClientPage(data) {
                               ml-[10px]
                             "
                           >
-                            <Button>업로드</Button>
+                            <Button onClick={imageToggle} type="button">
+                              업로드
+                              <input
+                                ref={imageRef}
+                                type="file"
+                                accept="image/*"
+                                hidden={true}
+                                onChange={imageUploadHandler}
+                              />
+                            </Button>
                           </FormControl>
                           <CustomFormMessage name="image" />
                         </FormItem>
                       )}
                     />
+
+                    {imageStore.images.map((data) => {
+                      return (
+                        <div
+                          className="
+                            rounded
+                            relative
+                            border-[1px]
+                            p-[10px]
+                          "
+                          key={data.id}
+                        >
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            className="
+                              absolute
+                              top-[10px]
+                              right-[10px]
+                            "
+                          >
+                            <XCircle size={24} color={theme.white} />
+                          </Button>
+                          <img src={data.url} />
+                        </div>
+                      );
+                    })}
 
                     <Button
                       type="submit"
@@ -609,8 +704,34 @@ export default function ClientPage(data) {
           </Dialog>
         </li>
       </ul>
+
+      <Dialog onOpenChange={addressToggle} open={isAddress}>
+        <DialogTitle></DialogTitle>
+        <DialogContent
+          className="
+            h-[600px]
+          "
+        >
+          <DaumPostcodeEmbed
+            style={{ height: `100%` }}
+            onComplete={(data) => {
+              createPlaceForm.setValue("address", data.address);
+              createPlaceForm.setValue("postcode", data.zonecode);
+              setIsAddress(false);
+            }}
+            autoClose={false}
+          />
+        </DialogContent>
+      </Dialog>
+
       <article
-        className="flex flex-col items-center justify-start  size-full"
+        className="
+          flex
+          flex-col
+          items-center
+          justify-start
+          size-full
+        "
       >
         <DragTable<PlaceDTO>
           table={table}
