@@ -130,7 +130,13 @@ import { XCircle } from "@deemlol/next-icons";
 import { Badge } from "./components/ui/badge";
 import { Textarea } from "./components/ui/textarea";
 import { Toaster } from "./components/ui/sonner";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 // CustomFormMessage.tsx
 
 const CustomFormMessage = ({ name }: { name: string }) => {
@@ -144,7 +150,12 @@ const CustomFormMessage = ({ name }: { name: string }) => {
 
   return (
     <ul
-      className="flex flex-row items-center justify-start "
+      className="
+        flex
+        flex-row
+        items-center
+        justify-start
+      "
     >
       <li
         className="
@@ -276,6 +287,11 @@ const Components = {
   Textarea,
   SheetFooter,
   Toaster,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 };
 
 export type { ChartConfig };

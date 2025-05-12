@@ -1,9 +1,29 @@
 import prisma from "../config/db";
-import { CreatePlace, DeletePlace, UpdatePlace } from "../types/place";
+import {
+  CreatePlace,
+  DeletePlace,
+  UpdatePlace,
+  UpdatePlaceTag,
+} from "../types/place";
+
+type PlaceUpdateInput = Parameters<typeof prisma.place.update>[0]["data"];
 
 export const deletePlaceModel = async (data: DeletePlace) => {
   return prisma.place.delete({
     where: { id: data.id },
+  });
+};
+
+export const updatePlaceTagModel = async (placeData: UpdatePlaceTag) => {
+  const tags = placeData.Tag.map((value: { tag: string }) => value.tag);
+
+  return prisma.place.update({
+    where: { id: placeData.id },
+    data: {
+      Tag: {
+        connect: tags.map((tag) => ({ tag })), // tag 필드는 unique이므로 가능
+      },
+    },
   });
 };
 

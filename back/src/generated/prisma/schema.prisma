@@ -70,7 +70,7 @@ model Place {
 // 감성카페, 이쁜카페, 이색카페, 관광명소 등
 model Tag {
   id        Int        @id @default(autoincrement())
-  tag       String     @db.VarChar(700)
+  tag       String     @unique
   Category  Category[] @relation("CategoryTag")
   Place     Place[]    @relation("PlaceTag")
   createdAt DateTime   @default(now())

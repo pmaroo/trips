@@ -1,5 +1,5 @@
 import { PlanDTO } from "./plan";
-import { TagDTO } from "./tag";
+import { TagDTO, UpdateTag } from "./tag";
 
 export interface PlaceDTO {
   id: number;
@@ -45,4 +45,10 @@ export interface UpdatePlace {
 
 export interface DeletePlace {
   id: number;
+}
+
+export interface UpdatePlaceTag {
+  id: number;
+  name: string;
+  Tag: { tag: string }[];
 }

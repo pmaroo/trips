@@ -61,3 +61,20 @@ export const useImageState = create<ImageState>((set) => ({
     })),
   clearImages: () => set({ images: null }),
 }));
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+interface LatLongState {
+  lat: string | null;
+  long: string | null;
+  setLatLong: (data: { lat: string; long: string }) => void;
+  clearLatLong: () => void;
+}
+
+export const useLatLongState = create<LatLongState>((set) => ({
+  lat: null,
+  long: null,
+  setLatLong: (data) => set({ ...data }),
+  clearLatLong: () => set({ lat: null, long: null }),
+}));

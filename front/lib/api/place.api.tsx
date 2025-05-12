@@ -1,4 +1,9 @@
-import { CreatePlace, DeletePlace, UpdatePlace } from "@/types/place";
+import {
+  CreatePlace,
+  CreatePlaceTag,
+  DeletePlace,
+  UpdatePlace,
+} from "@/types/place";
 import axios from "axios";
 
 export const apiClient = axios.create({
@@ -30,5 +35,15 @@ export const deletePlace = async (
   placeData: DeletePlace,
 ): Promise<DeletePlace> => {
   const { data } = await apiClient.post<DeletePlace>("/delete", placeData);
+  return data;
+};
+
+export const createPlaceTag = async (
+  placeData: CreatePlaceTag,
+): Promise<CreatePlaceTag> => {
+  const { data } = await apiClient.post<CreatePlaceTag>("/tag", {
+    placeData,
+  });
+
   return data;
 };

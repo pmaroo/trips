@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TagDTO } from "./tag";
 
 // TYPE
 export interface PlaceDTO {
@@ -7,13 +8,13 @@ export interface PlaceDTO {
   address: string;
   detailAddress: string;
   postcode: string;
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
   descript: string;
   image?: string;
   source: string;
-  //   Tag: TagDTO[];
-  //   Plan: PlanDTO[];
+  Tag: TagDTO[];
+  // Plan: PlanDTO[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,11 +24,12 @@ export interface CreatePlace {
   address: string;
   detailAddress: string;
   postcode: string;
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
   descript: string;
   image?: string;
   source: string;
+  Tag: { tag: string }[];
 }
 
 export interface UpdatePlace {
@@ -36,8 +38,8 @@ export interface UpdatePlace {
   address: string;
   detailAddress: string;
   postcode: string;
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
   descript: string;
   image?: string;
   source: string;
@@ -47,6 +49,12 @@ export interface DeletePlace {
   id: number;
 }
 
+export interface CreatePlaceTag {
+  id: number;
+  name: string;
+  Tag: { tag: string }[];
+}
+
 // SCHEMA
 export const placeDTOSchema = z.object({
   id: z.number(),
@@ -54,8 +62,8 @@ export const placeDTOSchema = z.object({
   address: z.string().min(1, "주소는 필수입니다."),
   detailAddress: z.string(),
   postcode: z.string().min(1, "우편번호는 필수입니다."),
-  lat: z.number(),
-  lng: z.number(),
+  lat: z.string(),
+  lng: z.string(),
   descript: z.string().min(1, "내용은 필수입니다."),
   image: z.string(),
   source: z.string(),
@@ -67,10 +75,10 @@ export const createPlaceSchema = z.object({
   address: z.string().min(1, "주소는 필수입니다."),
   detailAddress: z.string(),
   postcode: z.string().min(1, "우편번호는 필수입니다."),
-  lat: z.number(),
-  lng: z.number(),
+  lat: z.string(),
+  lng: z.string(),
   descript: z.string().min(1, "내용은 필수입니다."),
-  image: z.string(),
+  image: z.string().optional(),
   source: z.string(),
 });
 
@@ -80,9 +88,13 @@ export const updatePlaceSchema = z.object({
   address: z.string().min(1, "주소는 필수입니다."),
   detailAddress: z.string(),
   postcode: z.string().min(1, "우편번호는 필수입니다."),
-  lat: z.number(),
-  lng: z.number(),
+  lat: z.string(),
+  lng: z.string(),
   descript: z.string().min(1, "내용은 필수입니다."),
-  image: z.string(),
+  image: z.string().optional(),
   source: z.string(),
+});
+
+export const createPlaceTagSchema = z.object({
+  name: z.string().min(1, "이름은 필수입니다."),
 });

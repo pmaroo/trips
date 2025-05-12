@@ -5,9 +5,34 @@ import {
   deletePlaceModel,
   getAllPlaceModel,
   updatePlaceModel,
+  updatePlaceTagModel,
 } from "../models/place.model";
 import { TagDTO } from "../types/tag";
 import { DeletePlace } from "../types/place";
+
+export const createTagPlus = async (req: Request, res: Response) => {
+  const { placeData } = req.body;
+
+  try {
+    if (!placeData) {
+      res.status(401).json({ message: "장소 정보가 없습니다." });
+      return;
+    }
+
+    const result = {
+      ...placeData,
+      Tag: {
+        connect: placeData.Tag,
+      },
+    };
+
+    const data = await updatePlaceModel(result);
+    res.json(data);
+  } catch (error) {
+    errorConsole(error);
+    res.status(401).json({ message: "태그를 추가하는데 실패했습니다." });
+  }
+};
 
 export const deletePlace = async (req: Request, res: Response) => {
   const deleteData: DeletePlace = req.body;
@@ -27,21 +52,19 @@ export const deletePlace = async (req: Request, res: Response) => {
 };
 
 export const updatePlace = async (req: Request, res: Response) => {
-  const { Tag, ...placeData } = req.body;
+  const { placeData } = req.body;
 
   try {
     if (!placeData) {
       res.status(401).json({ message: "장소 정보가 없습니다." });
       return;
     }
-
     const result = {
       ...placeData,
       Tag: {
-        set: Tag.map((tag: TagDTO) => tag),
+        connect: placeData.Tag?.map((tag: TagDTO) => tag),
       },
     };
-
     const data = await updatePlaceModel(result);
     res.json(data);
   } catch (error) {
@@ -51,7 +74,7 @@ export const updatePlace = async (req: Request, res: Response) => {
 };
 
 export const createPlace = async (req: Request, res: Response) => {
-  const { Tag, ...placeData } = req.body;
+  const { placeData } = req.body;
 
   try {
     if (!placeData) {
@@ -62,7 +85,7 @@ export const createPlace = async (req: Request, res: Response) => {
     const result = {
       ...placeData,
       Tag: {
-        connect: Tag.map((tag: TagDTO) => tag),
+        connect: placeData.Tag,
       },
     };
 

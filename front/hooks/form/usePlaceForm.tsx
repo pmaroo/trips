@@ -1,10 +1,21 @@
 import { useForm } from "react-hook-form";
-import { placeDTOSchema, createPlaceSchema } from "../../types/place";
+import {
+  placeDTOSchema,
+  createPlaceSchema,
+  createPlaceTagSchema,
+} from "../../types/place";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type createPlaceType = z.infer<typeof createPlaceSchema>;
 type placeDTOType = z.infer<typeof placeDTOSchema>;
+type createPlaceTagType = z.infer<typeof createPlaceTagSchema>;
+
+export function useCreatePlaceTagForm() {
+  return useForm<createPlaceTagType>({
+    resolver: zodResolver(createPlaceTagSchema),
+  });
+}
 
 export function useCreatePlaceForm() {
   return useForm<createPlaceType>({

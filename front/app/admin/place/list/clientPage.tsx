@@ -11,22 +11,32 @@ import {
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
 import Components from "../../../../components/shadcn";
-import { PlusCircle, XCircle } from "@deemlol/next-icons";
+import { Delete, PlusCircle, XCircle } from "@deemlol/next-icons";
 import {
   useCreatePlaceForm,
+  useCreatePlaceTagForm,
   useUpdatePlaceForm,
 } from "@hooks/form/usePlaceForm";
 import {
   useCreatePlace,
+  useCreatePlaceTag,
   useDeletePlace,
   usePlaceList,
   useUpdatePlace,
 } from "@hooks/reactQuery/usePlace";
-import { CreatePlace, DeletePlace, PlaceDTO, UpdatePlace } from "@/types/place";
-import { useImageState } from "@store/commonStore";
-import { useImageUpload } from "@hooks/reactQuery/useCommon";
+import {
+  CreatePlace,
+  CreatePlaceTag,
+  DeletePlace,
+  PlaceDTO,
+  UpdatePlace,
+} from "@/types/place";
+import { useImageState, useLatLongState } from "@store/commonStore";
+import { useImageUpload, useLatLongAPI } from "@hooks/reactQuery/useCommon";
 import { Theme } from "@components/theme";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { useTagList } from "@hooks/reactQuery/useTag";
+import { toast } from "@node_modules/sonner/dist";
 
 export default function ClientPage(data) {
   const {
@@ -55,19 +65,27 @@ export default function ClientPage(data) {
     Input,
     Textarea,
     DialogPortal,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
   } = Components;
 
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
 
-  const [dataResult, setDataResult] = useState<PlaceDTO[]>(data);
+  const [dataResult, setDataResult] = useState<PlaceDTO[]>(data.data);
+  const [tagDatum, setTagDatum] = useState<{ tag: string }[]>([]);
+  //
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<number | null>(null);
   const [isAddress, setIsAddress] = useState<boolean>(false);
-
+  const [isTag, setIsTag] = useState<boolean>(false);
+  //
   const imageRef = useRef(null);
-
+  //
   const theme = useContext(Theme);
 
   //////////////////////////////////////////////////////////////
@@ -83,12 +101,16 @@ export default function ClientPage(data) {
     setIsDelete(null);
   });
   const imageUpload = useImageUpload(() => {});
+  const latLongAPI = useLatLongAPI(() => {});
+  const tagList = useTagList();
+  const createPlaceTag = useCreatePlaceTag(() => {});
 
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
   const imageStore = useImageState((state) => state);
+  const latLongStore = useLatLongState((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -96,10 +118,16 @@ export default function ClientPage(data) {
 
   const placeDTOForm = useUpdatePlaceForm();
   const createPlaceForm = useCreatePlaceForm();
+  const createPlaceTagForm = useCreatePlaceTagForm();
 
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    createPlaceForm.setValue("lat", latLongStore.lat);
+    createPlaceForm.setValue("lng", latLongStore.long);
+  }, [latLongStore.lat, latLongStore.long]);
 
   useEffect(() => {
     if (placeList.isSuccess) {
@@ -110,6 +138,10 @@ export default function ClientPage(data) {
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
+
+  const tagToggle = () => {
+    setIsTag(!isTag);
+  };
 
   const addressToggle = () => {
     setIsAddress(!isAddress);
@@ -134,6 +166,37 @@ export default function ClientPage(data) {
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
+  const createPlaceTagHandler = (data) => {
+    const placeData: CreatePlaceTag = {
+      name: data.name,
+      id: 0,
+      Tag: tagDatum,
+    };
+
+    createPlaceTag.mutate(placeData);
+  };
+
+  const tagDatumDeleteHandler = (data: string) => {
+    let datum = tagDatum ? tagDatum.map((value) => value) : [];
+    const currentTag = datum.findIndex((value) => value.tag === data);
+    if (currentTag !== -1) {
+      datum.splice(currentTag, 1);
+      setTagDatum(datum);
+    }
+  };
+
+  const tagDatumHandler = (data: string) => {
+    let datum = tagDatum ? tagDatum.map((value) => value) : [];
+    const currentTag = datum.findIndex((value) => value.tag === data);
+
+    if (currentTag === -1) {
+      datum.push({ tag: data });
+      setTagDatum(datum);
+    } else {
+      toast("이미 추가한 태그입니다.");
+    }
+  };
 
   const imageUploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -184,6 +247,7 @@ export default function ClientPage(data) {
       descript: data.descript,
       image: data.image,
       source: data.source,
+      Tag: tagDatum,
     };
 
     createPlace.mutate(placeData);
@@ -233,6 +297,7 @@ export default function ClientPage(data) {
         maxSize: 80,
         minSize: 80,
       }),
+
       columnHelper.display({
         id: "actions",
         header: "",
@@ -250,8 +315,8 @@ export default function ClientPage(data) {
                     h-[20px]
                     p-[0]
                   "
-                  onClick={() => {
-                    placeDTOForm.reset(row.original); // form 초기화
+                  onClick={(e) => {
+                    placeDTOForm.reset(row.original);
                   }}
                   tabIndex={-1}
                 >
@@ -282,49 +347,207 @@ export default function ClientPage(data) {
 
                     <FormField
                       control={placeDTOForm.control}
-                      name="id"
+                      name="name"
                       render={({ field }) => (
                         <FormItem
                           className="
                             mb-[10px]
-                            px-[20px]
                           "
                         >
-                          <FormLabel>ID</FormLabel>
+                          <FormLabel>장소명</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="장소명을 입력해주세요."
+                              autoFocus
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="name" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormItem
+                      className="
+                        mb-[10px]
+                      "
+                    >
+                      <FormLabel
+                        className="
+                          mr-[10px]
+                        "
+                      >
+                        태그
+                      </FormLabel>
+
+                      {row.original.Tag.map((data, idx) => {
+                        return (
+                          <Badge
+                            className="
+                              mr-[5px]
+                              mb-[5px]
+                              cursor-pointer
+                            "
+                            key={idx}
+                          >
+                            {data.tag}
+                          </Badge>
+                        );
+                      })}
+                    </FormItem>
+
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="postcode"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>우편번호</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="
+                                w-[50%]
+                              "
+                              disabled
+                              {...field}
+                              placeholder="우편번호를 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="postcode" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>주소</FormLabel>
+                          <FormControl>
+                            <div
+                              className="flex items-center w-full space-x-2 "
+                            >
+                              <Input
+                                disabled
+                                {...field}
+                                placeholder="주소를 입력해주세요."
+                              />
+                              <Button onClick={addressToggle} type="button">
+                                검색
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <CustomFormMessage name="address" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="detailAddress"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>상세주소</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="상세주소를 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="detailAddress" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="descript"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>설명</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              className="
+                                h-[150px]
+                                resize-none
+                              "
+                              placeholder="설명을 입력해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="descript" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="image"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>이미지</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]
                             "
                           >
-                            <Badge variant="outline">{field.value}</Badge>
+                            <Button onClick={imageToggle} type="button">
+                              업로드
+                              <input
+                                ref={imageRef}
+                                type="file"
+                                accept="image/*"
+                                hidden={true}
+                                onChange={imageUploadHandler}
+                              />
+                            </Button>
                           </FormControl>
+                          <CustomFormMessage name="image" />
                         </FormItem>
                       )}
                     />
 
-                    <FormField
-                      control={placeDTOForm.control}
-                      name="createdAt"
-                      render={({ field }) => (
-                        <FormItem
+                    {imageStore.images.map((data) => {
+                      return (
+                        <div
                           className="
-                            mb-[10px]
-                            px-[20px]
+                            rounded
+                            relative
+                            border-[1px]
+                            p-[10px]
                           "
+                          key={data.id}
                         >
-                          <FormLabel>회원가입날짜</FormLabel>
-                          <FormControl
+                          <Button
+                            type="button"
+                            variant="destructive"
                             className="
-                              ml-[10px]
+                              absolute
+                              top-[10px]
+                              right-[10px]
                             "
                           >
-                            <Badge variant="outline">
-                              {field.value.toString()}
-                            </Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+                            <XCircle size={24} color={theme.white} />
+                          </Button>
+                          <img src={data.url} />
+                        </div>
+                      );
+                    })}
 
                     <SheetFooter>
                       <Button type="submit">수정하기</Button>
@@ -405,9 +628,7 @@ export default function ClientPage(data) {
                     >
                       <Button
                         type="submit"
-                        className="
-                          w-full
-                        "
+                        className="w-full "
                       >
                         탈퇴하기
                       </Button>
@@ -454,9 +675,7 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="
-            w-auto
-          "
+          className="w-auto "
         >
           <Dialog
             open={isCreate}
@@ -473,6 +692,7 @@ export default function ClientPage(data) {
                     address: "",
                     detailAddress: "",
                     descript: "",
+                    source: "local",
                   })
                 }
                 variant="outline"
@@ -488,7 +708,7 @@ export default function ClientPage(data) {
             <DialogPortal>
               <DialogContent
                 className="
-                  h-[80vh]
+                  max-h-[90vh]
                   overflow-auto
                 "
               >
@@ -529,6 +749,62 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
+
+                    <FormItem
+                      className="
+                        mb-[10px]
+                      "
+                    >
+                      <FormLabel>태그</FormLabel>
+                      <FormControl
+                        className="
+                          ml-[10px]
+                        "
+                      >
+                        <Select
+                          onValueChange={(e) => {
+                            tagDatumHandler(e);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="태그를 선택해주세요." />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            {tagList.data &&
+                              tagList.data.map((data) => {
+                                return (
+                                  <SelectItem
+                                    key={data.id}
+                                    value={data.tag}
+                                    className="duration-100  // hover:bg-gray-100"
+                                  >
+                                    {data.tag}
+                                  </SelectItem>
+                                );
+                              })}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+
+                    {tagDatum.map((data, idx) => {
+                      return (
+                        <Badge
+                          className="
+                            mr-[5px]
+                            mb-[5px]
+                            cursor-pointer
+                          "
+                          onClick={() => tagDatumDeleteHandler(data.tag)}
+                          key={idx}
+                        >
+                          {data.tag}&nbsp;&nbsp;
+                          <Delete size={16} color="#FFFFFF" />
+                        </Badge>
+                      );
+                    })}
+
                     <FormField
                       control={createPlaceForm.control}
                       name="postcode"
@@ -565,12 +841,7 @@ export default function ClientPage(data) {
                           <FormLabel>주소</FormLabel>
                           <FormControl>
                             <div
-                              className="
-                                flex
-                                items-center
-                                w-full
-                                space-x-2
-                              "
+                              className="flex items-center w-full space-x-2 "
                             >
                               <Input
                                 disabled
@@ -703,6 +974,162 @@ export default function ClientPage(data) {
             </DialogPortal>
           </Dialog>
         </li>
+        <li
+          className="w-auto "
+        >
+          <Dialog
+            open={isTag}
+            onOpenChange={() => {
+              tagToggle();
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button
+                onClick={() =>
+                  createPlaceForm.reset({
+                    name: "",
+                  })
+                }
+                variant="outline"
+                className="
+                  text-[13px]
+                  h-[30px]
+                "
+                tabIndex={-1}
+              >
+                <PlusCircle size={16} /> 태그
+              </Button>
+            </DialogTrigger>
+            <DialogPortal>
+              <DialogContent
+                className="
+                  max-h-[90vh]
+                  overflow-auto
+                "
+              >
+                <DialogHeader>
+                  <DialogTitle>태그 추가</DialogTitle>
+                  <DialogDescription>
+                    장소에 태그를 추가할 수 있습니다.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <Form {...createPlaceTagForm}>
+                  <form
+                    onSubmit={createPlaceTagForm.handleSubmit(
+                      createPlaceTagHandler,
+                      (errors) => {
+                        console.log("유효성 에러 발생:", errors);
+                      },
+                    )}
+                  >
+                    <FormField
+                      control={createPlaceTagForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                          "
+                        >
+                          <FormLabel>장소명</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="장소를 선택해주세요." />
+                              </SelectTrigger>
+
+                              <SelectContent>
+                                {placeList.data &&
+                                  placeList.data.map((data) => {
+                                    return (
+                                      <SelectItem
+                                        key={data.id}
+                                        value={data.name}
+                                        className="duration-100  // hover:bg-gray-100"
+                                      >
+                                        {data.name}
+                                      </SelectItem>
+                                    );
+                                  })}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <CustomFormMessage name="name" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormItem
+                      className="
+                        mb-[10px]
+                      "
+                    >
+                      <FormLabel>태그</FormLabel>
+                      <FormControl
+                        className="
+                          ml-[10px]
+                        "
+                      >
+                        <Select
+                          onValueChange={(e) => {
+                            tagDatumHandler(e);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="태그를 선택해주세요." />
+                          </SelectTrigger>
+
+                          <SelectContent>
+                            {tagList.data &&
+                              tagList.data.map((data) => {
+                                return (
+                                  <SelectItem
+                                    key={data.id}
+                                    value={data.tag}
+                                    className="duration-100  // hover:bg-gray-100"
+                                  >
+                                    {data.tag}
+                                  </SelectItem>
+                                );
+                              })}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+
+                    {tagDatum.map((data, idx) => {
+                      return (
+                        <Badge
+                          className="
+                            mr-[5px]
+                            mb-[5px]
+                            cursor-pointer
+                          "
+                          onClick={() => tagDatumDeleteHandler(data.tag)}
+                          key={idx}
+                        >
+                          {data.tag}&nbsp;&nbsp;
+                          <Delete size={16} color="#FFFFFF" />
+                        </Badge>
+                      );
+                    })}
+
+                    <Button
+                      type="submit"
+                      className="
+                        w-full
+                        mt-[20px]
+                      "
+                    >
+                      추가하기
+                    </Button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </DialogPortal>
+          </Dialog>
+        </li>
       </ul>
 
       <Dialog onOpenChange={addressToggle} open={isAddress}>
@@ -717,6 +1144,7 @@ export default function ClientPage(data) {
             onComplete={(data) => {
               createPlaceForm.setValue("address", data.address);
               createPlaceForm.setValue("postcode", data.zonecode);
+              latLongAPI.mutate(data.address);
               setIsAddress(false);
             }}
             autoClose={false}
@@ -725,13 +1153,7 @@ export default function ClientPage(data) {
       </Dialog>
 
       <article
-        className="
-          flex
-          flex-col
-          items-center
-          justify-start
-          size-full
-        "
+        className="flex flex-col items-center justify-start  size-full"
       >
         <DragTable<PlaceDTO>
           table={table}
