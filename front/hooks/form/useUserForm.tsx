@@ -16,6 +16,15 @@ type createUserType = z.infer<typeof createUserSchema>;
 type exitUserType = z.infer<typeof exitUserSchema>;
 type loginUserType = z.infer<typeof loginUserSchema>;
 
+export function useUserForm() {
+  return useForm<userDTOType>({
+    resolver: zodResolver(userDTOSchema),
+    defaultValues: {
+      reason: "",
+    },
+  });
+}
+
 export function useCreateUserForm() {
   return useForm<createUserType>({
     resolver: zodResolver(createUserSchema),

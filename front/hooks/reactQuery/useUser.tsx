@@ -24,10 +24,10 @@ import { useMeState } from "@store/commonStore";
 // useQuery : R 정보를 불러올때 (자동실행) 캐시초기화/갱신할때
 // useMutation : CUD 정보를 보낼때 (수동실행)
 
-// 관리자계정 가져오기
+// 회원리스트 가져오기
 export const useAdminUser = (isAdmin: boolean) => {
   return useQuery<UserDTO[]>({
-    queryKey: ["adminUser", true],
+    queryKey: ["adminUser", isAdmin],
     queryFn: () => adminUserList(isAdmin),
   });
 };

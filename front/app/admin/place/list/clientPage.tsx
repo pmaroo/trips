@@ -76,7 +76,7 @@ export default function ClientPage(data) {
   // STATE
   //////////////////////////////////////////////////////////////
 
-  const [dataResult, setDataResult] = useState<PlaceDTO[]>(data.data);
+  const [dataResult, setDataResult] = useState<PlaceDTO[]>(data);
   const [tagDatum, setTagDatum] = useState<{ tag: string }[]>([]);
   //
   const [isCreate, setIsCreate] = useState<boolean>(false);
@@ -141,6 +141,7 @@ export default function ClientPage(data) {
 
   const tagToggle = () => {
     setIsTag(!isTag);
+    setTagDatum([]);
   };
 
   const addressToggle = () => {
@@ -161,6 +162,7 @@ export default function ClientPage(data) {
 
   const createToggle = () => {
     setIsCreate(!isCreate);
+    setTagDatum([]);
   };
 
   //////////////////////////////////////////////////////////////
@@ -169,8 +171,7 @@ export default function ClientPage(data) {
 
   const createPlaceTagHandler = (data) => {
     const placeData: CreatePlaceTag = {
-      name: data.name,
-      id: 0,
+      id: parseInt(data.id),
       Tag: tagDatum,
     };
 
@@ -316,7 +317,11 @@ export default function ClientPage(data) {
                     p-[0]
                   "
                   onClick={(e) => {
-                    placeDTOForm.reset(row.original);
+                    placeDTOForm.reset({
+                      ...row.original,
+                      image: "",
+                      createdAt: new Date(row.original.createdAt),
+                    });
                   }}
                   tabIndex={-1}
                 >
@@ -580,8 +585,12 @@ export default function ClientPage(data) {
                     p-[0]
                   "
                   variant="destructive"
-                  onClick={() => {
-                    placeDTOForm.reset(row.original); // form 초기화
+                  onClick={(e) => {
+                    placeDTOForm.reset({
+                      ...row.original,
+                      image: "",
+                      createdAt: new Date(row.original.createdAt),
+                    });
                   }}
                   tabIndex={-1}
                 >
@@ -620,6 +629,22 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={placeDTOForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>장소명</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
                     <DialogFooter
                       className="
@@ -629,8 +654,9 @@ export default function ClientPage(data) {
                       <Button
                         type="submit"
                         className="w-full "
+                        variant="destructive"
                       >
-                        탈퇴하기
+                        삭제하기
                       </Button>
                     </DialogFooter>
                   </form>
@@ -994,6 +1020,7 @@ export default function ClientPage(data) {
                 className="
                   text-[13px]
                   h-[30px]
+                  ml-[5px]
                 "
                 tabIndex={-1}
               >
@@ -1025,7 +1052,7 @@ export default function ClientPage(data) {
                   >
                     <FormField
                       control={createPlaceTagForm.control}
-                      name="name"
+                      name="id"
                       render={({ field }) => (
                         <FormItem
                           className="
@@ -1045,7 +1072,7 @@ export default function ClientPage(data) {
                                     return (
                                       <SelectItem
                                         key={data.id}
-                                        value={data.name}
+                                        value={data.id.toString()}
                                         className="duration-100  // hover:bg-gray-100"
                                       >
                                         {data.name}

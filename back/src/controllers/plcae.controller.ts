@@ -19,14 +19,7 @@ export const createTagPlus = async (req: Request, res: Response) => {
       return;
     }
 
-    const result = {
-      ...placeData,
-      Tag: {
-        connect: placeData.Tag,
-      },
-    };
-
-    const data = await updatePlaceModel(result);
+    const data = await updatePlaceTagModel(placeData);
     res.json(data);
   } catch (error) {
     errorConsole(error);

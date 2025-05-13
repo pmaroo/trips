@@ -51,7 +51,6 @@ export interface DeletePlace {
 
 export interface CreatePlaceTag {
   id: number;
-  name: string;
   Tag: { tag: string }[];
 }
 
@@ -96,5 +95,5 @@ export const updatePlaceSchema = z.object({
 });
 
 export const createPlaceTagSchema = z.object({
-  name: z.string().min(1, "이름은 필수입니다."),
+  id: z.string(),
 });
