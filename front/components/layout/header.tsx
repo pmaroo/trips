@@ -1,116 +1,545 @@
 "use client";
 
+import { Theme } from "@components/theme";
 import * as Icon from "@deemlol/next-icons";
-import { useCallback, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { motion } from "framer-motion";
-import debounce from "lodash/debounce";
+import Subway from "@components/ui/subway";
 
 export default function Header() {
-  const [isMenu, setIsMenu] = useState<Boolean>(false);
-  const [isScroll, setIsScroll] = useState<Boolean>(true);
+  const [isMenu, setIsMenu] = useState<boolean>(false);
 
-  const menuFlag = useCallback(() => {
+  const menuToggle = () => {
     setIsMenu(!isMenu);
-  }, [isMenu]);
-
-  useEffect(() => {
-    const scrollEvent = () => {
-      if (window.scrollY === 0) {
-        setIsScroll(true);
-      } else {
-        setIsScroll(false);
-      }
-    };
-
-    window.addEventListener("scroll", scrollEvent);
-
-    return () => {
-      window.removeEventListener("scroll", scrollEvent);
-    };
-  }, []);
+  };
 
   return (
     <>
-      <motion.div
-        animate={{
-          transform: isScroll ? `translateY(0px)` : `translateY(-60px)`,
-        }}
-        transition={{ duration: isScroll ? 0.3 : 0.3, ease: "easeOut" }}
-        style={{
-          position: `fixed`,
-          top: `0`,
-          left: `0`,
-          width: `100%`,
-        }}
-      >
-        <header
-          className="
+      <header
+        className="
           flex
           flex-row
           items-center
+          justify-center
           w-full
-          justify-between
+          bg-white
           h-[60px]
-          bg-black
-          px-[20px]
           z-[100]
+          fixed
+          top-0
+          left-0
         "
+      >
+        <div
+          className="
+            flex
+            flex-row
+            items-center
+            h-full
+            justify-between
+            w-[--layout]
+          "
         >
-          <p className="text-white ">로고</p>
-          <nav className="flex flex-row w-auto ">
-            <ul className="flex flex-row ">
+          <p
+            className="
+              text-black
+              z-[100]
+            "
+          >
+            로고
+          </p>
+          <nav
+            className="
+              flex
+              flex-row
+              w-auto
+              z-[100]
+            "
+          >
+            <ul
+              className="flex flex-row items-center  justifet-center"
+            >
               <li
                 className="
-                text-white
-                text-[13px]
-                cursor-pointer
-              "
+                  text-[16px]
+                  cursor-pointer
+                  duration-500
+                  hover:font-[700]
+                  hover:text-[var(--main)]
+                "
+                onClick={menuToggle}
               >
-                <a>로그인</a>
+                <a>지역여행</a>
               </li>
 
               <li
                 className="
-                text-[#bbb]
-                text-[13px]
-                mx-[10px]
-              "
+                  text-[16px]
+                  cursor-pointer
+                  mx-[10px]
+                  duration-500
+                  hover:font-[700]
+                  hover:text-[var(--main)]
+                "
               >
-                <p>|</p>
+                <a>카테고리여행</a>
               </li>
               <li
                 className="
-                text-white
-                text-[13px]
-                cursor-pointer
-              "
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
+                  size-[30px]
+                  rounded-[50px]
+                  bg-[--main]
+                "
               >
-                <a>회원가입</a>
+                <Icon.User size={16} color="#fff" />
               </li>
             </ul>
-            <p
-              className="
-              ml-[10px]
-              cursor-pointer
-            "
-              onClick={menuFlag}
-            >
-              {isMenu ? (
-                <Icon.X size={18} color="#ffffff" />
-              ) : (
-                <Icon.AlignJustify size={18} color="#ffffff" />
-              )}
-            </p>
           </nav>
-        </header>
-      </motion.div>
+
+          <motion.div
+            initial={{ top: `-550px` }}
+            animate={{ top: isMenu ? `60px` : `-550px` }}
+            style={{
+              width: `100%`,
+              position: `fixed`,
+              top: `0`,
+              left: `0`,
+              height: `550px`,
+              background: `#fff`,
+              display: `flex`,
+              flexDirection: `column`,
+              justifyContent: `center`,
+              alignItems: `center`,
+            }}
+          >
+            <nav
+              className="
+                flex
+                flex-col
+                h-full
+                w-[--layout]
+              "
+            >
+              <ul
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  justify-center
+                  bg-[--lightGrey]
+                  h-[54px]
+                  rounded-[15px]
+                  p-[10px]
+                  relative
+                  mb-[10px]
+                "
+              >
+                <li
+                  className="
+                    h-[calc(100%-20px)]
+                    absolute
+                    top-[10px]
+                    left-[10px]
+                    bg-[--white]
+                    w-[calc(25%-20px)]
+                    rounded-[10px]
+                    z-[1]
+                  "
+                ></li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+              </ul>
+              <ul
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  justify-center
+                  bg-[--lightGrey]
+                  h-[54px]
+                  rounded-[15px]
+                  p-[10px]
+                  relative
+                  mb-[10px]
+                "
+              >
+                <li
+                  className="
+                    h-[calc(100%-20px)]
+                    absolute
+                    top-[10px]
+                    left-[10px]
+                    bg-[--white]
+                    w-[calc(25%-20px)]
+                    rounded-[10px]
+                    z-[1]
+                  "
+                ></li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+              </ul>
+              <ul
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  justify-center
+                  bg-[--lightGrey]
+                  h-[54px]
+                  rounded-[15px]
+                  p-[10px]
+                  relative
+                  mb-[10px]
+                "
+              >
+                <li
+                  className="
+                    h-[calc(100%-20px)]
+                    absolute
+                    top-[10px]
+                    left-[10px]
+                    bg-[--white]
+                    w-[calc(25%-20px)]
+                    rounded-[10px]
+                    z-[1]
+                  "
+                ></li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+              </ul>
+              <ul
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  justify-center
+                  bg-[--lightGrey]
+                  h-[54px]
+                  rounded-[15px]
+                  p-[10px]
+                  relative
+                  mb-[20px]
+                "
+              >
+                <li
+                  className="
+                    h-[calc(100%-20px)]
+                    absolute
+                    top-[10px]
+                    left-[10px]
+                    bg-[--white]
+                    w-[calc(25%-20px)]
+                    rounded-[10px]
+                    z-[1]
+                  "
+                ></li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+                <li
+                  className="
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
+                    w-[25%]
+                    text-[--grey]
+                    text-[16px]
+                    font-[700]
+                    cursor-pointer
+                    z-[2]
+                  "
+                >
+                  서울특별시
+                </li>
+              </ul>
+              <div
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
+                  w-full
+                  relative
+                  mb-[20px]
+                "
+              >
+                <div
+                  className="
+                    absolute
+                    w-screen
+                    bg-[--main]
+                    h-[10px]
+                    z-[-1]
+                    inset-auto
+                  "
+                />
+                <Subway title={"서울특별시"} />
+              </div>
+
+              <ul
+                className="flex flex-row flex-wrap items-center justify-start "
+              >
+                <button
+                  className="
+                    text-center
+                    w-[120px]
+                    h-[25px]
+                    rounded-[20px]
+                    border-[--lightGrey2]
+                    border
+                    text-[14px]
+                    font-[700]
+                    text-[--grey]
+                    duration-500
+                    mx-[5px]
+                    mb-[5px]
+                    hover:bg-[--grey]
+                    hover:text-[--white]
+                  "
+                >
+                  마포구
+                </button>
+              </ul>
+            </nav>
+          </motion.div>
+        </div>
+      </header>
     </>
   );
 }
-// 주의점
-// app은 서버에서 렌더링 되는 서버 컴포넌트이기 때문에
-// react hook 사용시 "use client"로 클라이언트 컴포넌트로 명시해야 사용 가능
-
-// pages를 사용하지 않고 app 을 사용하는 이유
-// 1. 서버 컴포넌트 기본적용
-// 서버 컴포넌트이기 때문에 불필요한 js가 클라이언트에 전달되는걸 방지하고 결과만 클라이언트로 보내기때문에 렌더링 성능이 좋아짐
