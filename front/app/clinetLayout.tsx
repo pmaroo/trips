@@ -135,25 +135,41 @@ export default function ClientLayout({
                   "
                 >
                   <div
-                    className="flex items-center gap-2 px-4 "
+                    className="
+                      flex
+                      items-center
+                      gap-2
+                      px-4
+                    "
                   >
                     <SidebarTrigger
-                      className="-ml-1 "
+                      className="
+                        -ml-1
+                      "
                     />
                     <Separator
                       orientation="vertical"
-                      className="h-4 mr-2 "
+                      className="
+                        h-4
+                        mr-2
+                      "
                     />
                     <Breadcrumb>
                       <BreadcrumbList>
                         <BreadcrumbItem
-                          className="hidden  md:block"
+                          className="
+                            hidden
+                            md:block
+                          "
                         >
                           {url.title}
                         </BreadcrumbItem>
                         {path !== "/admin" && (
                           <BreadcrumbSeparator
-                            className="hidden  md:block"
+                            className="
+                              hidden
+                              md:block
+                            "
                           />
                         )}
                         <BreadcrumbItem>
@@ -182,7 +198,14 @@ export default function ClientLayout({
             <header>
               <Header />
             </header>
-            <section>{children}</section>
+            <section
+              className="
+                mt-[60px]
+                overflow-hidden
+              "
+            >
+              {children}
+            </section>
             <footer>
               <Footer />
             </footer>

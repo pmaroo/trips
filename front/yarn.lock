@@ -2674,10 +2674,10 @@ tailwind-merge@3.0.1:
   resolved "https://registry.npmjs.org/tailwind-merge/-/tailwind-merge-3.0.1.tgz"
   integrity sha512-AvzE8FmSoXC7nC+oU5GlQJbip2UO7tmOhOfQyOmPhrStOGXHU08j8mZEHZ4BmCqY5dWTCo4ClWkNyRNx1wpT0g==
 
-tailwind-prettier@1.0.15:
-  version "1.0.15"
-  resolved "https://registry.npmjs.org/tailwind-prettier/-/tailwind-prettier-1.0.15.tgz"
-  integrity sha512-Occt4k8MOoUdGFlhCg6lJQwBO2oP2X6TJfNyyveps+7J3Sv/i/TUl0jVyB2Ek7WUl/S5g8zJIZVrMWZk5d0oNw==
+tailwind-prettier@1.0.26:
+  version "1.0.26"
+  resolved "https://registry.npmjs.org/tailwind-prettier/-/tailwind-prettier-1.0.26.tgz"
+  integrity sha512-5l5dOAXAJPa9iSgY4NA0ciNGoAF72TWvq30B8tYuj08VbTRbBMvfqVnwt5fMM4ZLf8vlCCV92775kHZxG4EC2Q==
   dependencies:
     prettier "3.5.3"
 

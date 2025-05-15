@@ -150,12 +150,7 @@ const CustomFormMessage = ({ name }: { name: string }) => {
 
   return (
     <ul
-      className="
-        flex
-        flex-row
-        items-center
-        justify-start
-      "
+      className="flex flex-row items-center justify-start "
     >
       <li
         className="
@@ -177,6 +172,14 @@ const CustomFormMessage = ({ name }: { name: string }) => {
     </ul>
   );
 };
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./components/ui/carousel";
 
 const Components = {
   Button,
@@ -292,6 +295,11 @@ const Components = {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 };
 
 export type { ChartConfig };

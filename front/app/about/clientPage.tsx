@@ -10,7 +10,9 @@ export default function ClientPage({ user }) {
 
   return (
     <Suspense fallback={<p>로딩중</p>}>
-      <h1 className={`text-[${ThemeContext.basic}]`}>{stat.name}</h1>
+      <h1 className="text-[13px] text-[13px] text-[13px] text-[13px] text-[13px]">
+        {stat.name}
+      </h1>
     </Suspense>
   );
 }
