@@ -1,3 +1,3 @@
-module.exports = {
-  plugins: ["tailwind-prettier"],
-};
+// module.exports = {
+//   plugins: ["tailwind-prettier"],
+// };
