@@ -13,6 +13,34 @@ export default function Header() {
     setIsMenu(!isMenu);
   };
 
+  const seoulDistricts = [
+    "강남구",
+    "강동구",
+    "강북구",
+    "강서구",
+    "관악구",
+    "광진구",
+    "구로구",
+    "금천구",
+    "노원구",
+    "도봉구",
+    "동대문구",
+    "동작구",
+    "마포구",
+    "서대문구",
+    "서초구",
+    "성동구",
+    "성북구",
+    "송파구",
+    "양천구",
+    "영등포구",
+    "용산구",
+    "은평구",
+    "종로구",
+    "중구",
+    "중랑구",
+  ];
+
   return (
     <>
       <header
@@ -59,7 +87,12 @@ export default function Header() {
             "
           >
             <ul
-              className="flex flex-row items-center  justifet-center"
+              className="
+                flex
+                flex-row
+                items-center
+                justifet-center
+              "
             >
               <li
                 className="
@@ -163,7 +196,7 @@ export default function Header() {
                 items-center
                 justify-center
                 w-[25%]
-                text-[--grey]
+                text-[--black]
                 text-[16px]
                 font-[700]
                 cursor-pointer
@@ -186,7 +219,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              인천광역시
             </li>
             <li
               className="
@@ -202,7 +235,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              경기도
             </li>
             <li
               className="
@@ -218,98 +251,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
-            </li>
-          </ul>
-          <ul
-            className="
-              flex
-              flex-row
-              items-center
-              justify-center
-              bg-[--lightGrey]
-              h-[54px]
-              rounded-[15px]
-              p-[10px]
-              relative
-              mb-[10px]
-            "
-          >
-            <li
-              className="
-                h-[calc(100%-20px)]
-                absolute
-                top-[10px]
-                left-[10px]
-                bg-[--white]
-                w-[calc(25%-20px)]
-                rounded-[10px]
-                z-[1]
-              "
-            ></li>
-            <li
-              className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                w-[25%]
-                text-[--grey]
-                text-[16px]
-                font-[700]
-                cursor-pointer
-                z-[2]
-              "
-            >
-              서울특별시
-            </li>
-            <li
-              className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                w-[25%]
-                text-[--grey]
-                text-[16px]
-                font-[700]
-                cursor-pointer
-                z-[2]
-              "
-            >
-              서울특별시
-            </li>
-            <li
-              className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                w-[25%]
-                text-[--grey]
-                text-[16px]
-                font-[700]
-                cursor-pointer
-                z-[2]
-              "
-            >
-              서울특별시
-            </li>
-            <li
-              className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                w-[25%]
-                text-[--grey]
-                text-[16px]
-                font-[700]
-                cursor-pointer
-                z-[2]
-              "
-            >
-              서울특별시
+              강원도
             </li>
           </ul>
           <ul
@@ -332,7 +274,6 @@ export default function Header() {
                 absolute
                 top-[10px]
                 left-[10px]
-                bg-[--white]
                 w-[calc(25%-20px)]
                 rounded-[10px]
                 z-[1]
@@ -352,7 +293,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              충청북도
             </li>
             <li
               className="
@@ -368,7 +309,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              대전광역시
             </li>
             <li
               className="
@@ -384,7 +325,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              충청남도
             </li>
             <li
               className="
@@ -400,7 +341,97 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              경상북도
+            </li>
+          </ul>
+          <ul
+            className="
+              flex
+              flex-row
+              items-center
+              justify-center
+              bg-[--lightGrey]
+              h-[54px]
+              rounded-[15px]
+              p-[10px]
+              relative
+              mb-[10px]
+            "
+          >
+            <li
+              className="
+                h-[calc(100%-20px)]
+                absolute
+                top-[10px]
+                left-[10px]
+                w-[calc(25%-20px)]
+                rounded-[10px]
+                z-[1]
+              "
+            ></li>
+            <li
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                w-[25%]
+                text-[--grey]
+                text-[16px]
+                font-[700]
+                cursor-pointer
+                z-[2]
+              "
+            >
+              대구광역시
+            </li>
+            <li
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                w-[25%]
+                text-[--grey]
+                text-[16px]
+                font-[700]
+                cursor-pointer
+                z-[2]
+              "
+            >
+              경상남도
+            </li>
+            <li
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                w-[25%]
+                text-[--grey]
+                text-[16px]
+                font-[700]
+                cursor-pointer
+                z-[2]
+              "
+            >
+              부산광역시
+            </li>
+            <li
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                w-[25%]
+                text-[--grey]
+                text-[16px]
+                font-[700]
+                cursor-pointer
+                z-[2]
+              "
+            >
+              울산광역시
             </li>
           </ul>
           <ul
@@ -423,7 +454,6 @@ export default function Header() {
                 absolute
                 top-[10px]
                 left-[10px]
-                bg-[--white]
                 w-[calc(25%-20px)]
                 rounded-[10px]
                 z-[1]
@@ -443,7 +473,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              전라북도
             </li>
             <li
               className="
@@ -459,7 +489,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              전라남도
             </li>
             <li
               className="
@@ -475,7 +505,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              광주광역시
             </li>
             <li
               className="
@@ -491,7 +521,7 @@ export default function Header() {
                 z-[2]
               "
             >
-              서울특별시
+              제주도
             </li>
           </ul>
           <div
@@ -519,28 +549,39 @@ export default function Header() {
           </div>
 
           <ul
-            className="flex flex-row flex-wrap items-center justify-start "
+            className="
+              flex
+              flex-row
+              items-center
+              justify-start
+              flex-wrap
+            "
           >
-            <button
-              className="
-                text-center
-                w-[120px]
-                h-[25px]
-                rounded-[20px]
-                border-[--lightGrey2]
-                border
-                text-[14px]
-                font-[700]
-                text-[--grey]
-                duration-500
-                mx-[5px]
-                mb-[5px]
-                hover:bg-[--grey]
-                hover:text-[--white]
-              "
-            >
-              마포구
-            </button>
+            {seoulDistricts.map((data, idx) => {
+              return (
+                <button
+                  key={idx}
+                  className="
+                    text-center
+                    w-[120px]
+                    h-[25px]
+                    rounded-[20px]
+                    border-[--lightGrey2]
+                    border
+                    text-[14px]
+                    font-[700]
+                    text-[--grey]
+                    duration-500
+                    mx-[5px]
+                    mb-[5px]
+                    hover:bg-[--grey]
+                    hover:text-[--white]
+                  "
+                >
+                  {data}
+                </button>
+              );
+            })}
           </ul>
         </nav>
       </motion.div>

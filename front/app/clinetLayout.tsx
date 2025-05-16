@@ -195,20 +195,19 @@ export default function ClientLayout({
           )
         ) : (
           <>
-            <header>
+            {/* <header>
               <Header />
-            </header>
+            </header> */}
             <section
               className="
-                mt-[60px]
-                overflow-hidden
-              "
+              overflow-hidden
+            "
             >
               {children}
             </section>
-            <footer>
+            {/* <footer>
               <Footer />
-            </footer>
+            </footer> */}
           </>
         )}
       </ThemeProvider>

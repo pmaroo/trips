@@ -150,7 +150,12 @@ const CustomFormMessage = ({ name }: { name: string }) => {
 
   return (
     <ul
-      className="flex flex-row items-center justify-start "
+      className="
+        flex
+        flex-row
+        items-center
+        justify-start
+      "
     >
       <li
         className="
@@ -180,6 +185,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./components/ui/carousel";
+import { Progress } from "./components/ui/progress";
 
 const Components = {
   Button,
@@ -300,6 +306,7 @@ const Components = {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  Progress,
 };
 
 export type { ChartConfig };
