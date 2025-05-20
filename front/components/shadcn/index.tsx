@@ -136,7 +136,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
 } from "./components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/ui/tooltip";
 // CustomFormMessage.tsx
 
 const CustomFormMessage = ({ name }: { name: string }) => {
@@ -186,6 +194,11 @@ import {
   CarouselPrevious,
 } from "./components/ui/carousel";
 import { Progress } from "./components/ui/progress";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "./components/ui/popover";
 
 const Components = {
   Button,
@@ -301,12 +314,21 @@ const Components = {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
   Progress,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 };
 
 export type { ChartConfig };

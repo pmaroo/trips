@@ -1,8 +1,8 @@
-function Bus() {
+function Bus(data: { width: string; height: string }) {
   return (
     <svg
-      width="84"
-      height="88"
+      width={data.width ? data.width : "84"}
+      height={data.height ? data.height : "88"}
       viewBox="0 0 84 88"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

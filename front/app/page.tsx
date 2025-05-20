@@ -1,9 +1,10 @@
-import { notFound } from "@node_modules/next/navigation";
-import IndexClient from "./clientPage";
+import { notFound } from "next/navigation";
+import ClientPage from "./clientPage";
+import { NextApiRequest, NextApiResponse } from "next";
 // import { useRouter } from "@node_modules/next/router";
 
 // posts는 빌드시점에 getStaticProps()에 의해 채워짐
-export default async function Page({ posts }) {
+export default async function Page(req: NextApiRequest, res: NextApiResponse) {
   // const router = useRouter();
 
   // fallback:true로 해뒀기때문에 router에서 isFallback의 값을 가져올 수 있음
@@ -25,7 +26,7 @@ export default async function Page({ posts }) {
 
   return (
     <>
-      <IndexClient />
+      <ClientPage />
     </>
   );
 }

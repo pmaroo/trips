@@ -6,6 +6,21 @@ body {
   color: var(--foreground);
 }
 
+/* scroll */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+
+  @media (max-width: 700px) {
+    height: 4px;
+    width: 4px;
+  }
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--lightGrey2);
+  border-radius: 10px;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -37,9 +52,13 @@ body {
 
     /* 여름 */
     --main: #72affe;
+    --main2: #23307e;
+    --main3: #ffd804;
     --subMain: #81cede;
     --lightMain: #c3e8eb;
     --mainPoint: #ddd3c2;
+    --mainPoint2: #ff3d57;
+    --mainPoint3: #7857a9;
     /*  */
     --grey: #aaa;
     --grey2: #c9c9c9;
@@ -84,18 +103,23 @@ body {
 
 @layer utilities {
   .kakao {
-    @apply bg-[#FEE500] text-[#3A1D1D];
-  }
+    background: #fee500;
+    color: #3a1d1d;
 
+    &:hover {
+      background: #fff;
+    }
+  }
+  /* 
   .naver {
-    @apply bg-[#03C75A] text-white;
+    @apply bg-[#03C75A] text-white hover:bg-[#00b34a];
   }
 
   .google {
-    @apply bg-white text-[#4285F4] border border-gray-300;
+    @apply bg-white text-[#4285F4] border border-gray-300 hover:bg-gray-100;
   }
 
   .git {
     @apply bg-[#1d1b1b] text-white;
-  }
+  } */
 }

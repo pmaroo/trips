@@ -1,6 +1,5 @@
 // Page.jsx (서버 컴포넌트)
 import { Metadata } from "@node_modules/next";
-import dynamic from "next/dynamic";
 import ClientPage from "./clientPage";
 
 export const metadata: Metadata = {
@@ -9,11 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const user = {
-    name: "이름33",
-  };
-
-  return <ClientPage user={user} />;
+  return <ClientPage />;
 }
 // 서버 컴포넌트의 장점을 살리면서 클라이언트 컴포넌트를 사용하는 방법
 

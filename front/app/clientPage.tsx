@@ -60,8 +60,12 @@ import Step3 from "@components/ui/main/step3";
 import Step4 from "@components/ui/main/step4";
 import Step5 from "@components/ui/main/step5";
 import Step6 from "@components/ui/main/step6";
+import useDeviceSize from "@hooks/useDeviceSize";
+import { useMeState } from "@store/commonStore";
+import axios from "@node_modules/axios";
+import { useKakaoStore } from "@store/loginStore";
 
-export default function ClientPage({ user }) {
+export default function ClientPage() {
   const { Button, Progress } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
@@ -71,11 +75,16 @@ export default function ClientPage({ user }) {
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
+  const { isDesktop, isTablet, isMobile } = useDeviceSize();
+
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
   const stepStore = useStepStore();
+  const meStore = useMeState();
+  const kakaoStore = useKakaoStore();
+  console.log(meStore);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -94,6 +103,7 @@ export default function ClientPage({ user }) {
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
   //////////////////////////////////////////////////////////////
   //  TABLE
   //////////////////////////////////////////////////////////////
@@ -155,7 +165,7 @@ export default function ClientPage({ user }) {
             top-0
             left-0
             p-[10px]
-            z-[100]
+            z-[9]
           "
         >
           <Progress
@@ -191,13 +201,38 @@ export default function ClientPage({ user }) {
             </motion.li>
           </ul>
         </div>
-
-        {stepStore.step === 0 && <Step1 koreanRegions={koreanRegions} />}
-        {stepStore.step === 1 && <Step2 categorys={categorys} />}
-        {stepStore.step === 2 && <Step3 />}
-        {stepStore.step === 3 && <Step4 />}
-        {stepStore.step === 4 && <Step5 />}
-        {stepStore.step === 5 && <Step6 />}
+        <ul
+          className="
+            flex
+            flex-row
+            items-center
+            justify-center
+            relative
+            size-full
+            bg-[--white]
+          "
+        >
+          <motion.li
+            className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              w-full
+              h-full
+              p-[20px]
+              sm:w-[1000px]
+              sm:p-[100px]
+            "
+          >
+            {stepStore.step === 0 && <Step1 koreanRegions={koreanRegions} />}
+            {stepStore.step === 1 && <Step2 categorys={categorys} />}
+            {stepStore.step === 2 && <Step3 />}
+            {stepStore.step === 3 && <Step4 />}
+            {stepStore.step === 4 && <Step5 />}
+            {stepStore.step === 5 && <Step6 />}
+          </motion.li>
+        </ul>
       </article>
     </>
   );

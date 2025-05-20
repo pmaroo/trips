@@ -127,12 +127,7 @@ export default function ClientPage({ user }) {
             여행을 떠나자,
           </motion.p>
           <div
-            className="
-              flex
-              flex-row
-              items-center
-              justify-center
-            "
+            className="flex flex-row items-center justify-center "
           >
             <motion.p
               initial={{ y: 30, opacity: 0 }}
@@ -205,12 +200,7 @@ export default function ClientPage({ user }) {
             어디로 갈지 모르겠어 ?
           </motion.p>
           <div
-            className="
-              flex
-              flex-row
-              items-center
-              justify-center
-            "
+            className="flex flex-row items-center justify-center "
           >
             <motion.svg
               initial={{ opacity: 0 }}
@@ -282,12 +272,7 @@ export default function ClientPage({ user }) {
             일정 짤 시간이 부족해 ?
           </motion.p>
           <div
-            className="
-              flex
-              flex-row
-              items-center
-              justify-center
-            "
+            className="flex flex-row items-center justify-center "
           >
             <motion.p
               initial={{ y: 30, opacity: 0 }}
@@ -330,13 +315,7 @@ export default function ClientPage({ user }) {
           </div>
         </div>
         <div
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            relative
-          "
+          className="relative flex flex-col items-center justify-center "
         >
           <img src="/main.png" />
           <ul
@@ -354,31 +333,16 @@ export default function ClientPage({ user }) {
             "
           >
             <li
-              className="
-                flex
-                flex-col
-                items-center
-                justify-center
-                relative
-              "
+              className="relative flex flex-col items-center justify-center "
             >
               <div>
                 <MapLine2 />
               </div>
               <div
-                className="
-                  absolute
-                  inset-auto
-                "
+                className="absolute inset-auto "
               >
                 <ul
-                  className="
-                    flex
-                    flex-col
-                    items-center
-                    justify-center
-                    relative
-                  "
+                  className="relative flex flex-col items-center justify-center "
                 >
                   <li
                     className="
@@ -396,14 +360,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -574,14 +531,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -617,14 +567,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -749,14 +692,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -792,14 +728,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -835,14 +764,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -879,14 +801,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -922,14 +837,7 @@ export default function ClientPage({ user }) {
                     "
                   >
                     <div
-                      className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        relative
-                        group
-                      "
+                      className="relative flex flex-col items-center justify-center  group"
                     >
                       <div
                         className="
@@ -970,14 +878,7 @@ export default function ClientPage({ user }) {
                 "
               >
                 <div
-                  className="
-                    flex
-                    flex-col
-                    items-center
-                    justify-center
-                    relative
-                    group
-                  "
+                  className="relative flex flex-col items-center justify-center  group"
                 >
                   <div
                     className="
@@ -1143,14 +1044,7 @@ export default function ClientPage({ user }) {
         </div>
 
         <div
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            w-full
-            relative
-          "
+          className="relative flex flex-col items-center justify-center w-full "
         >
           <div
             className="
@@ -1182,42 +1076,42 @@ export default function ClientPage({ user }) {
                 >
                   <ul
                     className={`
-              flex
-              flex-col
-              items-start
-              justify-center
-              w-full
-              h-[100px]
-              rounded-[50px]
-              border-[10px]
-              ${current === index ? "border-[--main]" : "border-[--grey2]"}
-              relative
-              px-[10px]
-              bg-[--white]
-          `}
+                      flex
+                      flex-col
+                      items-start
+                      justify-center
+                      w-full
+                      h-[100px]
+                      rounded-[50px]
+                      border-[10px]
+                      ${current === index ? "border-[--main]" : "border-[--grey2]"}
+                      relative
+                      px-[10px]
+                      bg-[--white]
+                  `}
                   >
                     <li
                       className={`
-                size-[50px]
-                rounded-[100%]
-                ${current === index ? "bg-[--main]" : "bg-[--grey2]"}
+                        size-[50px]
+                        rounded-[100%]
+                        ${current === index ? "bg-[--main]" : "bg-[--grey2]"}
 
-            `}
+                    `}
                     ></li>
 
                     <li
                       className={`
-                      flex
-                      flex-col
-                      items-center
-                      justify-center
-                      absolute
-                      w-[calc(100%-16px)]
-                      text-[36px]
-                      font-[700]
-                      ${current === index ? "text-[--main]" : "text-[--grey2]"}
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        absolute
+                        w-[calc(100%-16px)]
+                        text-[36px]
+                        font-[700]
+                        ${current === index ? "text-[--main]" : "text-[--grey2]"}
 
-                  `}
+                    `}
                     >
                       서울역
                     </li>
@@ -1228,13 +1122,7 @@ export default function ClientPage({ user }) {
           </Carousel>
 
           <ul
-            className="
-              flex
-              flex-row
-              items-center
-              justify-center
-              w-full
-            "
+            className="flex flex-row items-center justify-center w-full "
           >
             <img
               className="
