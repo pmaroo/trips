@@ -1,16 +1,16 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
 import { useState } from "react";
 import { useStepStore } from "@store/frontStore";
 import { motion } from "framer-motion";
-import { addDays } from "@node_modules/date-fns/addDays";
-import { ko } from "date-fns/locale";
+
 import { useDatePickerState } from "@react-stately/datepicker";
 import { useDatePicker } from "@react-aria/datepicker";
 import { useRef } from "react";
 import Calender from "./calender";
+import { usePlanStore } from "@store/planStore";
+import { PlanDateType } from "@/types/plan";
 
 export default function Step3() {
   const { Button } = Components;
@@ -19,6 +19,8 @@ export default function Step3() {
   // STATE
   //////////////////////////////////////////////////////////////
 
+  const [selectData, setSelectData] = useState<PlanDateType[] | null>(null);
+
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
@@ -26,7 +28,8 @@ export default function Step3() {
   // STORE
   //////////////////////////////////////////////////////////////
 
-  const stepStore = useStepStore();
+  const stepStore = useStepStore((state) => state);
+  const planStore = usePlanStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -41,7 +44,10 @@ export default function Step3() {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = () => {
+  const stepHandler = async () => {
+    await planStore.setPlan({
+      date: selectData,
+    });
     stepStore.setStep(3);
   };
   //////////////////////////////////////////////////////////////
@@ -54,7 +60,7 @@ export default function Step3() {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -65,7 +71,7 @@ export default function Step3() {
       </h1>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -73,7 +79,7 @@ export default function Step3() {
           sm:text-[50px]
         "
       >
-        커플여행으로 떠나시는군요 !
+        {planStore && planStore.plan.categoryName}으로 떠나시는군요 !
       </h1>
       <p
         className="
@@ -123,7 +129,7 @@ export default function Step3() {
           flex-wrap
         "
       >
-        <Calender />
+        <Calender setSelectData={setSelectData} />
       </motion.div>
     </>
   );

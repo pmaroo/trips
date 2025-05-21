@@ -8,7 +8,7 @@ export interface UserDTO {
   userName: string;
   nickName: string;
   type: string;
-  Plan: PlanDTO[];
+  Plan?: PlanDTO[];
   isAdmin: boolean;
   isDelete: boolean;
   reason?: string;

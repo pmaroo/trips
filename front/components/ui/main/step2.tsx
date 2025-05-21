@@ -1,11 +1,12 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
 import { useStepStore } from "@store/frontStore";
+import { usePlanStore } from "@store/planStore";
+import { CategoryDTO } from "@/types/category";
 import { motion } from "framer-motion";
 
-export default function Step2(data: { categorys: string[] }) {
+export default function Step2({ categorys }: { categorys: CategoryDTO[] }) {
   const { Button } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
@@ -17,7 +18,8 @@ export default function Step2(data: { categorys: string[] }) {
   // STORE
   //////////////////////////////////////////////////////////////
 
-  const stepStore = useStepStore();
+  const stepStore = useStepStore((state) => state);
+  const planStore = usePlanStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -32,7 +34,12 @@ export default function Step2(data: { categorys: string[] }) {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = (data: string) => {
+  const stepHandler = (data: CategoryDTO) => {
+    planStore.setPlan({
+      // region: planStore.plan.region,
+      CategoryId: data.id,
+      categoryName: data.name,
+    });
     stepStore.setStep(2);
   };
   //////////////////////////////////////////////////////////////
@@ -45,18 +52,18 @@ export default function Step2(data: { categorys: string[] }) {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
           sm:text-[50px]
         "
       >
-        대구광역시로
+        {planStore && planStore.plan.region}로
       </h1>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -102,21 +109,22 @@ export default function Step2(data: { categorys: string[] }) {
           flex-wrap
         "
       >
-        {data.categorys.map((data, idx) => {
-          return (
-            <Button
-              key={idx}
-              className="
-                mr-[5px]
-                mb-[5px]
-              "
-              onClick={() => stepHandler(data)}
-              variant="outline"
-            >
-              {data}
-            </Button>
-          );
-        })}
+        {categorys &&
+          categorys.map((data, idx) => {
+            return (
+              <Button
+                className="
+                  mr-[5px]
+                  mb-[5px]
+                "
+                onClick={() => stepHandler(data)}
+                variant="outline"
+                key={data.id}
+              >
+                {data.name}
+              </Button>
+            );
+          })}
       </motion.div>
     </>
   );

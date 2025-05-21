@@ -41,7 +41,7 @@ export function Menu({ items }) {
                   className={
                     path === "/admin"
                       ? "text-[hsl(var(--point))] font-[700]"
-                      : "text-[hsl(var(--foreground))]"
+                      : "text-[[hsl(var(--foreground))]]"
                   }
                 >
                   홈

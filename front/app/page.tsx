@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import ClientPage from "./clientPage";
 import { NextApiRequest, NextApiResponse } from "next";
+import { cookies } from "next/headers";
+import axios from "@node_modules/axios";
+import { CategoryDTO, UpdateCategory } from "@/types/category";
 // import { useRouter } from "@node_modules/next/router";
 
 // posts는 빌드시점에 getStaticProps()에 의해 채워짐
@@ -20,13 +23,22 @@ export default async function Page(req: NextApiRequest, res: NextApiResponse) {
   // 직관적으로 변경
   // const res = await fetch("", { cache: "force-cache" });
   // const post = await res.json();
-  const post = await "aa";
+  const apiClient = axios.create({
+    baseURL: "http://localhost:8080/api", // api 주소
+    headers: { "content-Type": "application/json" },
+    withCredentials: true, // ✅ 쿠키 포함 요청
+  });
 
-  if (!post) return notFound();
+  const categoryList = async () => {
+    const { data } = await apiClient.post("/category");
 
+    return data;
+  };
+
+  const categoryData: CategoryDTO[] = await categoryList();
   return (
     <>
-      <ClientPage />
+      <ClientPage categoryData={categoryData} />
     </>
   );
 }

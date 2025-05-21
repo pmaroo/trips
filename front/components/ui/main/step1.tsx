@@ -1,8 +1,9 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
+import { useMeState } from "@store/commonStore";
 import { useStepStore } from "@store/frontStore";
+import { usePlanStore } from "@store/planStore";
 import { motion } from "framer-motion";
 
 export default function Step1(data: { koreanRegions: string[] }) {
@@ -17,7 +18,9 @@ export default function Step1(data: { koreanRegions: string[] }) {
   // STORE
   //////////////////////////////////////////////////////////////
 
-  const stepStore = useStepStore();
+  const stepStore = useStepStore((state) => state);
+  const planStore = usePlanStore((state) => state);
+  const meStore = useMeState((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -32,7 +35,8 @@ export default function Step1(data: { koreanRegions: string[] }) {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = (data: string) => {
+  const stepHandler = async (data: string) => {
+    await planStore.setPlan({ region: data });
     stepStore.setStep(1);
   };
   //////////////////////////////////////////////////////////////
@@ -45,7 +49,7 @@ export default function Step1(data: { koreanRegions: string[] }) {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -57,7 +61,7 @@ export default function Step1(data: { koreanRegions: string[] }) {
       <h1
         className="
           text-center
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -65,7 +69,7 @@ export default function Step1(data: { koreanRegions: string[] }) {
           sm:text-[50px]
         "
       >
-        박은비님의 여행비서,
+        {meStore.me && meStore.me.userName}님의 여행비서,
         <br
           className="
             flex

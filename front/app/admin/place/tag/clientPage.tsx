@@ -13,7 +13,6 @@ import {
 import { useReactTable } from "@tanstack/react-table";
 import Components from "../../../../components/shadcn";
 import { useForm } from "react-hook-form";
-import { PlusCircle } from "@node_modules/@deemlol/next-icons/build";
 import { useCreateTagForm, useUpdateTagForm } from "@hooks/form/useTagForm";
 import { CreateTag, DeleteTag, TagDTO, UpdateTag } from "../../../../types/tag";
 import {
@@ -22,6 +21,7 @@ import {
   useTagList,
   useUpdateTag,
 } from "@hooks/reactQuery/useTag";
+import { PlusCircle } from "lucide-react";
 
 // const data: PlanDTO[] = Array.from({ length: 100 }, (_, i) => ({
 //   id: i + 1,
@@ -415,7 +415,9 @@ export default function ClientPage(data) {
                     >
                       <Button
                         type="submit"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                         variant="destructive"
                       >
                         삭제하기
@@ -463,7 +465,9 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog
             open={isCreate}
@@ -485,7 +489,7 @@ export default function ClientPage(data) {
                 "
                 tabIndex={-1}
               >
-                <PlusCircle size={16} /> 태그
+                <PlusCircle /> 태그
               </Button>
             </DialogTrigger>
             <DialogPortal>
@@ -545,7 +549,13 @@ export default function ClientPage(data) {
         </li>
       </ul>
       <article
-        className="flex flex-col items-center justify-start  size-full"
+        className="
+          flex
+          flex-col
+          items-center
+          justify-start
+          size-full
+        "
       >
         <DragTable<TagDTO>
           table={table}

@@ -45,3 +45,8 @@ export const logoutUser = async (userData: LogoutUser) => {
   const { data } = await apiClient.post("/logout", userData);
   return data;
 };
+
+export const getUser = async (id: string) => {
+  const { data } = await apiClient.get(`/${id}`);
+  return data;
+};

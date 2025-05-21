@@ -1,15 +1,14 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
 import { useState } from "react";
 import { useStepStore } from "@store/frontStore";
 import { motion } from "framer-motion";
-import { addDays } from "@node_modules/date-fns/addDays";
-import { ko } from "date-fns/locale";
+
 import Car from "@components/svg/car";
 import Bus from "@components/svg/bus";
 import useDeviceSize from "@hooks/useDeviceSize";
+import { usePlanStore } from "@store/planStore";
 
 export default function Step4() {
   const { Button } = Components;
@@ -26,6 +25,7 @@ export default function Step4() {
   //////////////////////////////////////////////////////////////
 
   const stepStore = useStepStore();
+  const planStore = usePlanStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -40,7 +40,10 @@ export default function Step4() {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = () => {
+  const stepHandler = async (data: string) => {
+    await planStore.setPlan({
+      traffic: data,
+    });
     stepStore.setStep(4);
   };
   //////////////////////////////////////////////////////////////
@@ -53,18 +56,21 @@ export default function Step4() {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
           sm:text-[50px]
         "
       >
-        1월 20일 ~ 1월 25일에
+        {planStore && planStore.plan.date[0].month}월{" "}
+        {planStore && planStore.plan.date[0].day}일 ~{" "}
+        {planStore && planStore.plan.date[1].month}월{" "}
+        {planStore && planStore.plan.date[1].day}일에
       </h1>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -126,9 +132,9 @@ export default function Step4() {
             duration-500
             cursor-pointer
             sm:h-[300px]
-            hover:bg-[--lightGrey]
+            hover:bg-[hsl(var(--border))]
           "
-          onClick={stepHandler}
+          onClick={() => stepHandler("차량")}
         >
           <Car width={isMobile ? "40" : "84"} height={isMobile ? "35" : "88"} />
           <p
@@ -156,9 +162,9 @@ export default function Step4() {
             duration-500
             cursor-pointer
             sm:h-[300px]
-            hover:bg-[--lightGrey]
+            hover:bg-[hsl(var(--border))]
           "
-          onClick={stepHandler}
+          onClick={() => stepHandler("대중교통")}
         >
           <Bus width={isMobile ? "40" : "84"} height={isMobile ? "35" : "88"} />
           <p

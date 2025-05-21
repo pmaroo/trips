@@ -2,27 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  AirPlane,
-  AlarmClock,
-  Briefcase,
-  Calendar,
-  CheckCircle,
-  House,
-  Info,
-  Menu,
-  PlusCircle,
-  Repeat,
-  Settings,
-  Truck,
-  XCircle,
-} from "@node_modules/@deemlol/next-icons/build";
+
 import HashTag from "@components/ui/hash";
-import Bus from "@components/svg/bus";
 import Car from "@components/svg/car";
 import Components from "@components/shadcn";
 import UpdateCalender from "@components/ui/updateCalender";
-import DaumPostcodeEmbed from "react-daum-postcode";
 import { useUpdatePlaceForm } from "@hooks/form/usePlaceForm";
 import {
   DndContext,
@@ -40,6 +24,17 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import useDeviceSize from "@hooks/useDeviceSize";
+import {
+  Calendar,
+  CheckCircle,
+  Info,
+  Menu,
+  Plane,
+  PlusCircle,
+  Repeat,
+  Settings,
+  XCircle,
+} from "lucide-react";
 
 const SortableItem = ({ id, index }: { id: string; index: number }) => {
   const {
@@ -97,7 +92,7 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
             rounded-[5px]
             w-[20px]
             bg-[--main]
-            text-[--white]
+            text-[hsl(var(--background))]
             text-[12px]
             mr-[10px]
             absolute
@@ -147,7 +142,7 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
                   className="
                     text-[14px]
                     font-[700]
-                    text-[--black]
+                    text-[hsl(var(--foreground))]
                   "
                 >
                   대전 마루집
@@ -185,7 +180,7 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
               <Select>
                 <SelectTrigger
                   className="
-                    bg-[--white]
+                    bg-[hsl(var(--background))]
                     h-[30px]
                   "
                 >
@@ -295,54 +290,54 @@ export default function ClientPage() {
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    const container = document.getElementById("map");
-    const options = {
-      center: new kakao.maps.LatLng(37.5665, 126.978),
-      level: 5,
-    };
-    const map = new kakao.maps.Map(container, options);
+  // useEffect(() => {
+  //   const container = document.getElementById("map");
+  //   const options = {
+  //     center: new kakao.maps.LatLng(37.5665, 126.978),
+  //     level: 5,
+  //   };
+  //   const map = new kakao.maps.Map(container, options);
 
-    // 첫 번째 선 (빨간색)
-    const path1 = [
-      new kakao.maps.LatLng(37.5665, 126.978), // 서울시청
-      new kakao.maps.LatLng(37.57, 126.983), // 광화문
-    ];
+  //   // 첫 번째 선 (빨간색)
+  //   const path1 = [
+  //     new kakao.maps.LatLng(37.5665, 126.978), // 서울시청
+  //     new kakao.maps.LatLng(37.57, 126.983), // 광화문
+  //   ];
 
-    const polyline1 = new kakao.maps.Polyline({
-      path: path1,
-      strokeWeight: 5,
-      strokeColor: "#FF0000", // 빨간색
-      strokeOpacity: 0.8,
-      strokeStyle: "solid",
-    });
+  //   const polyline1 = new kakao.maps.Polyline({
+  //     path: path1,
+  //     strokeWeight: 5,
+  //     strokeColor: "#FF0000", // 빨간색
+  //     strokeOpacity: 0.8,
+  //     strokeStyle: "solid",
+  //   });
 
-    polyline1.setMap(map);
+  //   polyline1.setMap(map);
 
-    // 두 번째 선 (파란색)
-    const path2 = [
-      new kakao.maps.LatLng(37.57, 126.983), // 광화문
-      new kakao.maps.LatLng(37.5744, 126.9575), // 독립문
-    ];
+  //   // 두 번째 선 (파란색)
+  //   const path2 = [
+  //     new kakao.maps.LatLng(37.57, 126.983), // 광화문
+  //     new kakao.maps.LatLng(37.5744, 126.9575), // 독립문
+  //   ];
 
-    const polyline2 = new kakao.maps.Polyline({
-      path: path2,
-      strokeWeight: 5,
-      strokeColor: "#0000FF", // 파란색
-      strokeOpacity: 0.8,
-      strokeStyle: "solid",
-    });
+  //   const polyline2 = new kakao.maps.Polyline({
+  //     path: path2,
+  //     strokeWeight: 5,
+  //     strokeColor: "#0000FF", // 파란색
+  //     strokeOpacity: 0.8,
+  //     strokeStyle: "solid",
+  //   });
 
-    polyline2.setMap(map);
+  //   polyline2.setMap(map);
 
-    // 마커들 (선택)
-    [...path1, path2[1]].forEach((pos) => {
-      new kakao.maps.Marker({
-        position: pos,
-        map,
-      });
-    });
-  }, []);
+  //   // 마커들 (선택)
+  //   [...path1, path2[1]].forEach((pos) => {
+  //     new kakao.maps.Marker({
+  //       position: pos,
+  //       map,
+  //     });
+  //   });
+  // }, []);
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
@@ -399,7 +394,7 @@ export default function ClientPage() {
               left-0
               w-[300px]
               py-[30px]
-              bg-[--white]
+              bg-[hsl(var(--background))]
               px-[20px]
               z-[100]
               shadow-lg
@@ -428,7 +423,7 @@ export default function ClientPage() {
                 <Tooltip>
                   <TooltipTrigger>
                     <p>
-                      <Info size={16} />
+                      <Info />
                     </p>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -521,7 +516,7 @@ export default function ClientPage() {
                         className="
                           text-[14px]
                           font-[700]
-                          text-[--black]
+                          text-[hsl(var(--foreground))]
                         "
                       >
                         대전 마루집
@@ -552,7 +547,7 @@ export default function ClientPage() {
                   "
                   onClick={addressToggle}
                 >
-                  <PlusCircle size={16} />
+                  <PlusCircle />
                 </motion.p>
               </div>
             </div>
@@ -609,7 +604,7 @@ export default function ClientPage() {
                       mr-[5px]
                     "
                   >
-                    <AirPlane size={20} />
+                    <Plane />
                   </div>
                   <div>
                     <h1
@@ -652,7 +647,7 @@ export default function ClientPage() {
                   "
                   onClick={updateToggle}
                 >
-                  <CheckCircle size={24} />
+                  <CheckCircle />
                 </motion.li>
               ) : (
                 <motion.li
@@ -670,7 +665,7 @@ export default function ClientPage() {
                   "
                   onClick={updateToggle}
                 >
-                  <Settings size={24} />
+                  <Settings />
                 </motion.li>
               )}
             </ul>
@@ -795,7 +790,7 @@ export default function ClientPage() {
                         font-normal
                       "
                     >
-                      <Calendar size={24} />
+                      <Calendar />
                       <span>2025-05-30</span>
                     </Button>
                   </PopoverTrigger>
@@ -847,7 +842,7 @@ export default function ClientPage() {
                     rounded-[10px]
                     size-[20px]
                     bg-[--main3]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                   "
@@ -990,7 +985,7 @@ export default function ClientPage() {
                       rounded-[5px]
                       w-[20px]
                       bg-[--main]
-                      text-[--white]
+                      text-[hsl(var(--background))]
                       text-[12px]
                       mr-[10px]
                       absolute
@@ -1158,7 +1153,7 @@ export default function ClientPage() {
                     rounded-[5px]
                     w-[20px]
                     bg-[--main]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                     absolute
@@ -1325,7 +1320,7 @@ export default function ClientPage() {
                     rounded-[5px]
                     w-[20px]
                     bg-[--main]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                     absolute
@@ -1491,7 +1486,7 @@ export default function ClientPage() {
                     rounded-[10px]
                     size-[20px]
                     bg-[--main3]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                   "
@@ -1638,7 +1633,7 @@ export default function ClientPage() {
                     rounded-[10px]
                     size-[20px]
                     bg-[--main3]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                   "
@@ -1915,7 +1910,7 @@ export default function ClientPage() {
                       rounded-[5px]
                       w-[20px]
                       bg-[--main2]
-                      text-[--white]
+                      text-[hsl(var(--background))]
                       text-[12px]
                       mr-[10px]
                       absolute
@@ -2083,7 +2078,7 @@ export default function ClientPage() {
                     rounded-[5px]
                     w-[20px]
                     bg-[--main2]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                     absolute
@@ -2250,7 +2245,7 @@ export default function ClientPage() {
                     rounded-[5px]
                     w-[20px]
                     bg-[--main2]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                     absolute
@@ -2416,7 +2411,7 @@ export default function ClientPage() {
                     rounded-[10px]
                     size-[20px]
                     bg-[--main3]
-                    text-[--white]
+                    text-[hsl(var(--background))]
                     text-[12px]
                     mr-[10px]
                   "

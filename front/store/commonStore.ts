@@ -78,3 +78,18 @@ export const useLatLongState = create<LatLongState>((set) => ({
   setLatLong: (data) => set({ ...data }),
   clearLatLong: () => set({ lat: null, long: null }),
 }));
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+interface ThemeState {
+  theme: boolean;
+  setTheme: (theme: boolean) => void;
+  clearTheme: () => void;
+}
+
+export const useThemeStore = create<ThemeState>((set) => ({
+  theme: false,
+  setTheme: (theme) => set({ theme }),
+  clearTheme: () => set({ theme: null }),
+}));

@@ -15,7 +15,6 @@ import Providers from "@components/layout/providers";
 import Components from "@components/shadcn";
 import { cookies } from "next/headers";
 import axios from "axios";
-import { JwtUserDTO } from "../types/user";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -37,6 +36,8 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("jwt")?.value;
   const refreshToken = cookieStore.get("refresh")?.value;
+  const kakaoAccessToken = cookieStore.get("kakao_access")?.value;
+  const kakaoRefreshToken = cookieStore.get("kakao_refresh")?.value;
 
   const apiClient = axios.create({
     baseURL: "http://localhost:8080/api/auth", // api 주소

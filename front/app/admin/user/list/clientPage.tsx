@@ -17,7 +17,7 @@ import {
   UserDTO,
 } from "../../../../types/user";
 import { DragHandle, DragTable } from "@components/admin/table";
-import { PlusCircle } from "@deemlol/next-icons";
+
 import {
   useAdminUser,
   useCreateUser,
@@ -29,6 +29,7 @@ import {
   useExitUserForm,
   useUpdateUserForm,
 } from "../../../../hooks/form/useUserForm";
+import { PlusCircle } from "lucide-react";
 
 export default function ClientPage(data) {
   const {
@@ -492,7 +493,9 @@ export default function ClientPage(data) {
                       <Button
                         variant="destructive"
                         type="submit"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                       >
                         탈퇴하기
                       </Button>
@@ -532,7 +535,12 @@ export default function ClientPage(data) {
 
   return (
     <article
-      className="flex flex-col items-end justify-center "
+      className="
+        flex
+        flex-col
+        justify-center
+        items-end
+      "
     >
       <ul
         className="
@@ -545,7 +553,9 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog open={isCreate} onOpenChange={() => setIsCreate(!isCreate)}>
             <DialogTrigger asChild>

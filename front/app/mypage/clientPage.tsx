@@ -1,13 +1,7 @@
 "use client";
 
 import Components from "@components/shadcn";
-import {
-  AirPlane,
-  AlarmClock,
-  Briefcase,
-  House,
-  Truck,
-} from "@node_modules/@deemlol/next-icons/build";
+import { AlarmClock, Briefcase, Car, House, Plane } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CleintPage() {
@@ -128,7 +122,7 @@ export default function CleintPage() {
                       justify-center
                       px-[10px]
                       size-auto
-                      text-[--white]
+                      text-[hsl(var(--background))]
                       font-[700]
                       bg-[--main]
                       rounded-[5px]
@@ -149,9 +143,10 @@ export default function CleintPage() {
                     <li
                       className="
                         mr-[5px]
+                        text-[hsl(var(--background))]
                       "
                     >
-                      <AirPlane size={24} color="#FFFFFF" />
+                      <Plane />
                     </li>
                     <li>
                       <h1
@@ -160,7 +155,7 @@ export default function CleintPage() {
                           text-[--lightGrey2]
                           font-[700]
                           duration-500
-                          hover:text-[--white]
+                          hover:text-[hsl(var(--background))]
                         "
                       >
                         대전광역시
@@ -179,9 +174,10 @@ export default function CleintPage() {
                     <li
                       className="
                         mr-[5px]
+                        text-[hsl(var(--background))]
                       "
                     >
-                      <Briefcase size={16} color="#FFFFFF" />
+                      <Briefcase />
                     </li>
                     <li>
                       <h1
@@ -189,7 +185,7 @@ export default function CleintPage() {
                           text-[14px]
                           text-[--lightGrey2]
                           duration-500
-                          hover:text-[--white]
+                          hover:text-[hsl(var(--background))]
                         "
                       >
                         커플여행
@@ -208,9 +204,10 @@ export default function CleintPage() {
                     <li
                       className="
                         mr-[5px]
+                        text-[hsl(var(--background))]
                       "
                     >
-                      <Truck size={16} color="#FFFFFF" />
+                      <Car />
                     </li>
                     <li>
                       <h1
@@ -218,7 +215,7 @@ export default function CleintPage() {
                           text-[14px]
                           text-[--lightGrey2]
                           duration-500
-                          hover:text-[--white]
+                          hover:text-[hsl(var(--background))]
                         "
                       >
                         차량
@@ -238,9 +235,10 @@ export default function CleintPage() {
                       className="
                         mr-[5px]
                         mt-[3px]
+                        text-[hsl(var(--background))]
                       "
                     >
-                      <AlarmClock size={16} color="#FFFFFF" />
+                      <AlarmClock />
                     </li>
                     <li>
                       <h1
@@ -248,7 +246,7 @@ export default function CleintPage() {
                           text-[14px]
                           text-[--lightGrey2]
                           duration-500
-                          hover:text-[--white]
+                          hover:text-[hsl(var(--background))]
                         "
                       >
                         2025년1월25일
@@ -268,9 +266,10 @@ export default function CleintPage() {
                     <li
                       className="
                         mr-[5px]
+                        text-[hsl(var(--background))]
                       "
                     >
-                      <House size={16} color="#fff" />
+                      <House />
                     </li>
                     <li>
                       <h1
@@ -278,7 +277,7 @@ export default function CleintPage() {
                           text-[14px]
                           text-[--lightGrey2]
                           duration-500
-                          hover:text-[--white]
+                          hover:text-[hsl(var(--background))]
                         "
                       >
                         숙소 ~ 50,000원

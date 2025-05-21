@@ -1,15 +1,7 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
-import { useState } from "react";
-import { useStepStore } from "@store/frontStore";
-import { motion } from "framer-motion";
-import { addDays } from "@node_modules/date-fns/addDays";
-import { ko } from "date-fns/locale";
-import Car from "@components/svg/car";
-import Bus from "@components/svg/bus";
-
+import { useMeState } from "@store/commonStore";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 export default function Step6() {
@@ -24,6 +16,8 @@ export default function Step6() {
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
+
+  const meStore = useMeState((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -48,7 +42,7 @@ export default function Step6() {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -61,7 +55,7 @@ export default function Step6() {
       <h1
         className="
           text-center
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -69,7 +63,7 @@ export default function Step6() {
           sm:text-[50px]
         "
       >
-        박은비님의 여행일정을{" "}
+        {meStore && meStore.me.userName}님의 여행일정을{" "}
         <br
           className="
             flex
@@ -88,11 +82,11 @@ export default function Step6() {
         최적의 여행 일정을 AI마루가 계획중입니다.
       </p>
 
-      {/* <DotLottieReact
+      <DotLottieReact
         src="https://lottie.host/2d553345-1f87-4bdb-917f-ca2db66781bd/ZT8Wjzhcvy.lottie"
         loop
         autoplay
-      /> */}
+      />
     </>
   );
 }

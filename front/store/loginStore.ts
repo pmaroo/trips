@@ -1,9 +1,8 @@
-import { KakaoDTO } from "@/types/login";
 import { create } from "zustand";
 
 interface KakaoState {
-  profile: KakaoDTO | null;
-  setProfile: (profile: KakaoDTO) => void;
+  profile: string | null;
+  setProfile: (profile: string) => void;
   clearProfile: () => void;
 }
 

@@ -5,18 +5,24 @@ import Components from "@components/shadcn";
 import { Kakao } from "./login/kakao";
 import { Naver } from "./login/naver";
 import { Google } from "./login/google";
-import {
-  AirPlane,
-  AlarmClock,
-  Briefcase,
-  House,
-  PlusCircle,
-  Truck,
-} from "@node_modules/@deemlol/next-icons/build";
+
 import { useEffect, useState } from "react";
 import { useMeState } from "@store/commonStore";
 import axios from "axios";
 import { useKakaoStore } from "@store/loginStore";
+import {
+  useAdminLoginUser,
+  useAdminUser,
+  useLoginUser,
+} from "@hooks/reactQuery/useUser";
+import {
+  AlarmClock,
+  Briefcase,
+  CarFront,
+  House,
+  Plane,
+  PlusCircle,
+} from "lucide-react";
 
 export default function Main(data: {
   isStart: boolean;
@@ -39,14 +45,18 @@ export default function Main(data: {
   // STATE
   //////////////////////////////////////////////////////////////
   const [isCreate, setIsCreate] = useState<boolean>(false);
-  //////////////////////////////////////////////////////////////
-  // HOOK
-  //////////////////////////////////////////////////////////////
+
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
   const meStore = useMeState();
   const kakaoStore = useKakaoStore();
+  //////////////////////////////////////////////////////////////
+  // HOOK
+  //////////////////////////////////////////////////////////////
+
+  const loginUser = useLoginUser(meStore.me && meStore.me.id.toString());
+
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
@@ -59,7 +69,16 @@ export default function Main(data: {
 
       const { type, payload } = event.data;
       if (type === "KAKAO_AUTH_SUCCESS") {
-        kakaoStore.setProfile(payload); // 예: access_token 저장
+        fetch("http://localhost:8080/api/auth/kakao", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: payload.code }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            // 로그인 처리 (토큰 저장, 리디렉션 등)
+          });
       }
     };
 
@@ -71,7 +90,11 @@ export default function Main(data: {
   // TOGGLE
   //////////////////////////////////////////////////////////////
   const createToggle = () => {
-    setIsCreate(!isCreate);
+    if (loginUser.data && loginUser.data.Plan.length === 0) {
+      data.startToggle();
+    } else {
+      setIsCreate(!isCreate);
+    }
   };
   //////////////////////////////////////////////////////////////
   // HANDLER
@@ -92,6 +115,10 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
+  if (meStore.me && !loginUser.data) {
+    return;
+  }
+
   return (
     <motion.article
       className="
@@ -103,8 +130,8 @@ export default function Main(data: {
         fixed
         top-[0]
         left-[0]
-        bg-[--white]
-        z-[10]
+        bg-[hsl(var(--background))]
+        z-[20]
       "
       initial={{ y: 0 }}
       animate={{ y: data.isStart ? `-100%` : 0 }}
@@ -140,6 +167,20 @@ export default function Main(data: {
       >
         언제 어디든 일정계획 맡겨만 주세요.
       </p>
+
+      {/* <p
+        onClick={() => {
+          console.log("로그아웃");
+          fetch("https://kapi.kakao.com/v2/user/me", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer 1TtCZhjuhtlOR64PR9SowkZIsE1_4CrPAAAAAQoNIpkAAAGW8UQbbIE8pQXSEbh1`,
+            },
+          });
+        }}
+      >
+        로그아웃
+      </p> */}
 
       <Dialog open={isCreate} onOpenChange={createToggle}>
         <DialogTrigger asChild>
@@ -207,7 +248,7 @@ export default function Main(data: {
                   data.startToggle();
                 }}
               >
-                <PlusCircle size={30} />
+                <PlusCircle />
                 <p
                   className="
                     mt-[10px]
@@ -233,194 +274,200 @@ export default function Main(data: {
                 "
               >
                 <CarouselContent>
-                  {Array.from({ length: 8 }).map((_, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="
-                        px-[20px]
-                        basis-[calc(100%/2.5)]
-                        cursor-pointer
-                        group
-                      "
-                    >
-                      <motion.div
+                  {loginUser.data &&
+                    loginUser.data.Plan.map((_, index) => (
+                      <CarouselItem
+                        key={index}
                         className="
-                          w-full
-                          h-[300px]
-                          rounded-[10px]
-                          relative
-                          overflow-hidden
-                          border
-                          border-[--lightGrey]
-                          shadow-lg
-                          bg-[url(/daejeon.png)]
+                          px-[20px]
+                          basis-[calc(100%/2.5)]
+                          cursor-pointer
+                          group
                         "
                       >
-                        <div
+                        <motion.div
                           className="
-                            flex
-                            flex-col
-                            items-start
-                            justify-start
-                            bg-[rgba(0,0,0,0.3)]
-                            size-full
-                            p-[20px]
-                            duration-500
-                            hover:bg-[rgba(0,0,0,0.6)]
+                            w-full
+                            h-[300px]
+                            rounded-[10px]
+                            relative
+                            overflow-hidden
+                            border
+                            border-[--lightGrey]
+                            shadow-lg
+                            bg-[url(/daejeon.png)]
                           "
                         >
-                          <ul
+                          <div
                             className="
                               flex
-                              flex-row
-                              items-center
-                              justify-start
-                              mb-[10px]
-                            "
-                          >
-                            <li
-                              className="
-                                mr-[5px]
-                              "
-                            >
-                              <AirPlane size={24} color="#FFFFFF" />
-                            </li>
-                            <li>
-                              <h1
-                                className="
-                                  text-[20px]
-                                  text-[--lightGrey2]
-                                  font-[700]
-                                  duration-500
-                                  hover:text-[--white]
-                                "
-                              >
-                                대전광역시
-                              </h1>
-                            </li>
-                          </ul>
-                          <ul
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              mb-[5px]
-                            "
-                          >
-                            <li
-                              className="
-                                mr-[5px]
-                              "
-                            >
-                              <Briefcase size={16} color="#FFFFFF" />
-                            </li>
-                            <li>
-                              <h1
-                                className="
-                                  text-[14px]
-                                  text-[--lightGrey2]
-                                  duration-500
-                                  hover:text-[--white]
-                                "
-                              >
-                                커플여행
-                              </h1>
-                            </li>
-                          </ul>
-                          <ul
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              mb-[5px]
-                            "
-                          >
-                            <li
-                              className="
-                                mr-[5px]
-                              "
-                            >
-                              <Truck size={16} color="#FFFFFF" />
-                            </li>
-                            <li>
-                              <h1
-                                className="
-                                  text-[14px]
-                                  text-[--lightGrey2]
-                                  duration-500
-                                  hover:text-[--white]
-                                "
-                              >
-                                차량
-                              </h1>
-                            </li>
-                          </ul>
-                          <ul
-                            className="
-                              flex
-                              flex-row
+                              flex-col
                               items-start
                               justify-start
-                              mb-[5px]
+                              bg-[rgba(0,0,0,0.3)]
+                              size-full
+                              p-[20px]
+                              duration-500
+                              hover:bg-[rgba(0,0,0,0.6)]
                             "
                           >
-                            <li
+                            <ul
                               className="
-                                mr-[5px]
-                                mt-[3px]
+                                flex
+                                flex-row
+                                items-center
+                                justify-start
+                                mb-[10px]
                               "
                             >
-                              <AlarmClock size={16} color="#FFFFFF" />
-                            </li>
-                            <li>
-                              <h1
+                              <li
                                 className="
-                                  text-[14px]
-                                  text-[--lightGrey2]
-                                  duration-500
-                                  hover:text-[--white]
+                                  mr-[5px]
+                                  text-[hsl(var(--foreground))]
                                 "
                               >
-                                2025년1월25일
-                                <br />~ 2025년2월20일
-                              </h1>
-                            </li>
-                          </ul>
-                          <ul
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              mb-[5px]
-                            "
-                          >
-                            <li
+                                <Plane />
+                              </li>
+                              <li>
+                                <h1
+                                  className="
+                                    text-[20px]
+                                    text-[--lightGrey2]
+                                    font-[700]
+                                    duration-500
+                                    hover:text-[hsl(var(--background))]
+                                  "
+                                >
+                                  대전광역시
+                                </h1>
+                              </li>
+                            </ul>
+                            <ul
                               className="
-                                mr-[5px]
+                                flex
+                                flex-row
+                                items-center
+                                justify-start
+                                mb-[5px]
                               "
                             >
-                              <House size={16} color="#fff" />
-                            </li>
-                            <li>
-                              <h1
+                              <li
                                 className="
-                                  text-[14px]
-                                  text-[--lightGrey2]
-                                  duration-500
-                                  hover:text-[--white]
+                                  mr-[5px]
+                                  text-[hsl(var(--foreground))]
                                 "
                               >
-                                숙소 ~ 50,000원
-                              </h1>
-                            </li>
-                          </ul>
-                        </div>
-                      </motion.div>
-                    </CarouselItem>
-                  ))}
+                                <Briefcase />
+                              </li>
+                              <li>
+                                <h1
+                                  className="
+                                    text-[14px]
+                                    text-[--lightGrey2]
+                                    duration-500
+                                    hover:text-[hsl(var(--background))]
+                                  "
+                                >
+                                  커플여행
+                                </h1>
+                              </li>
+                            </ul>
+                            <ul
+                              className="
+                                flex
+                                flex-row
+                                items-center
+                                justify-start
+                                mb-[5px]
+                              "
+                            >
+                              <li
+                                className="
+                                  mr-[5px]
+                                  text-[hsl(var(--foreground))]
+                                "
+                              >
+                                <CarFront />
+                              </li>
+                              <li>
+                                <h1
+                                  className="
+                                    text-[14px]
+                                    text-[--lightGrey2]
+                                    duration-500
+                                    hover:text-[hsl(var(--background))]
+                                  "
+                                >
+                                  차량
+                                </h1>
+                              </li>
+                            </ul>
+                            <ul
+                              className="
+                                flex
+                                flex-row
+                                items-start
+                                justify-start
+                                mb-[5px]
+                              "
+                            >
+                              <li
+                                className="
+                                  mr-[5px]
+                                  mt-[3px]
+                                  text-[hsl(var(--foreground))]
+                                "
+                              >
+                                <AlarmClock />
+                              </li>
+                              <li>
+                                <h1
+                                  className="
+                                    text-[14px]
+                                    text-[--lightGrey2]
+                                    duration-500
+                                    hover:text-[hsl(var(--background))]
+                                  "
+                                >
+                                  2025년1월25일
+                                  <br />~ 2025년2월20일
+                                </h1>
+                              </li>
+                            </ul>
+                            <ul
+                              className="
+                                flex
+                                flex-row
+                                items-center
+                                justify-start
+                                mb-[5px]
+                              "
+                            >
+                              <li
+                                className="
+                                  mr-[5px]
+                                  text-[hsl(var(--foreground))]
+                                "
+                              >
+                                <House />
+                              </li>
+                              <li>
+                                <h1
+                                  className="
+                                    text-[14px]
+                                    text-[--lightGrey2]
+                                    duration-500
+                                    hover:text-[hsl(var(--background))]
+                                  "
+                                >
+                                  숙소 ~ 50,000원
+                                </h1>
+                              </li>
+                            </ul>
+                          </div>
+                        </motion.div>
+                      </CarouselItem>
+                    ))}
                 </CarouselContent>
                 <CarouselPrevious
                   className="

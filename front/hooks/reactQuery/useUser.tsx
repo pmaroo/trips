@@ -5,6 +5,7 @@ import {
   adminUserList,
   createAdminUser,
   exitUser,
+  getUser,
   logoutUser,
   updateUser,
 } from "@lib/api/user.api";
@@ -124,5 +125,13 @@ export const useLogoutUser = (onSuccessCallback: () => void) => {
     onError: (error: any) => {
       toast(error?.response.data.message);
     },
+  });
+};
+
+// 회원정보 가져오기
+export const useLoginUser = (id: string) => {
+  return useQuery<UserDTO>({
+    queryKey: ["getUser", id],
+    queryFn: () => getUser(id),
   });
 };

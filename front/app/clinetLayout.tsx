@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Header from "../components/layout/header";
-import Footer from "../components/layout/footer";
 import { usePathname } from "next/navigation";
 import Layout from "../components/admin/layout";
 import Components from "../components/shadcn";
@@ -11,7 +10,7 @@ import { ThemeProvider } from "next-themes";
 import { JwtUserDTO } from "../types/user";
 import { useMeState, useTokenState } from "@store/commonStore";
 import Login from "@components/admin/layout/login";
-import axios from "axios";
+import { useKakaoStore } from "@store/loginStore";
 
 export default function ClientLayout({
   children,
@@ -55,6 +54,7 @@ export default function ClientLayout({
 
   const meStore = useMeState((state) => state);
   const tokenStore = useTokenState((state) => state);
+  const kakaoStore = useKakaoStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -195,13 +195,13 @@ export default function ClientLayout({
           )
         ) : (
           <>
-            {/* <header>
+            <header>
               <Header />
-            </header> */}
+            </header>
             <section
               className="
-              overflow-hidden
-            "
+                overflow-hidden
+              "
             >
               {children}
             </section>

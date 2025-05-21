@@ -1,4 +1,5 @@
 import {
+  CategoryDTO,
   CreateCategory,
   DeleteCategory,
   UpdateCategory,
@@ -20,7 +21,7 @@ export const createCategory = async (
   return data;
 };
 
-export const categoryList = async () => {
+export const categoryList = async (): Promise<CategoryDTO> => {
   const { data } = await apiClient.post("/");
   return data;
 };

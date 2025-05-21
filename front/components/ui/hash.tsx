@@ -10,7 +10,7 @@ export default function HashTag(data: { title: string; type: number }) {
         min-w-[60px]
         ${data.type === 1 ? "bg-[--mainPoint]" : "bg-[--main]"}
 
-        ${data.type === 1 ? "text-[--black]" : "text-[--white]"}
+        ${data.type === 1 ? "text-[hsl(var(--foreground))]" : "text-[hsl(var(--background))]"}
         flex
         flex-col
         items-center

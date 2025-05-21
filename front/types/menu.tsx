@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Users } from "@deemlol/next-icons";
+import { MapPinCheck, Users2 } from "lucide-react";
 
 export interface MenuDTO {
   navMain: {
@@ -20,7 +20,7 @@ export const Menus: MenuDTO = {
     {
       title: "회원관리",
       url: "/user",
-      icon: <Users />,
+      icon: <Users2 />,
       isActive: false,
       items: [
         {
@@ -44,7 +44,7 @@ export const Menus: MenuDTO = {
     {
       title: "장소관리",
       url: "/place",
-      icon: <MapPin />,
+      icon: <MapPinCheck />,
       isActive: false,
       items: [
         {

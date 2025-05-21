@@ -1,58 +1,9 @@
 "use client";
 
-import { AirPlain } from "@components/svg/airplain";
-import {
-  Busan,
-  Chungbukdo,
-  Chungnamdo,
-  Daegu,
-  Daejeon,
-  Gangwondo,
-  Geyonggido,
-  Gwangju,
-  Gyeongbukdo,
-  Gyeongnamdo,
-  Jeju,
-  Jeollanamdo,
-  MapLine,
-  MapLine2,
-  Seoul,
-  Ulsan,
-} from "@components/svg/map";
-import {
-  BusanTitle,
-  ChungBukdoTitle,
-  ChungnamdoTitle,
-  DaeguTitle,
-  DaejeonTitle,
-  GangwondoTitle,
-  GwangjuTitle,
-  GyeongbukdoTitle,
-  GyeonggidoTitle,
-  GyeongnamdoTitle,
-  JejuTitle,
-  JeollanamdoTitle,
-  SeoulTitle,
-  UlsanTitle,
-} from "@components/svg/mapTitle";
-import WaveMorph from "@components/ui/waveLine";
-import { Suspense, useContext, useEffect, useRef, useState } from "react";
-import { motion, steps, useAnimation, useInView } from "framer-motion";
-import Sun from "@components/svg/sun";
-import Camera from "@components/svg/camera";
-import Bag from "@components/svg/bag";
-import Camp from "@components/svg/camp";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import Components from "@components/shadcn";
-import { CarouselApi } from "@components/shadcn/components/ui/carousel";
-import Triangle from "@components/svg/triangle";
-import HashTag from "@components/ui/hash";
 import Main from "@components/ui/main";
-import {
-  ChevronLeft,
-  ChevronLeft2,
-} from "@node_modules/@deemlol/next-icons/build";
 import Step1 from "@components/ui/main/step1";
 import { useStepStore } from "@store/frontStore";
 import Step2 from "@components/ui/main/step2";
@@ -62,10 +13,15 @@ import Step5 from "@components/ui/main/step5";
 import Step6 from "@components/ui/main/step6";
 import useDeviceSize from "@hooks/useDeviceSize";
 import { useMeState } from "@store/commonStore";
-import axios from "@node_modules/axios";
 import { useKakaoStore } from "@store/loginStore";
+import { ChevronLeft } from "lucide-react";
+import { CategoryDTO, UpdateCategory } from "@/types/category";
 
-export default function ClientPage() {
+export default function ClientPage({
+  categoryData,
+}: {
+  categoryData: CategoryDTO[];
+}) {
   const { Button, Progress } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
@@ -84,7 +40,6 @@ export default function ClientPage() {
   const stepStore = useStepStore();
   const meStore = useMeState();
   const kakaoStore = useKakaoStore();
-  console.log(meStore);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -127,20 +82,6 @@ export default function ClientPage() {
     "경상북도",
     "경상남도",
     "제주특별자치도",
-  ];
-
-  const categorys = [
-    "가족여행",
-    "커플여행",
-    "관광여행",
-    "우정여행",
-    "홀로여행",
-    "반려동물여행",
-    "랜덤여행",
-    "단체여행",
-    "효도여행",
-    "어린이여행",
-    "기념여행",
   ];
 
   return (
@@ -197,7 +138,7 @@ export default function ClientPage() {
                 cursor-pointer
               "
             >
-              <ChevronLeft size={50} />
+              <ChevronLeft />
             </motion.li>
           </ul>
         </div>
@@ -209,7 +150,7 @@ export default function ClientPage() {
             justify-center
             relative
             size-full
-            bg-[--white]
+            bg-[hsl(var(--background))]
           "
         >
           <motion.li
@@ -226,7 +167,7 @@ export default function ClientPage() {
             "
           >
             {stepStore.step === 0 && <Step1 koreanRegions={koreanRegions} />}
-            {stepStore.step === 1 && <Step2 categorys={categorys} />}
+            {stepStore.step === 1 && <Step2 categorys={categoryData} />}
             {stepStore.step === 2 && <Step3 />}
             {stepStore.step === 3 && <Step4 />}
             {stepStore.step === 4 && <Step5 />}

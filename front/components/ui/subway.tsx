@@ -21,7 +21,7 @@ export default function Subway(data: { title: string }) {
           justify-center
           size-full
           rounded-[50px]
-          bg-[--white]
+          bg-[hsl(var(--background))]
           px-[10px]
         "
       >

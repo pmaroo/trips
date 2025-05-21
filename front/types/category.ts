@@ -1,12 +1,13 @@
 import { PlanDTO } from "./plan";
 import { z } from "zod";
+import { TagDTO } from "./tag";
 
 // TYPE
 export interface CategoryDTO {
   id: number;
   name: string;
-  // Tag: [];
-  // Plan: PlanDTO[];
+  Tag: TagDTO[];
+  Plan: PlanDTO[];
   createdAt: Date;
   updatedAt: Date;
 }

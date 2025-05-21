@@ -10,7 +10,7 @@ export function Naver() {
     <Button
       className="
         bg-[#03C75A]
-        text-[--white]
+        text-[hsl(var(--background))]
         h-[50px]
         hover:bg-[#c2eec7]
       "

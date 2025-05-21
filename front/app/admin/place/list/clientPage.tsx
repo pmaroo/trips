@@ -11,7 +11,7 @@ import {
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
 import Components from "../../../../components/shadcn";
-import { Delete, PlusCircle, XCircle } from "@deemlol/next-icons";
+
 import {
   useCreatePlaceForm,
   useCreatePlaceTagForm,
@@ -37,6 +37,7 @@ import { Theme } from "@components/theme";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { useTagList } from "@hooks/reactQuery/useTag";
 import { toast } from "@node_modules/sonner/dist";
+import { Delete, PlusCircle, XCircle } from "lucide-react";
 
 export default function ClientPage(data) {
   const {
@@ -436,7 +437,12 @@ export default function ClientPage(data) {
                           <FormLabel>주소</FormLabel>
                           <FormControl>
                             <div
-                              className="flex items-center w-full space-x-2 "
+                              className="
+                                flex
+                                items-center
+                                w-full
+                                space-x-2
+                              "
                             >
                               <Input
                                 disabled
@@ -653,7 +659,9 @@ export default function ClientPage(data) {
                     >
                       <Button
                         type="submit"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                         variant="destructive"
                       >
                         삭제하기
@@ -701,7 +709,9 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog
             open={isCreate}
@@ -803,7 +813,11 @@ export default function ClientPage(data) {
                                   <SelectItem
                                     key={data.id}
                                     value={data.tag}
-                                    className="duration-100  // hover:bg-gray-100"
+                                    className="
+                                      duration-100
+                                      //
+                                      hover:bg-gray-100
+                                    "
                                   >
                                     {data.tag}
                                   </SelectItem>
@@ -867,7 +881,12 @@ export default function ClientPage(data) {
                           <FormLabel>주소</FormLabel>
                           <FormControl>
                             <div
-                              className="flex items-center w-full space-x-2 "
+                              className="
+                                flex
+                                items-center
+                                w-full
+                                space-x-2
+                              "
                             >
                               <Input
                                 disabled
@@ -1001,7 +1020,9 @@ export default function ClientPage(data) {
           </Dialog>
         </li>
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog
             open={isTag}
@@ -1073,7 +1094,11 @@ export default function ClientPage(data) {
                                       <SelectItem
                                         key={data.id}
                                         value={data.id.toString()}
-                                        className="duration-100  // hover:bg-gray-100"
+                                        className="
+                                          duration-100
+                                          //
+                                          hover:bg-gray-100
+                                        "
                                       >
                                         {data.name}
                                       </SelectItem>
@@ -1114,7 +1139,11 @@ export default function ClientPage(data) {
                                   <SelectItem
                                     key={data.id}
                                     value={data.tag}
-                                    className="duration-100  // hover:bg-gray-100"
+                                    className="
+                                      duration-100
+                                      //
+                                      hover:bg-gray-100
+                                    "
                                   >
                                     {data.tag}
                                   </SelectItem>
@@ -1180,7 +1209,13 @@ export default function ClientPage(data) {
       </Dialog>
 
       <article
-        className="flex flex-col items-center justify-start  size-full"
+        className="
+          flex
+          flex-col
+          items-center
+          justify-start
+          size-full
+        "
       >
         <DragTable<PlaceDTO>
           table={table}

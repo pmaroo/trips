@@ -6,8 +6,6 @@ import {
   UpdatePlaceTag,
 } from "../types/place";
 
-type PlaceUpdateInput = Parameters<typeof prisma.place.update>[0]["data"];
-
 export const deletePlaceModel = async (data: DeletePlace) => {
   return prisma.place.delete({
     where: { id: data.id },

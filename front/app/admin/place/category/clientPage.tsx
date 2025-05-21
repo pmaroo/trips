@@ -11,7 +11,7 @@ import {
 } from "@tanstack/table-core";
 import { useReactTable } from "@tanstack/react-table";
 import Components from "@components/shadcn";
-import { PlusCircle } from "@deemlol/next-icons";
+
 import {
   CategoryDTO,
   CreateCategory,
@@ -28,6 +28,7 @@ import {
   useDeleteCategory,
   useUpdateCategory,
 } from "@hooks/reactQuery/useCategory";
+import { PlusCircle } from "lucide-react";
 
 export default function ClientPage(data) {
   const {
@@ -94,7 +95,7 @@ export default function ClientPage(data) {
 
   useEffect(() => {
     if (categoryList.isSuccess) {
-      setDataResult(categoryList.data);
+      setDataResult(data.data);
       return;
     }
   }, [categoryList.data]);
@@ -517,7 +518,9 @@ export default function ClientPage(data) {
                       <Button
                         type="submit"
                         variant="destructive"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                       >
                         삭제하기
                       </Button>
@@ -564,7 +567,9 @@ export default function ClientPage(data) {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog
             open={isCreate}
@@ -647,7 +652,13 @@ export default function ClientPage(data) {
       </ul>
 
       <article
-        className="flex flex-col items-center justify-start  size-full"
+        className="
+          flex
+          flex-col
+          items-center
+          justify-start
+          size-full
+        "
       >
         <DragTable<CategoryDTO>
           table={table}

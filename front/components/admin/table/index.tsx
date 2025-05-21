@@ -26,8 +26,9 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Menu, MoreHorizontal } from "@deemlol/next-icons";
+
 import { CSS } from "@dnd-kit/utilities";
+import { Menu, MoreHorizontal } from "lucide-react";
 
 export function DragHandle({ id }: { id: number }) {
   const { Button } = Components;
@@ -314,7 +315,7 @@ export function DragTable<T extends { id: number }>({
                 px-2
               "
             >
-              <MoreHorizontal size={20} />
+              <MoreHorizontal />
             </span>
           )}
 

@@ -34,6 +34,6 @@ router.post("/create", createUser);
 router.post("/all", getAllUsers);
 
 // 회원조회
-router.post("/:id", getUserById);
+router.get("/:id", getUserById);
 
 export default router;

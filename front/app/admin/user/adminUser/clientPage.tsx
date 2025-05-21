@@ -17,7 +17,6 @@ import {
   UserDTO,
 } from "../../../../types/user";
 import { DragHandle, DragTable } from "@components/admin/table";
-import { PlusCircle } from "@deemlol/next-icons";
 import {
   useAdminUser,
   useCreateUser,
@@ -29,6 +28,7 @@ import {
   useExitUserForm,
   useUpdateUserForm,
 } from "../../../../hooks/form/useUserForm";
+import { PlusCircle } from "lucide-react";
 
 export default function ClientPage() {
   const {
@@ -481,7 +481,9 @@ export default function ClientPage() {
                       <Button
                         variant="destructive"
                         type="submit"
-                        className="w-full "
+                        className="
+                          w-full
+                        "
                       >
                         탈퇴하기
                       </Button>
@@ -521,7 +523,12 @@ export default function ClientPage() {
 
   return (
     <article
-      className="flex flex-col items-end justify-center "
+      className="
+        flex
+        flex-col
+        justify-center
+        items-end
+      "
     >
       <ul
         className="
@@ -534,7 +541,9 @@ export default function ClientPage() {
         "
       >
         <li
-          className="w-auto "
+          className="
+            w-auto
+          "
         >
           <Dialog open={isCreate} onOpenChange={() => setIsCreate(!isCreate)}>
             <DialogTrigger asChild>
@@ -545,7 +554,7 @@ export default function ClientPage() {
                   h-[30px]
                 "
               >
-                <PlusCircle size={16} /> 회원가입
+                <PlusCircle /> 회원가입
               </Button>
             </DialogTrigger>
             <DialogPortal>

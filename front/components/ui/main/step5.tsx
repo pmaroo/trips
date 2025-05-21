@@ -1,14 +1,13 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { ChevronLeft } from "@node_modules/@deemlol/next-icons/build";
 import { useState } from "react";
 import { useStepStore } from "@store/frontStore";
 import { motion } from "framer-motion";
-import { addDays } from "@node_modules/date-fns/addDays";
-import { ko } from "date-fns/locale";
+
 import Car from "@components/svg/car";
 import Bus from "@components/svg/bus";
+import { usePlanStore } from "@store/planStore";
 
 export default function Step5() {
   const { Button, Input } = Components;
@@ -24,7 +23,7 @@ export default function Step5() {
   //////////////////////////////////////////////////////////////
 
   const stepStore = useStepStore();
-
+  const planStore = usePlanStore((state) => state);
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
@@ -38,7 +37,8 @@ export default function Step5() {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = () => {
+  const stepHandler = async (data: number) => {
+    await planStore.setPlan({ stayPrice: data });
     stepStore.setStep(5);
   };
   //////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ export default function Step5() {
     <>
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -63,7 +63,7 @@ export default function Step5() {
 
       <h1
         className="
-          text-[--black]
+          text-[hsl(var(--foreground))]
           font-[700]
           text-[30px]
           leading-[1.2]
@@ -71,7 +71,7 @@ export default function Step5() {
           sm:text-[50px]
         "
       >
-        차량으로 이동하시는군요!
+        {planStore && planStore.plan.traffic}으로 이동하시는군요!
       </h1>
       <p
         className="
@@ -125,7 +125,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(50000)}
             variant="outline"
           >
             50,000원
@@ -135,7 +135,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(100000)}
             variant="outline"
           >
             100,000원
@@ -145,7 +145,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(150000)}
             variant="outline"
           >
             150,000원
@@ -155,7 +155,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(200000)}
             variant="outline"
           >
             200,000원
@@ -165,7 +165,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(300000)}
             variant="outline"
           >
             300,000원
@@ -175,7 +175,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(400000)}
             variant="outline"
           >
             40,000원
@@ -185,7 +185,7 @@ export default function Step5() {
               mr-[5px]
               mb-[5px]
             "
-            onClick={stepHandler}
+            onClick={() => stepHandler(500000)}
             variant="outline"
           >
             500,000원
@@ -201,12 +201,11 @@ export default function Step5() {
             mt-[10px]
             sm:w-[60%]
           "
-          onClick={stepHandler}
         >
           <Input
             placeholder="숙소 최대 금액을 입력해주세요."
             type="number"
-            onKeyDown={(e) => e.keyCode === 13 && stepHandler()}
+            // onKeyDown={(e) => e.keyCode === 13 && stepHandler()}
           />
           <p
             className="

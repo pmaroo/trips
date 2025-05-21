@@ -126,7 +126,7 @@ import {
   FormMessage,
 } from "./components/ui/form";
 import { useFormContext } from "react-hook-form";
-import { XCircle } from "@deemlol/next-icons";
+
 import { Badge } from "./components/ui/badge";
 import { Textarea } from "./components/ui/textarea";
 import { Toaster } from "./components/ui/sonner";
@@ -172,7 +172,7 @@ const CustomFormMessage = ({ name }: { name: string }) => {
           mr-[5px]
         "
       >
-        <XCircle size={16} color="red" />
+        <XCircle />
       </li>
       <li
         className="
@@ -199,6 +199,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./components/ui/popover";
+import { XCircle } from "lucide-react";
 
 const Components = {
   Button,

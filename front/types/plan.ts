@@ -15,10 +15,17 @@ export interface PlanDTO {
   updatedAt: string;
 }
 
+export interface PlanDateType {
+  year: string;
+  month: string;
+  day: string;
+}
+
 export interface CreatePlan {
   CategoryId?: number; // 카테고리
+  categoryName?: string;
   region?: string; // 지역
-  date?: string; // 날짜
+  date?: PlanDateType[]; // 날짜
   traffic?: string; // 교통수단
   stayPrice?: number; // 숙소가격
 }
