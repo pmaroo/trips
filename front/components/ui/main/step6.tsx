@@ -3,6 +3,7 @@
 import Components from "@components/shadcn";
 import { useMeState } from "@store/commonStore";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useEffect } from "react";
 
 export default function Step6() {
   const { Button, Input } = Components;
@@ -25,6 +26,7 @@ export default function Step6() {
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ export default function Step5() {
 
   const stepHandler = async (data: number) => {
     await planStore.setPlan({ stayPrice: data });
-    stepStore.setStep(5);
+    stepStore.setStep(6);
   };
   //////////////////////////////////////////////////////////////
   //  TABLE

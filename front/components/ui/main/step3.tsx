@@ -48,7 +48,7 @@ export default function Step3() {
     await planStore.setPlan({
       date: selectData,
     });
-    stepStore.setStep(3);
+    stepStore.setStep(4);
   };
   //////////////////////////////////////////////////////////////
   //  TABLE

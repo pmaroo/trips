@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Components from "@components/shadcn";
 import Main from "@components/ui/main";
@@ -15,14 +15,16 @@ import useDeviceSize from "@hooks/useDeviceSize";
 import { useMeState } from "@store/commonStore";
 import { useKakaoStore } from "@store/loginStore";
 import { ChevronLeft } from "lucide-react";
-import { CategoryDTO, UpdateCategory } from "@/types/category";
+import { CategoryDTO } from "@/types/category";
+import Step7 from "@components/ui/main/step7";
+import FindCategory from "@logic/findCategorty";
 
 export default function ClientPage({
   categoryData,
 }: {
   categoryData: CategoryDTO[];
 }) {
-  const { Button, Progress } = Components;
+  const { Progress } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
@@ -38,8 +40,6 @@ export default function ClientPage({
   //////////////////////////////////////////////////////////////
 
   const stepStore = useStepStore();
-  const meStore = useMeState();
-  const kakaoStore = useKakaoStore();
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -47,6 +47,10 @@ export default function ClientPage({
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    FindCategory();
+  }, []);
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
@@ -58,6 +62,12 @@ export default function ClientPage({
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
+  const backHandler = () => {
+    if (stepStore.step - 1 >= 0) {
+      stepStore.setStep(stepStore.step - 1);
+    }
+  };
 
   //////////////////////////////////////////////////////////////
   //  TABLE
@@ -110,7 +120,7 @@ export default function ClientPage({
           "
         >
           <Progress
-            value={stepStore.step * 20}
+            value={stepStore.step * (100 / 6)}
             className="
               mb-[10px]
             "
@@ -137,6 +147,7 @@ export default function ClientPage({
               className="
                 cursor-pointer
               "
+              onClick={backHandler}
             >
               <ChevronLeft />
             </motion.li>
@@ -167,11 +178,12 @@ export default function ClientPage({
             "
           >
             {stepStore.step === 0 && <Step1 koreanRegions={koreanRegions} />}
-            {stepStore.step === 1 && <Step2 categorys={categoryData} />}
-            {stepStore.step === 2 && <Step3 />}
-            {stepStore.step === 3 && <Step4 />}
-            {stepStore.step === 4 && <Step5 />}
-            {stepStore.step === 5 && <Step6 />}
+            {stepStore.step === 1 && <Step7 />}
+            {stepStore.step === 2 && <Step2 categorys={categoryData} />}
+            {stepStore.step === 3 && <Step3 />}
+            {stepStore.step === 4 && <Step4 />}
+            {stepStore.step === 5 && <Step5 />}
+            {stepStore.step === 6 && <Step6 />}
           </motion.li>
         </ul>
       </article>

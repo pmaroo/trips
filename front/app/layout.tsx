@@ -74,10 +74,10 @@ export default async function RootLayout({
         </Providers>
         <Toaster />
         <Leins />
-        <script
+        {/* <script
           type="text/javascript"
-          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=24bc02992c631c914a19667e16adbd8a"
-        ></script>
+          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=66560f77cf5a1dac46c7395a202f8825&libraries=services,clusterer,drawing"
+        ></script> */}
       </body>
     </html>
   );

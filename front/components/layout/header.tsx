@@ -19,13 +19,13 @@ export default function Header() {
           flex
           flex-row
           items-center
-          w-full
           justify-end
           z-[1000]
           fixed
           top-[10px]
-          left-0
+          right-0
           p-[20px]
+          w-auto
         "
       >
         <Button variant="outline" size="icon" onClick={themeHandler}>

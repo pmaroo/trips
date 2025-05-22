@@ -4,6 +4,7 @@ import tagRouter from "./routes/tagRouter";
 import planRouter from "./routes/planRouter";
 import placeRouter from "./routes/placeRouter";
 import categoryRouter from "./routes/categoryRouter";
+import logicRouter from "./routes/logicRouter";
 import authRouter from "./routes/authRouter";
 import morgan from "morgan";
 import cors from "cors";
@@ -52,6 +53,7 @@ app.use("/api/tag", tagRouter);
 app.use("/api/plan", planRouter);
 app.use("/api/place", placeRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/logic", logicRouter);
 
 // 에러 핸들링
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

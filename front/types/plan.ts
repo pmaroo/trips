@@ -28,4 +28,5 @@ export interface CreatePlan {
   date?: PlanDateType[]; // 날짜
   traffic?: string; // 교통수단
   stayPrice?: number; // 숙소가격
+  startAddress?: string; // 출발주소
 }

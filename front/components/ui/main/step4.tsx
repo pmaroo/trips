@@ -44,7 +44,7 @@ export default function Step4() {
     await planStore.setPlan({
       traffic: data,
     });
-    stepStore.setStep(4);
+    stepStore.setStep(5);
   };
   //////////////////////////////////////////////////////////////
   //  TABLE
