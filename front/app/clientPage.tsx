@@ -17,7 +17,6 @@ import { useKakaoStore } from "@store/loginStore";
 import { ChevronLeft } from "lucide-react";
 import { CategoryDTO } from "@/types/category";
 import Step7 from "@components/ui/main/step7";
-import FindCategory from "@logic/findCategorty";
 
 export default function ClientPage({
   categoryData,
@@ -48,9 +47,6 @@ export default function ClientPage({
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    FindCategory();
-  }, []);
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
