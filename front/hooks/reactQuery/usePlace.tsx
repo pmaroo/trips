@@ -18,7 +18,7 @@ import {
   updatePlace,
 } from "@lib/api/place.api";
 
-// 카테고리 태그 추가하기
+// 장소 태그 추가하기
 export const useCreatePlaceTag = (onSuccessCallback: () => void) => {
   const queryClient = useQueryClient();
 
@@ -35,7 +35,7 @@ export const useCreatePlaceTag = (onSuccessCallback: () => void) => {
   });
 };
 
-// 카테고리 삭제하기
+// 장소 삭제하기
 export const useDeletePlace = (onSuccessCallback: () => void) => {
   const queryClient = useQueryClient();
 
@@ -52,7 +52,7 @@ export const useDeletePlace = (onSuccessCallback: () => void) => {
   });
 };
 
-// 카테고리 수정하기
+// 장소 수정하기
 export const useUpdatePlace = (onSuccessCallback: () => void) => {
   const queryClient = useQueryClient();
 
@@ -69,7 +69,7 @@ export const useUpdatePlace = (onSuccessCallback: () => void) => {
   });
 };
 
-// 카테고리 만들기
+// 장소 만들기
 export const useCreatePlace = (onSuccessCallback: () => void) => {
   const queryClient = useQueryClient();
 
@@ -86,7 +86,7 @@ export const useCreatePlace = (onSuccessCallback: () => void) => {
   });
 };
 
-// 카테고리 가져오기
+// 장소 가져오기
 export const usePlaceList = () => {
   return useQuery<PlaceDTO[]>({
     queryKey: ["placeList"],

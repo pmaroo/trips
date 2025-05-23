@@ -38,7 +38,7 @@ export default function Step2({ categorys }: { categorys: CategoryDTO[] }) {
     planStore.setPlan({
       // region: planStore.plan.region,
       CategoryId: data.id,
-      categoryName: data.name,
+      category: data.name,
     });
     stepStore.setStep(3);
   };
@@ -60,7 +60,7 @@ export default function Step2({ categorys }: { categorys: CategoryDTO[] }) {
           sm:text-[50px]
         "
       >
-        {planStore && planStore.plan.startAddress}에서
+        {planStore && planStore.plan.start.name}에서
       </h1>
       <h1
         className="

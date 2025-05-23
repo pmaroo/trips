@@ -15,3 +15,15 @@ export const usePlanStore = create<PlanState>((set) => ({
     }),
   clearPlan: () => set({ plan: null }),
 }));
+
+interface ResultPlanState {
+  plan: any;
+  setPlan: (plan: any) => void;
+  clearPlan: () => void;
+}
+
+export const useResultPlan = create<ResultPlanState>((set) => ({
+  plan: null,
+  setPlan: (plan) => set({ plan }),
+  clearPlan: () => set({ plan: null }),
+}));

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import Car from "@components/svg/car";
 import Bus from "@components/svg/bus";
 import { usePlanStore } from "@store/planStore";
+import { useCreatePlan } from "@hooks/reactQuery/usePlan";
 
 export default function Step5() {
   const { Button, Input } = Components;
@@ -18,6 +19,9 @@ export default function Step5() {
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
+
+  const createPlan = useCreatePlan(() => {});
+
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
@@ -38,9 +42,11 @@ export default function Step5() {
   //////////////////////////////////////////////////////////////
 
   const stepHandler = async (data: number) => {
-    await planStore.setPlan({ stayPrice: data });
-    stepStore.setStep(6);
+    await planStore.setPlan({ budget: data });
+    createPlan.mutate(planStore.plan);
+    // stepStore.setStep(6);
   };
+
   //////////////////////////////////////////////////////////////
   //  TABLE
   //////////////////////////////////////////////////////////////

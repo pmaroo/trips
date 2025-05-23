@@ -4,6 +4,7 @@ import Components from "@components/shadcn";
 import { useMeState } from "@store/commonStore";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useEffect } from "react";
+import { useCreatePlan } from "@hooks/reactQuery/usePlan";
 
 export default function Step6() {
   const { Button, Input } = Components;
@@ -14,11 +15,16 @@ export default function Step6() {
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
+
+  const createPlan = useCreatePlan(() => {});
+
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
   const meStore = useMeState((state) => state);
+
+  console.log(createPlan);
 
   //////////////////////////////////////////////////////////////
   // FORM

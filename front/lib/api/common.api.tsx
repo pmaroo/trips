@@ -11,10 +11,10 @@ export const imageUpload = async (imageData: FormData) => {
 
 export const latlongAPI = async (address: string) => {
   const { data } = await axios.get(
-    `https://dapi.kakao.com/v2/local/search/address.json?query=${address}&appkey=9c5894d38bae2a1785adabd46325ccc6`,
+    `https://dapi.kakao.com/v2/local/search/address.json?query=${address}&appkey=26df7dfd151672851ce1a3808d2441e6`,
     {
       headers: {
-        Authorization: `KakaoAK 9c5894d38bae2a1785adabd46325ccc6`,
+        Authorization: `KakaoAK 26df7dfd151672851ce1a3808d2441e6`,
       },
     },
   );

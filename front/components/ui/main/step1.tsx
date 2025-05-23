@@ -1,16 +1,31 @@
 "use client";
 
 import Components from "@components/shadcn";
+import { useState } from "react";
 import { useMeState } from "@store/commonStore";
 import { useStepStore } from "@store/frontStore";
 import { usePlanStore } from "@store/planStore";
 import { motion } from "framer-motion";
+import { ArrowLeftToLine } from "lucide-react";
 
-export default function Step1(data: { koreanRegions: string[] }) {
+interface CitiesType {
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+interface RegionType {
+  name: string;
+  cities: CitiesType[];
+}
+
+export default function Step1(data: { regionList: RegionType[] }) {
   const { Button } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
+  const [cities, setCities] = useState<CitiesType[]>([]);
+  const [region, setRegion] = useState<string>("");
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
@@ -35,8 +50,18 @@ export default function Step1(data: { koreanRegions: string[] }) {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const stepHandler = async (data: string) => {
-    await planStore.setPlan({ region: data });
+  const citisHandler = (data) => {
+    setCities(data.cities);
+    setRegion(data.name);
+  };
+
+  const stepHandler = async (data: {
+    name: string;
+    lat: number;
+    lng: number;
+  }) => {
+    const result = { ...data, name: region + " " + data.name };
+    await planStore.setPlan({ destination: result });
     stepStore.setStep(1);
   };
   //////////////////////////////////////////////////////////////
@@ -110,24 +135,54 @@ export default function Step1(data: { koreanRegions: string[] }) {
           flex-row
           items-center
           justify-start
+          w-full
           flex-wrap
         "
       >
-        {data.koreanRegions.map((data, idx) => {
-          return (
-            <Button
-              key={idx}
+        {cities.length === 0 ? (
+          data.regionList.map((data, idx) => {
+            return (
+              <Button
+                key={idx}
+                className="
+                  mr-[5px]
+                  mb-[5px]
+                "
+                onClick={() => citisHandler(data)}
+                variant="outline"
+              >
+                {data.name}
+              </Button>
+            );
+          })
+        ) : (
+          <>
+            <ArrowLeftToLine
               className="
-                mr-[5px]
-                mb-[5px]
+                cursor-pointer
+                mr-[10px]
+                duration-500
+                hover:text-[var(--main)]
               "
-              onClick={() => stepHandler(data)}
-              variant="outline"
-            >
-              {data}
-            </Button>
-          );
-        })}
+              onClick={() => setCities([])}
+            />
+            {cities.map((data, idx) => {
+              return (
+                <Button
+                  key={idx}
+                  className="
+                    mr-[5px]
+                    mb-[5px]
+                  "
+                  onClick={() => stepHandler(data)}
+                  variant="outline"
+                >
+                  {data.name}
+                </Button>
+              );
+            })}
+          </>
+        )}
       </motion.div>
     </>
   );

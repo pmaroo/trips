@@ -2,11 +2,12 @@
 
 import Components from "@components/shadcn";
 import { useEffect, useState } from "react";
-import { useMeState } from "@store/commonStore";
+import { useLatLongState, useMeState } from "@store/commonStore";
 import { useStepStore } from "@store/frontStore";
 import { usePlanStore } from "@store/planStore";
 import { motion } from "framer-motion";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { useLatLongAPI } from "@hooks/reactQuery/useCommon";
 
 export default function Step7() {
   const { Button, Input, Dialog, DialogContent, DialogTitle, DialogTrigger } =
@@ -16,16 +17,19 @@ export default function Step7() {
   //////////////////////////////////////////////////////////////
   const [isAddress, setIsAddress] = useState<boolean>(false);
   const [addressInput, setAddressInput] = useState<string>("");
+  const [latInput, setLatInput] = useState<number | null>(null);
+  const [lngInput, setLngInput] = useState<number | null>(null);
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
+  const latLongAPI = useLatLongAPI(() => {});
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
-  const stepStore = useStepStore((state) => state);
   const planStore = usePlanStore((state) => state);
-  const meStore = useMeState((state) => state);
+  const latLongStore = useLatLongState((state) => state);
+  const stepStore = useStepStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -33,6 +37,11 @@ export default function Step7() {
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    setLatInput(parseInt(latLongStore.lat));
+    setLngInput(parseInt(latLongStore.long));
+  }, [latLongStore.lat, latLongStore.long]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -47,7 +56,9 @@ export default function Step7() {
   //////////////////////////////////////////////////////////////
 
   const stepHandler = async () => {
-    await planStore.setPlan({ startAddress: addressInput });
+    await planStore.setPlan({
+      start: { name: addressInput, lat: latInput, lng: lngInput },
+    });
     stepStore.setStep(2);
   };
   //////////////////////////////////////////////////////////////
@@ -67,7 +78,7 @@ export default function Step7() {
           sm:text-[50px]
         "
       >
-        {planStore && planStore.plan.region}로
+        {planStore && planStore.plan.destination.name}로
       </h1>
       <h1
         className="
@@ -147,6 +158,8 @@ export default function Step7() {
               style={{ height: `100%` }}
               onComplete={(data) => {
                 setAddressInput(data.address);
+                console.log(data);
+                latLongAPI.mutate(data.address);
                 setIsAddress(false);
               }}
               autoClose={false}
