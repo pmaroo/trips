@@ -332,13 +332,7 @@ async function getFirstDay(
     fivePlace = await day1LastStay[0];
   }
 
-  return {
-    onePlace,
-    twoPlace,
-    threePlace,
-    fourPlace,
-    fivePlace,
-  };
+  return [onePlace, twoPlace, threePlace, fourPlace, fivePlace];
 }
 
 // n일차
@@ -399,14 +393,7 @@ async function getNDay(
   fivePlace = await nLastFood[0];
   sixPlace = await nLastStay[0];
 
-  return {
-    onePlace,
-    twoPlace,
-    threePlace,
-    fourPlace,
-    fivePlace,
-    sixPlace,
-  };
+  return [onePlace, twoPlace, threePlace, fourPlace, fivePlace, sixPlace];
 }
 
 // n-1일차
@@ -482,20 +469,13 @@ async function getNMinusDay(
   fivePlace = await nMiusFood[0];
   sixPlace = await nMiusStay[0];
 
-  return {
-    onePlace,
-    twoPlace,
-    threePlace,
-    fourPlace,
-    fivePlace,
-    sixPlace,
-  };
+  return [onePlace, twoPlace, threePlace, fourPlace, fivePlace, sixPlace];
 }
 
 // 마지막날
 async function getLastDay(touristAllSortDistance: Result[]) {
   let onePlace = null;
-  let towPlace = null;
+  let twoPlace = null;
 
   // 마지막 관광지 = touristAllSortDistance[0]
   // 마지막 음식점
@@ -509,9 +489,9 @@ async function getLastDay(touristAllSortDistance: Result[]) {
   );
 
   onePlace = await touristAllSortDistance[0];
-  towPlace = await lastFood[0];
+  twoPlace = await lastFood[0];
 
-  return { onePlace, towPlace };
+  return [onePlace, twoPlace];
 }
 
 export async function logic(data: any) {
@@ -635,7 +615,7 @@ export async function logic(data: any) {
   );
 
   // 1일차 추가
-  await days.push({ ...firstDay });
+  await days.push(firstDay);
 
   // 2박 3일부터
   if (firstTouristSortDistance.length > 1) {
@@ -649,9 +629,9 @@ export async function logic(data: any) {
     let firstStayDistance: DistnaceDTO[] = await Promise.all(
       remainFirstStayDistance.map((place) =>
         getDistance(
-          firstDay.fivePlace.name,
-          firstDay.fivePlace.lat,
-          firstDay.fivePlace.lng,
+          firstDay[4].name,
+          firstDay[4].lat,
+          firstDay[4].lng,
           place.name,
           place.lat,
           place.lng
@@ -666,7 +646,7 @@ export async function logic(data: any) {
       const nDay = await getNDay(firstStayDistance, remainFirstStayDistance);
 
       // n일차 추가
-      await days.push({ ...nDay });
+      await days.push(nDay);
 
       // 남은 관광지 / 3(N일차 하루 필요 관광지 3) - 1(2일차) - 1(n-1일차)
       if (firstStayDistance.length / 3 - 2 > 0) {
@@ -677,9 +657,9 @@ export async function logic(data: any) {
           firstStayDistance = await Promise.all(
             remainFirstStayDistance.map((place) =>
               getDistance(
-                nDay.sixPlace.name,
-                nDay.sixPlace.lat,
-                nDay.sixPlace.lng,
+                nDay[5].name,
+                nDay[5].lat,
+                nDay[5].lng,
                 place.name,
                 place.lat,
                 place.lng
@@ -694,7 +674,7 @@ export async function logic(data: any) {
           );
 
           // n일차 추가
-          await days.push({ ...nDays });
+          await days.push(nDays);
         }
       }
       // n-1일차 구하기
@@ -702,11 +682,11 @@ export async function logic(data: any) {
         destinationLat,
         destinationLng,
         remainFirstStayDistance,
-        nDay.sixPlace
+        nDay[5]
       );
 
       // n일차 추가
-      await days.push({ ...nMinusDay });
+      await days.push(nMinusDay);
     } else {
       // 2박 3일
       // 1일차 - n-1일차 - 마지막
@@ -715,11 +695,11 @@ export async function logic(data: any) {
         destinationLat,
         destinationLng,
         remainFirstStayDistance,
-        firstDay.fivePlace
+        firstDay[4]
       );
 
       // n일차 추가
-      await days.push({ ...nMinusDay });
+      await days.push(nMinusDay);
     }
   }
 
@@ -727,7 +707,12 @@ export async function logic(data: any) {
   const lastDay = await getLastDay(touristAllSortDistance);
 
   // 마지막 추가
-  await days.push({ ...lastDay });
+  await days.push(lastDay);
 
-  return days;
+  const result = {
+    ...data,
+    days,
+  };
+
+  return result;
 }

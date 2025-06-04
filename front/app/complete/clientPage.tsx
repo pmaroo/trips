@@ -33,6 +33,7 @@ import {
   PlusCircle,
   Repeat,
   Settings,
+  Star,
   XCircle,
 } from "lucide-react";
 import { usePlanStore, useResultPlan } from "@store/planStore";
@@ -63,13 +64,7 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="
-        flex
-        flex-col
-        items-start
-        justify-center
-        w-full
-      "
+      className="flex flex-col items-start justify-center w-full "
     >
       <li
         className="
@@ -166,12 +161,7 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
               </motion.p>
             </div>
             <div
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-              "
+              className="flex flex-row items-center justify-start "
             >
               <p
                 className="
@@ -286,8 +276,7 @@ export default function ClientPage() {
   //////////////////////////////////////////////////////////////
 
   const resultPlan = useResultPlan((state) => state);
-  const planStore = usePlanStore((state) => state);
-  console.log(planStore.plan);
+  // const resultPlan = usePlanStore((state) => state);
   console.log(resultPlan.plan);
   console.log("??");
   //////////////////////////////////////////////////////////////
@@ -375,19 +364,10 @@ export default function ClientPage() {
   return (
     <>
       <article
-        className="
-          w-screen
-          min-h-screen
-        "
+        className="w-screen min-h-screen "
       >
         <ul
-          className="
-            flex
-            flex-row
-            items-center
-            justify-end
-            size-full
-          "
+          className="flex flex-row items-center justify-end  size-full"
         >
           <motion.li
             initial={{ left: `-300px` }}
@@ -471,13 +451,7 @@ export default function ClientPage() {
               "
             >
               <div
-                className="
-                  flex
-                  flex-row
-                  items-center
-                  w-full
-                  justify-between
-                "
+                className="flex flex-row items-center justify-between w-full "
               >
                 <div
                   className="
@@ -499,9 +473,7 @@ export default function ClientPage() {
                   >
                     <img
                       src="/daejeon.png"
-                      className="
-                        size-full
-                      "
+                      className=" size-full"
                     />
                   </div>
                   <div
@@ -591,22 +563,10 @@ export default function ClientPage() {
               "
             >
               <li
-                className="
-                  flex
-                  flex-col
-                  items-start
-                  justify-start
-                  sm:flex-row
-                  sm:items-center
-                "
+                className="flex flex-col items-start justify-start  sm:flex-row sm:items-center"
               >
                 <div
-                  className="
-                    flex
-                    flex-row
-                    items-center
-                    justify-center
-                  "
+                  className="flex flex-row items-center justify-center "
                 >
                   <div
                     className="
@@ -623,7 +583,7 @@ export default function ClientPage() {
                         mr-[5px]
                       "
                     >
-                      {planStore.plan && planStore.plan.destination.name}
+                      {resultPlan.plan && resultPlan.plan.destination.name}
                     </h1>
                   </div>
                 </div>
@@ -634,12 +594,12 @@ export default function ClientPage() {
                     font-[700]
                   "
                 >
-                  {planStore.plan && planStore.plan.date[0].year}년{" "}
-                  {planStore.plan && planStore.plan.date[0].month}월{" "}
-                  {planStore.plan && planStore.plan.date[0].day}일 ~{" "}
-                  {planStore.plan && planStore.plan.date[1].year}년{" "}
-                  {planStore.plan && planStore.plan.date[1].month}월{" "}
-                  {planStore.plan && planStore.plan.date[1].day}일
+                  {resultPlan.plan && resultPlan.plan.date[0].year}년{" "}
+                  {resultPlan.plan && resultPlan.plan.date[0].month}월{" "}
+                  {resultPlan.plan && resultPlan.plan.date[0].day}일 ~{" "}
+                  {resultPlan.plan && resultPlan.plan.date[1].year}년{" "}
+                  {resultPlan.plan && resultPlan.plan.date[1].month}월{" "}
+                  {resultPlan.plan && resultPlan.plan.date[1].day}일
                 </div>
               </li>
               {isUpdate ? (
@@ -656,9 +616,7 @@ export default function ClientPage() {
                       repeatType: "reverse",
                     },
                   }}
-                  className="
-                    cursor-pointer
-                  "
+                  className="cursor-pointer "
                   onClick={updateToggle}
                 >
                   <CheckCircle />
@@ -674,9 +632,7 @@ export default function ClientPage() {
                       duration: 0.5,
                     },
                   }}
-                  className="
-                    cursor-pointer
-                  "
+                  className="cursor-pointer "
                   onClick={updateToggle}
                 >
                   <Settings />
@@ -702,7 +658,7 @@ export default function ClientPage() {
                   mr-[10px]
                 "
               >
-                {planStore.plan && planStore.plan.traffic === "차량" ? (
+                {resultPlan.plan && resultPlan.plan.traffic === "차량" ? (
                   <Car width={"30"} height="20" />
                 ) : (
                   <Bus width={"30"} height="20" />
@@ -710,7 +666,7 @@ export default function ClientPage() {
               </li>
 
               <HashTag
-                title={planStore.plan && planStore.plan.category}
+                title={resultPlan.plan && resultPlan.plan.category}
                 type={1}
               />
             </ul>
@@ -737,7 +693,7 @@ export default function ClientPage() {
                 </Button>
               </li>
               {Array.from(
-                { length: resultPlan.plan && resultPlan.plan.length },
+                { length: resultPlan.plan && resultPlan.plan.days.length },
                 (_, index) => (
                   <li key={index}>
                     <Button
@@ -755,14 +711,11 @@ export default function ClientPage() {
               )}
             </ul>
             {resultPlan.plan &&
-              resultPlan.plan.map((data, index) => {
-                console.log(data.one);
+              resultPlan.plan.days.map((data, index) => {
                 return (
                   <div
+                    className="w-full "
                     key={index}
-                    className="
-                      w-full
-                    "
                   >
                     <ul
                       className="
@@ -775,12 +728,7 @@ export default function ClientPage() {
                       "
                     >
                       <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          justify-center
-                        "
+                        className="flex flex-row items-center justify-center "
                       >
                         <p
                           className="
@@ -849,22 +797,10 @@ export default function ClientPage() {
                     </ul>
 
                     <ul
-                      className="
-                        flex
-                        flex-col
-                        items-start
-                        justify-center
-                        w-full
-                      "
+                      className="flex flex-col items-start justify-center w-full "
                     >
                       <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          justify-start
-                          w-full
-                        "
+                        className="flex flex-row items-center justify-start w-full "
                       >
                         <div
                           className="
@@ -898,7 +834,12 @@ export default function ClientPage() {
                               text-[14px]
                             "
                           >
-                            {planStore.plan && planStore.plan.start.name}
+                            {index === 0
+                              ? resultPlan.plan && resultPlan.plan.start.name
+                              : resultPlan.plan &&
+                                resultPlan.plan.days[index - 1][
+                                  resultPlan.plan.days[index - 1].length - 1
+                                ].name}
                           </p>
                           <p
                             className="
@@ -909,61 +850,6 @@ export default function ClientPage() {
                             {index + 1}일차 시작
                           </p>
                         </div>
-                      </li>
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          w-full
-                          justify-between
-                          border-l-2
-                          border-dashed
-                          border-l-[--grey2]
-                          pl-[20px]
-                          py-[30px]
-                          ml-[9px]
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-start
-                            justify-center
-                            w-[60%]
-                          "
-                        >
-                          <div
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              text-[grey]
-                            "
-                          >
-                            <Car width="15" height="15" />{" "}
-                            <p
-                              className="
-                                text-[14px]
-                                ml-[5px]
-                              "
-                            >
-                              1시간 소요
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            w-[40%]
-                          "
-                        ></div>
                       </li>
                     </ul>
 
@@ -991,572 +877,384 @@ export default function ClientPage() {
                         </SortableContext>
                       </DndContext>
                     ) : (
-                      <ul
-                        className="
-                          flex
-                          flex-col
-                          items-start
-                          justify-center
-                          w-full
-                        "
-                      >
-                        <li
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            w-full
-                            relative
-                            justify-end
-                          "
-                        >
-                          <div
+                      data.map((value, idx) => {
+                        return data.length - 1 === idx &&
+                          resultPlan.plan &&
+                          resultPlan.plan.days.length - 1 !== index ? (
+                          <ul
+                            key={`${idx}-${index}`}
                             className="
                               flex
                               flex-col
-                              items-center
+                              items-start
                               justify-center
-                              h-full
-                              text-center
-                              rounded-[5px]
-                              w-[20px]
-                              bg-[--main]
-                              text-[hsl(var(--background))]
-                              text-[12px]
-                              mr-[10px]
-                              absolute
-                              top-[0]
-                              left-[0]
+                              w-full
+                              mb-[50px]
                             "
                           >
-                            1
-                          </div>
-                          <div
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-between
-                              w-[calc(100%-30px)]
-                            "
-                          >
-                            <div
+                            <li
                               className="
                                 flex
-                                flex-col
-                                items-start
-                                justify-center
-                                w-[60%]
+                                flex-row
+                                items-center
+                                w-full
+                                justify-between
+                                border-l-2
+                                border-dashed
+                                border-l-[--grey2]
+                                pl-[20px]
+                                py-[30px]
+                                ml-[9px]
                               "
                             >
-                              <p
-                                className="
-                                  text-[--main]
-                                  text-[14px]
-                                  font-[700]
-                                "
-                              >
-                                명소
-                              </p>
-                              <p
-                                className="
-                                  text-[14px]
-                                  font-[700]
-                                "
-                              >
-                                대전 마루집
-                              </p>
-                              <p
-                                className="
-                                  text-[grey]
-                                  text-[14px]
-                                "
-                              >
-                                대전광역시 삼성동 346-3
-                              </p>
                               <div
                                 className="
                                   flex
                                   flex-row
                                   items-center
                                   justify-start
+                                  text-[grey]
                                 "
                               >
-                                <Repeat size={16} />{" "}
+                                <Car width="15" height="15" />{" "}
                                 <p
                                   className="
                                     text-[14px]
                                     ml-[5px]
+                                  "
+                                >
+                                  1시간소요
+                                </p>
+                              </div>
+                            </li>
+                            <li
+                              className="flex flex-row items-center justify-start w-full "
+                            >
+                              <div
+                                className="
+                                  flex
+                                  flex-col
+                                  items-center
+                                  justify-center
+                                  text-center
+                                  rounded-[10px]
+                                  size-[20px]
+                                  bg-[--main3]
+                                  text-[hsl(var(--background))]
+                                  text-[12px]
+                                  mr-[10px]
+                                "
+                              >
+                                {data.length + 1}
+                              </div>
+                              <div
+                                className="
+                                  flex
+                                  flex-row
+                                  items-center
+                                  justify-between
+                                  w-[calc(100%-30px)]
+                                "
+                              >
+                                <p
+                                  className="
+                                    text-[grey]
+                                    text-[14px]
+                                  "
+                                >
+                                  {index === resultPlan.plan.days.length - 1
+                                    ? resultPlan.plan &&
+                                      resultPlan.plan.start.name
+                                    : data[data.length - 1].name}
+                                </p>
+                                <p
+                                  className="
+                                    text-[--darkGrey2]
+                                    text-[12px]
+                                  "
+                                >
+                                  {index + 1}일차 마무리
+                                </p>
+                              </div>
+                            </li>
+                          </ul>
+                        ) : (
+                          <ul
+                            key={`${idx}-${index}`}
+                            className="flex flex-col items-start justify-center w-full "
+                          >
+                            <li
+                              className="
+                                flex
+                                flex-row
+                                items-center
+                                w-full
+                                justify-between
+                                border-l-2
+                                border-dashed
+                                border-l-[--grey2]
+                                pl-[20px]
+                                py-[30px]
+                                ml-[9px]
+                              "
+                            >
+                              <div
+                                className="
+                                  flex
+                                  flex-col
+                                  items-start
+                                  justify-center
+                                  w-[60%]
+                                "
+                              >
+                                <div
+                                  className="
+                                    flex
+                                    flex-row
+                                    items-center
+                                    justify-start
                                     text-[grey]
                                   "
                                 >
-                                  13:50 ~ 15:50 (1시간)
-                                </p>
+                                  <Car width="15" height="15" />{" "}
+                                  <p
+                                    className="
+                                      text-[14px]
+                                      ml-[5px]
+                                    "
+                                  >
+                                    {value.duration}시간 소요
+                                  </p>
+                                </div>
                               </div>
-                            </div>
 
+                              <div
+                                className="
+                                  flex
+                                  flex-col
+                                  items-center
+                                  justify-center
+                                  w-[40%]
+                                "
+                              ></div>
+                            </li>
+                            <li
+                              className="relative flex flex-row items-center justify-end w-full "
+                            >
+                              <div
+                                className="
+                                  flex
+                                  flex-col
+                                  items-center
+                                  justify-center
+                                  h-full
+                                  text-center
+                                  rounded-[5px]
+                                  w-[20px]
+                                  bg-[--main]
+                                  text-[hsl(var(--background))]
+                                  text-[12px]
+                                  mr-[10px]
+                                  absolute
+                                  top-[0]
+                                  left-[0]
+                                "
+                              >
+                                {idx + 2}
+                              </div>
+                              <div
+                                className="
+                                  flex
+                                  flex-row
+                                  items-center
+                                  justify-between
+                                  w-[calc(100%-30px)]
+                                "
+                              >
+                                <div
+                                  className="
+                                    flex
+                                    flex-col
+                                    items-start
+                                    justify-center
+                                    w-[60%]
+                                  "
+                                >
+                                  <p
+                                    className="
+                                      text-[--main]
+                                      text-[14px]
+                                      font-[700]
+                                    "
+                                  >
+                                    명소
+                                  </p>
+                                  <p
+                                    className="
+                                      text-[14px]
+                                      font-[700]
+                                    "
+                                  >
+                                    {value.name}
+                                  </p>
+                                  <p
+                                    className="
+                                      text-[grey]
+                                      text-[14px]
+                                    "
+                                  >
+                                    {value.address}
+                                  </p>
+                                  <div
+                                    className="flex flex-row items-center justify-start "
+                                  >
+                                    <Star
+                                      className="
+                                        w-[15px]
+                                        text-[grey]
+                                      "
+                                    />{" "}
+                                    <p
+                                      className="
+                                        text-[14px]
+                                        ml-[5px]
+                                        text-[grey]
+                                      "
+                                    >
+                                      {value.rating}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div
+                                  className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    w-[40%]
+                                  "
+                                >
+                                  <img
+                                    src="/daejeon.png"
+                                    className="
+                                      size-[80px]
+                                      rounded-[10px]
+                                    "
+                                  />
+                                </div>
+
+                                <p
+                                  className="
+                                    text-[--darkGrey2]
+                                    text-[12px]
+                                  "
+                                ></p>
+                              </div>
+                            </li>
+                          </ul>
+                        );
+                      })
+                    )}
+                    {resultPlan.plan &&
+                      resultPlan.plan.days.length - 1 === index && (
+                        <ul
+                          className="
+                            flex
+                            flex-col
+                            items-start
+                            justify-center
+                            w-full
+                            mb-[50px]
+                          "
+                        >
+                          <li
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              w-full
+                              justify-between
+                              border-l-2
+                              border-dashed
+                              border-l-[--grey2]
+                              pl-[20px]
+                              py-[30px]
+                              ml-[9px]
+                            "
+                          >
+                            <div
+                              className="
+                                flex
+                                flex-row
+                                items-center
+                                justify-start
+                                text-[grey]
+                              "
+                            >
+                              <Car width="15" height="15" />{" "}
+                              <p
+                                className="
+                                  text-[14px]
+                                  ml-[5px]
+                                "
+                              >
+                                1시간소요
+                              </p>
+                            </div>
+                          </li>
+                          <li
+                            className="flex flex-row items-center justify-start w-full "
+                          >
                             <div
                               className="
                                 flex
                                 flex-col
                                 items-center
                                 justify-center
-                                w-[40%]
-                              "
-                            >
-                              <img
-                                src="/daejeon.png"
-                                className="
-                                  size-[80px]
-                                  rounded-[10px]
-                                "
-                              />
-                            </div>
-
-                            <p
-                              className="
-                                text-[--darkGrey2]
+                                text-center
+                                rounded-[10px]
+                                size-[20px]
+                                bg-[--main3]
+                                text-[hsl(var(--background))]
                                 text-[12px]
-                              "
-                            ></p>
-                          </div>
-                        </li>
-                        <li
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            w-full
-                            justify-between
-                            border-l-2
-                            border-dashed
-                            border-l-[--grey2]
-                            pl-[20px]
-                            py-[30px]
-                            ml-[9px]
-                          "
-                        >
-                          <div
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              text-[grey]
-                            "
-                          >
-                            <Car width="15" height="15" />{" "}
-                            <p
-                              className="
-                                text-[14px]
-                                ml-[5px]
+                                mr-[10px]
                               "
                             >
-                              13:50 ~ 15:50 (1시간)
-                            </p>
-                          </div>
-                        </li>
-                      </ul>
-                    )}
-
-                    <ul
-                      className="
-                        flex
-                        flex-col
-                        items-start
-                        justify-center
-                        w-full
-                      "
-                    >
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          w-full
-                          relative
-                          justify-end
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            h-full
-                            text-center
-                            rounded-[5px]
-                            w-[20px]
-                            bg-[--main]
-                            text-[hsl(var(--background))]
-                            text-[12px]
-                            mr-[10px]
-                            absolute
-                            top-[0]
-                            left-[0]
-                          "
-                        >
-                          1
-                        </div>
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-between
-                            w-[calc(100%-30px)]
-                          "
-                        >
-                          <div
-                            className="
-                              flex
-                              flex-col
-                              items-start
-                              justify-center
-                              w-[60%]
-                            "
-                          >
-                            <p
-                              className="
-                                text-[--main]
-                                text-[14px]
-                                font-[700]
-                              "
-                            >
-                              명소
-                            </p>
-                            <p
-                              className="
-                                text-[14px]
-                                font-[700]
-                              "
-                            >
-                              대전 마루집
-                            </p>
-                            <p
-                              className="
-                                text-[grey]
-                                text-[14px]
-                              "
-                            >
-                              대전광역시 삼성동 346-3
-                            </p>
+                              {data.length + 2}
+                            </div>
                             <div
                               className="
                                 flex
                                 flex-row
                                 items-center
-                                justify-start
+                                justify-between
+                                w-[calc(100%-30px)]
                               "
                             >
-                              <Repeat size={16} />{" "}
                               <p
                                 className="
-                                  text-[14px]
-                                  ml-[5px]
                                   text-[grey]
+                                  text-[14px]
                                 "
                               >
-                                13:50 ~ 15:50 (1시간)
+                                {index === resultPlan.plan.days.length - 1
+                                  ? resultPlan.plan &&
+                                    resultPlan.plan.start.name
+                                  : data[data.length - 1].name}
                               </p>
-                            </div>
-                          </div>
-
-                          <div
-                            className="
-                              flex
-                              flex-col
-                              items-center
-                              justify-center
-                              w-[40%]
-                            "
-                          >
-                            <img
-                              src="/daejeon.png"
-                              className="
-                                size-[80px]
-                                rounded-[10px]
-                              "
-                            />
-                          </div>
-
-                          <p
-                            className="
-                              text-[--darkGrey2]
-                              text-[12px]
-                            "
-                          ></p>
-                        </div>
-                      </li>
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          w-full
-                          justify-between
-                          border-l-2
-                          border-dashed
-                          border-l-[--grey2]
-                          pl-[20px]
-                          py-[30px]
-                          ml-[9px]
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-start
-                            text-[grey]
-                          "
-                        >
-                          <Car width="15" height="15" />{" "}
-                          <p
-                            className="
-                              text-[14px]
-                              ml-[5px]
-                            "
-                          >
-                            13:50 ~ 15:50 (1시간)
-                          </p>
-                        </div>
-                      </li>
-                    </ul>
-
-                    <ul
-                      className="
-                        flex
-                        flex-col
-                        items-start
-                        justify-center
-                        w-full
-                      "
-                    >
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          w-full
-                          relative
-                          justify-end
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            h-full
-                            text-center
-                            rounded-[5px]
-                            w-[20px]
-                            bg-[--main]
-                            text-[hsl(var(--background))]
-                            text-[12px]
-                            mr-[10px]
-                            absolute
-                            top-[0]
-                            left-[0]
-                          "
-                        >
-                          1
-                        </div>
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-between
-                            w-[calc(100%-30px)]
-                          "
-                        >
-                          <div
-                            className="
-                              flex
-                              flex-col
-                              items-start
-                              justify-center
-                              w-[60%]
-                            "
-                          >
-                            <p
-                              className="
-                                text-[--main]
-                                text-[14px]
-                                font-[700]
-                              "
-                            >
-                              명소
-                            </p>
-                            <p
-                              className="
-                                text-[14px]
-                                font-[700]
-                              "
-                            >
-                              대전 마루집
-                            </p>
-                            <p
-                              className="
-                                text-[grey]
-                                text-[14px]
-                              "
-                            >
-                              대전광역시 삼성동 346-3
-                            </p>
-                            <div
-                              className="
-                                flex
-                                flex-row
-                                items-center
-                                justify-start
-                              "
-                            >
-                              <Repeat size={16} />{" "}
                               <p
                                 className="
-                                  text-[14px]
-                                  ml-[5px]
-                                  text-[grey]
+                                  text-[--darkGrey2]
+                                  text-[12px]
                                 "
                               >
-                                13:50 ~ 15:50 (1시간)
+                                {index + 1}일차 마무리
                               </p>
                             </div>
-                          </div>
-
-                          <div
-                            className="
-                              flex
-                              flex-col
-                              items-center
-                              justify-center
-                              w-[40%]
-                            "
-                          >
-                            <img
-                              src="/daejeon.png"
-                              className="
-                                size-[80px]
-                                rounded-[10px]
-                              "
-                            />
-                          </div>
-
-                          <p
-                            className="
-                              text-[--darkGrey2]
-                              text-[12px]
-                            "
-                          ></p>
-                        </div>
-                      </li>
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          w-full
-                          justify-between
-                          border-l-2
-                          border-dashed
-                          border-l-[--grey2]
-                          pl-[20px]
-                          py-[30px]
-                          ml-[9px]
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-start
-                            text-[grey]
-                          "
-                        >
-                          <Car width="15" height="15" />{" "}
-                          <p
-                            className="
-                              text-[14px]
-                              ml-[5px]
-                            "
-                          >
-                            13:50 ~ 15:50 (1시간)
-                          </p>
-                        </div>
-                      </li>
-                    </ul>
-
-                    <ul
-                      className="
-                        flex
-                        flex-col
-                        items-start
-                        justify-center
-                        w-full
-                        mb-[50px]
-                      "
-                    >
-                      <li
-                        className="
-                          flex
-                          flex-row
-                          items-center
-                          justify-start
-                          w-full
-                        "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            text-center
-                            rounded-[10px]
-                            size-[20px]
-                            bg-[--main3]
-                            text-[hsl(var(--background))]
-                            text-[12px]
-                            mr-[10px]
-                          "
-                        >
-                          3
-                        </div>
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-between
-                            w-[calc(100%-30px)]
-                          "
-                        >
-                          <p
-                            className="
-                              text-[grey]
-                              text-[14px]
-                            "
-                          >
-                            대전광역시 삼성동 346-3
-                          </p>
-                          <p
-                            className="
-                              text-[--darkGrey2]
-                              text-[12px]
-                            "
-                          >
-                            1일차 마무리
-                          </p>
-                        </div>
-                      </li>
-                    </ul>
+                          </li>
+                        </ul>
+                      )}
                   </div>
                 );
               })}
