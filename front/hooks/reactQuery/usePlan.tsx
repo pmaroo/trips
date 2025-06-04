@@ -17,7 +17,7 @@ export const useCreatePlan = (onSuccessCallback: () => void) => {
     mutationFn: (planData: CreatePlan) => createPlan(planData),
     onSuccess: async (data) => {
       resultPlan.setPlan(data);
-      toast("완성");
+      // toast("완성");
       onSuccessCallback?.();
     },
     onError: (error: any) => {

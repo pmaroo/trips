@@ -30,10 +30,9 @@ export const useLatLongAPI = (onSuccessCallback: () => void) => {
     mutationFn: (address: string) => latlongAPI(address),
     onSuccess: async (data) => {
       latLongstore.setLatLong({
-        lat: data.documents[0].address.x,
-        long: data.documents[0].address.y,
+        lat: data.documents[0].y,
+        long: data.documents[0].x,
       });
-      console.log(data);
       toast("주소 및 위도 경도를 저장했습니다.");
       onSuccessCallback?.();
     },

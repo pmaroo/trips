@@ -53,33 +53,6 @@ export default function ClientPage({
 
   const createPlan = useCreatePlan(() => {});
 
-  const data = {
-    CategoryId: 8,
-    category: "커플여행",
-    destination: {
-      name: "부산광역시",
-      lat: 35.1631,
-      lng: 129.1635,
-    },
-    start: {
-      name: "대전 동구 삼성동 346-3",
-      lat: 127,
-      lng: 36,
-    },
-    budget: 100000,
-    traffic: "차량",
-  };
-
-  useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
-
-    if (createPlan) {
-      createPlan.mutate(data);
-      console.log("여러번찍히면안됨;");
-    }
-  }, []);
-
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////

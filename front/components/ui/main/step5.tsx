@@ -9,6 +9,7 @@ import Car from "@components/svg/car";
 import Bus from "@components/svg/bus";
 import { usePlanStore } from "@store/planStore";
 import { useCreatePlan } from "@hooks/reactQuery/usePlan";
+import { useRouter } from "next/navigation";
 
 export default function Step5() {
   const { Button, Input } = Components;
@@ -16,11 +17,15 @@ export default function Step5() {
   // STATE
   //////////////////////////////////////////////////////////////
 
+  const router = useRouter();
+
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
 
-  const createPlan = useCreatePlan(() => {});
+  const createPlan = useCreatePlan(() => {
+    router.push(`/complete`);
+  });
 
   //////////////////////////////////////////////////////////////
   // STORE
@@ -44,7 +49,7 @@ export default function Step5() {
   const stepHandler = async (data: number) => {
     await planStore.setPlan({ budget: data });
     createPlan.mutate(planStore.plan);
-    // stepStore.setStep(6);
+    stepStore.setStep(6);
   };
 
   //////////////////////////////////////////////////////////////
