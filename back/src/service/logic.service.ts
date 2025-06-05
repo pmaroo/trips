@@ -24,6 +24,7 @@ interface Result {
   vicinity: string;
   distance?: number;
   duration?: number;
+  photos?: string;
 }
 
 interface GooglePlace {
@@ -142,6 +143,22 @@ async function getNearbyGooglePlaces(
       }
     );
 
+    const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${details.data.result.photos[0].photo_reference}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+
+    const buffer = Buffer.from(arrayBuffer);
+
+    // 이미지의 MIME 타입 추정 (구글에서 대부분 JPEG으로 반환됨)
+    const mimeType = "image/jpeg"; // 필요시 content-type 검사로 유동 처리 가능
+
+    // base64 인코딩
+    const base64 = buffer.toString("base64");
+
+    // data URI 생성
+    const dataUrl = `data:${mimeType};base64,${base64}`;
+
     await storeDatum.push({
       name: details.data.result.name,
       address: details.data.result.formatted_address,
@@ -163,6 +180,7 @@ async function getNearbyGooglePlaces(
       vicinity: details.data.result.vicinity,
       lat: details.data.result.geometry.location.lat,
       lng: details.data.result.geometry.location.lng,
+      photos: dataUrl,
     });
   }
 
@@ -171,6 +189,7 @@ async function getNearbyGooglePlaces(
 
 // 장소 간 거리 구하기
 // 카카오보빌리티 일 10,000건
+// 차량일때만
 async function getDistance(
   startName: string | null,
   startLat: number,
@@ -462,6 +481,8 @@ async function getNMinusDay(
     1
   );
 
+  console.log(nMiusStay);
+
   onePlace = await firstStaySortDistance[0];
   twoPlace = await nFirstFood[0];
   threePlace = await firstStaySortDistance[1];
@@ -530,8 +551,85 @@ export async function logic(data: any) {
   // 여행 일정
   // ex ) 1박2일 = 2 , 2박3일 = 3
   // 실제 여행일정 일차
-  const originDate = 2;
+
+  console.log(data);
+  const startMonth = parseInt(data.date[0].month);
+  const endMonth = parseInt(data.date[1].month);
+  const startDay = parseInt(data.date[0].day);
+  const endDay = parseInt(data.date[1].day);
+
+  const resultMonth = endMonth - startMonth;
+  const resultDay = endDay - startDay;
+
+  // 해당 month가 30일인지 31일인지 구하기
+  const monthDay =
+    startMonth < 8
+      ? // 8보다작을때
+        startMonth % 2 === 0
+        ? //짝수
+          30
+        : //홀수
+          31
+      : // 8보다 같거나 클때
+      startMonth % 2 === 0
+      ? //짝수
+        31
+      : //홀수
+        30;
+
+  const originDate =
+    resultMonth === 0 ? resultDay + 1 : monthDay - startDay + endDay + 1;
   const setDate = originDate - 2;
+  const date: {
+    yaer: string;
+    month: string;
+    day: string;
+  }[] = [];
+
+  // 0 == 마지막날
+
+  // 30 - 28 = 2
+
+  // 28,29,30,1,2,3
+  // 0,1,2,3,4,5
+  // 2 = monthDay - startDay
+  //
+  //  2- 1
+  for (let i = 0; i < originDate; i++) {
+    resultMonth === 0
+      ? date.push(
+          i === 0
+            ? { ...data.date[0] }
+            : originDate - 1 === i
+            ? { ...data.date[1] }
+            : {
+                year: data.date[0].year,
+                month: data.date[0].month,
+                day: String(startDay + i),
+              }
+        )
+      : date.push(
+          i === 0
+            ? { ...data.date[0] }
+            : originDate - 1 === i
+            ? { ...data.date[1] }
+            : monthDay - startDay < i
+            ? // 다음달로 넘어감 [1]
+              {
+                year: data.date[1].year,
+                month: data.date[1].month,
+                day: String(endDay - (originDate - i)),
+              }
+            : // 이전달 [0]
+              {
+                year: data.date[0].year,
+                month: data.date[0].month,
+                day: String(startDay + i),
+              }
+        );
+  }
+
+  data.date = date;
 
   // 관광지 뽑기
   // (3 + 3 * setDate)의 개수만큼 뽑기
@@ -712,6 +810,7 @@ export async function logic(data: any) {
   const result = {
     ...data,
     days,
+    originDate,
   };
 
   return result;

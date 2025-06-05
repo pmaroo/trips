@@ -21,6 +21,8 @@ export default function Step3() {
 
   const [selectData, setSelectData] = useState<PlanDateType[] | null>(null);
 
+  console.log(selectData);
+
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
@@ -79,7 +81,7 @@ export default function Step3() {
           sm:text-[50px]
         "
       >
-        {planStore && planStore.plan.categoryName}으로 떠나시는군요 !
+        {planStore && planStore.plan.category}으로 떠나시는군요 !
       </h1>
       <p
         className="
@@ -120,14 +122,7 @@ export default function Step3() {
         <Button onClick={() => stepHandler()}>날짜확정</Button>
       </div>
       <motion.div
-        className="
-          flex
-          flex-row
-          items-center
-          justify-center
-          w-full
-          flex-wrap
-        "
+        className="flex flex-row flex-wrap items-center justify-center w-full "
       >
         <Calender setSelectData={setSelectData} />
       </motion.div>

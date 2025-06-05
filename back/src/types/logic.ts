@@ -27,5 +27,5 @@ export interface ItineraryInput {
   destination: Coordinate;
   category: string; // ex. "커플", "가족"
   budget: number; // 숙소금액
-  dateRange: { start: string; end: string };
+  dateRange: { year: string; month: string; day: string }[];
 }

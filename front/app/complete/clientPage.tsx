@@ -671,14 +671,7 @@ export default function ClientPage() {
               />
             </ul>
             <ul
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-                w-full
-                mb-[20px]
-              "
+              className="flex flex-row items-center justify-start w-full "
             >
               <li>
                 <Button
@@ -725,6 +718,7 @@ export default function ClientPage() {
                         w-full
                         justify-between
                         mb-[10px]
+                        mt-[40px]
                       "
                     >
                       <li
@@ -791,7 +785,9 @@ export default function ClientPage() {
                             text-[14px]
                           "
                         >
-                          2025-08-01(수)
+                          {resultPlan.plan.date[index].year}-
+                          {resultPlan.plan.date[index].month}-
+                          {resultPlan.plan.date[index].day}
                         </li>
                       )}
                     </ul>
@@ -878,107 +874,7 @@ export default function ClientPage() {
                       </DndContext>
                     ) : (
                       data.map((value, idx) => {
-                        return data.length - 1 === idx &&
-                          resultPlan.plan &&
-                          resultPlan.plan.days.length - 1 !== index ? (
-                          <ul
-                            key={`${idx}-${index}`}
-                            className="
-                              flex
-                              flex-col
-                              items-start
-                              justify-center
-                              w-full
-                              mb-[50px]
-                            "
-                          >
-                            <li
-                              className="
-                                flex
-                                flex-row
-                                items-center
-                                w-full
-                                justify-between
-                                border-l-2
-                                border-dashed
-                                border-l-[--grey2]
-                                pl-[20px]
-                                py-[30px]
-                                ml-[9px]
-                              "
-                            >
-                              <div
-                                className="
-                                  flex
-                                  flex-row
-                                  items-center
-                                  justify-start
-                                  text-[grey]
-                                "
-                              >
-                                <Car width="15" height="15" />{" "}
-                                <p
-                                  className="
-                                    text-[14px]
-                                    ml-[5px]
-                                  "
-                                >
-                                  1시간소요
-                                </p>
-                              </div>
-                            </li>
-                            <li
-                              className="flex flex-row items-center justify-start w-full "
-                            >
-                              <div
-                                className="
-                                  flex
-                                  flex-col
-                                  items-center
-                                  justify-center
-                                  text-center
-                                  rounded-[10px]
-                                  size-[20px]
-                                  bg-[--main3]
-                                  text-[hsl(var(--background))]
-                                  text-[12px]
-                                  mr-[10px]
-                                "
-                              >
-                                {data.length + 1}
-                              </div>
-                              <div
-                                className="
-                                  flex
-                                  flex-row
-                                  items-center
-                                  justify-between
-                                  w-[calc(100%-30px)]
-                                "
-                              >
-                                <p
-                                  className="
-                                    text-[grey]
-                                    text-[14px]
-                                  "
-                                >
-                                  {index === resultPlan.plan.days.length - 1
-                                    ? resultPlan.plan &&
-                                      resultPlan.plan.start.name
-                                    : data[data.length - 1].name}
-                                </p>
-                                <p
-                                  className="
-                                    text-[--darkGrey2]
-                                    text-[12px]
-                                  "
-                                >
-                                  {index + 1}일차 마무리
-                                </p>
-                              </div>
-                            </li>
-                          </ul>
-                        ) : (
+                        return (
                           <ul
                             key={`${idx}-${index}`}
                             className="flex flex-col items-start justify-center w-full "
@@ -1023,7 +919,9 @@ export default function ClientPage() {
                                       ml-[5px]
                                     "
                                   >
-                                    {value.duration}시간 소요
+                                    {Math.floor(value.duration / 3600)}시간{" "}
+                                    {Math.floor((value.duration % 3600) / 60)}분
+                                    소요
                                   </p>
                                 </div>
                               </div>
@@ -1042,23 +940,23 @@ export default function ClientPage() {
                               className="relative flex flex-row items-center justify-end w-full "
                             >
                               <div
-                                className="
-                                  flex
-                                  flex-col
-                                  items-center
-                                  justify-center
-                                  h-full
-                                  text-center
-                                  rounded-[5px]
-                                  w-[20px]
-                                  bg-[--main]
-                                  text-[hsl(var(--background))]
-                                  text-[12px]
-                                  mr-[10px]
-                                  absolute
-                                  top-[0]
-                                  left-[0]
-                                "
+                                className={`
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    h-full
+                                    text-center
+                                    rounded-[5px]
+                                    w-[20px]
+                                    ${idx === data.length - 1 && resultPlan.plan && resultPlan.plan.days.length - 1 !== index ? "bg-[--main3]" : "bg-[--main]"}
+                                    text-[hsl(var(--background))]
+                                    text-[12px]
+                                    mr-[10px]
+                                    absolute
+                                    top-[0]
+                                    left-[0]
+                                `}
                               >
                                 {idx + 2}
                               </div>
@@ -1089,6 +987,7 @@ export default function ClientPage() {
                                   >
                                     명소
                                   </p>
+
                                   <p
                                     className="
                                       text-[14px]
@@ -1127,16 +1026,16 @@ export default function ClientPage() {
                                 </div>
 
                                 <div
-                                  className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    justify-center
-                                    w-[40%]
-                                  "
+                                  className={`
+                              flex
+                              flex-col
+                              items-center
+                              justify-center
+                              w-[40%]
+                          `}
                                 >
                                   <img
-                                    src="/daejeon.png"
+                                    src={value.photos}
                                     className="
                                       size-[80px]
                                       rounded-[10px]
