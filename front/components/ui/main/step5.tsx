@@ -5,8 +5,6 @@ import { useState } from "react";
 import { useStepStore } from "@store/frontStore";
 import { motion } from "framer-motion";
 
-import Car from "@components/svg/car";
-import Bus from "@components/svg/bus";
 import { usePlanStore } from "@store/planStore";
 import { useCreatePlan } from "@hooks/reactQuery/usePlan";
 import { useRouter } from "next/navigation";
@@ -24,7 +22,7 @@ export default function Step5() {
   //////////////////////////////////////////////////////////////
 
   const createPlan = useCreatePlan(() => {
-    router.push(`/complete`);
+    router.push(`/${String(createPlan.data.id)}`);
   });
 
   //////////////////////////////////////////////////////////////
@@ -112,24 +110,10 @@ export default function Step5() {
       </motion.p>
 
       <motion.ul
-        className="
-          flex
-          flex-row
-          items-center
-          justify-start
-          w-full
-          flex-wrap
-        "
+        className="flex flex-row flex-wrap items-center justify-start w-full "
       >
         <li
-          className="
-            flex
-            flex-row
-            items-center
-            justify-start
-            w-full
-            flex-wrap
-          "
+          className="flex flex-row flex-wrap items-center justify-start w-full "
         >
           <Button
             className="

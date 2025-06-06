@@ -2456,22 +2456,23 @@ export namespace Prisma {
     id: number | null
     UserId: number | null
     CategoryId: number | null
+    originDate: number | null
   }
 
   export type PlanSumAggregateOutputType = {
     id: number | null
     UserId: number | null
     CategoryId: number | null
+    originDate: number | null
   }
 
   export type PlanMinAggregateOutputType = {
     id: number | null
     UserId: number | null
     CategoryId: number | null
-    region: string | null
-    schedule: string | null
-    date: Date | null
     traffic: string | null
+    originDate: number | null
+    category: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2480,10 +2481,9 @@ export namespace Prisma {
     id: number | null
     UserId: number | null
     CategoryId: number | null
-    region: string | null
-    schedule: string | null
-    date: Date | null
     traffic: string | null
+    originDate: number | null
+    category: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2492,10 +2492,13 @@ export namespace Prisma {
     id: number
     UserId: number
     CategoryId: number
-    region: number
-    schedule: number
+    destination: number
     date: number
+    days: number
     traffic: number
+    start: number
+    originDate: number
+    category: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2506,22 +2509,23 @@ export namespace Prisma {
     id?: true
     UserId?: true
     CategoryId?: true
+    originDate?: true
   }
 
   export type PlanSumAggregateInputType = {
     id?: true
     UserId?: true
     CategoryId?: true
+    originDate?: true
   }
 
   export type PlanMinAggregateInputType = {
     id?: true
     UserId?: true
     CategoryId?: true
-    region?: true
-    schedule?: true
-    date?: true
     traffic?: true
+    originDate?: true
+    category?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2530,10 +2534,9 @@ export namespace Prisma {
     id?: true
     UserId?: true
     CategoryId?: true
-    region?: true
-    schedule?: true
-    date?: true
     traffic?: true
+    originDate?: true
+    category?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2542,10 +2545,13 @@ export namespace Prisma {
     id?: true
     UserId?: true
     CategoryId?: true
-    region?: true
-    schedule?: true
+    destination?: true
     date?: true
+    days?: true
     traffic?: true
+    start?: true
+    originDate?: true
+    category?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2641,10 +2647,13 @@ export namespace Prisma {
     id: number
     UserId: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date
+    destination: JsonValue
+    date: JsonValue
+    days: JsonValue
     traffic: string
+    start: JsonValue
+    originDate: number
+    category: string
     createdAt: Date
     updatedAt: Date
     _count: PlanCountAggregateOutputType | null
@@ -2672,10 +2681,13 @@ export namespace Prisma {
     id?: boolean
     UserId?: boolean
     CategoryId?: boolean
-    region?: boolean
-    schedule?: boolean
+    destination?: boolean
     date?: boolean
+    days?: boolean
     traffic?: boolean
+    start?: boolean
+    originDate?: boolean
+    category?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     User?: boolean | UserDefaultArgs<ExtArgs>
@@ -2690,15 +2702,18 @@ export namespace Prisma {
     id?: boolean
     UserId?: boolean
     CategoryId?: boolean
-    region?: boolean
-    schedule?: boolean
+    destination?: boolean
     date?: boolean
+    days?: boolean
     traffic?: boolean
+    start?: boolean
+    originDate?: boolean
+    category?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "UserId" | "CategoryId" | "region" | "schedule" | "date" | "traffic" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
+  export type PlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "UserId" | "CategoryId" | "destination" | "date" | "days" | "traffic" | "start" | "originDate" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
   export type PlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     User?: boolean | UserDefaultArgs<ExtArgs>
     Category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -2717,10 +2732,13 @@ export namespace Prisma {
       id: number
       UserId: number
       CategoryId: number
-      region: string
-      schedule: string
-      date: Date
+      destination: Prisma.JsonValue
+      date: Prisma.JsonValue
+      days: Prisma.JsonValue
       traffic: string
+      start: Prisma.JsonValue
+      originDate: number
+      category: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["plan"]>
@@ -3098,10 +3116,13 @@ export namespace Prisma {
     readonly id: FieldRef<"Plan", 'Int'>
     readonly UserId: FieldRef<"Plan", 'Int'>
     readonly CategoryId: FieldRef<"Plan", 'Int'>
-    readonly region: FieldRef<"Plan", 'String'>
-    readonly schedule: FieldRef<"Plan", 'String'>
-    readonly date: FieldRef<"Plan", 'DateTime'>
+    readonly destination: FieldRef<"Plan", 'Json'>
+    readonly date: FieldRef<"Plan", 'Json'>
+    readonly days: FieldRef<"Plan", 'Json'>
     readonly traffic: FieldRef<"Plan", 'String'>
+    readonly start: FieldRef<"Plan", 'Json'>
+    readonly originDate: FieldRef<"Plan", 'Int'>
+    readonly category: FieldRef<"Plan", 'String'>
     readonly createdAt: FieldRef<"Plan", 'DateTime'>
     readonly updatedAt: FieldRef<"Plan", 'DateTime'>
   }
@@ -6639,10 +6660,13 @@ export namespace Prisma {
     id: 'id',
     UserId: 'UserId',
     CategoryId: 'CategoryId',
-    region: 'region',
-    schedule: 'schedule',
+    destination: 'destination',
     date: 'date',
+    days: 'days',
     traffic: 'traffic',
+    start: 'start',
+    originDate: 'originDate',
+    category: 'category',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -6696,6 +6720,13 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
   export const NullsOrder: {
     first: 'first',
     last: 'last'
@@ -6717,10 +6748,26 @@ export namespace Prisma {
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
   export const PlanOrderByRelevanceFieldEnum: {
-    region: 'region',
-    schedule: 'schedule',
-    traffic: 'traffic'
+    traffic: 'traffic',
+    category: 'category'
   };
 
   export type PlanOrderByRelevanceFieldEnum = (typeof PlanOrderByRelevanceFieldEnum)[keyof typeof PlanOrderByRelevanceFieldEnum]
@@ -6783,6 +6830,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -6903,10 +6964,13 @@ export namespace Prisma {
     id?: IntFilter<"Plan"> | number
     UserId?: IntFilter<"Plan"> | number
     CategoryId?: IntFilter<"Plan"> | number
-    region?: StringFilter<"Plan"> | string
-    schedule?: StringFilter<"Plan"> | string
-    date?: DateTimeFilter<"Plan"> | Date | string
+    destination?: JsonFilter<"Plan">
+    date?: JsonFilter<"Plan">
+    days?: JsonFilter<"Plan">
     traffic?: StringFilter<"Plan"> | string
+    start?: JsonFilter<"Plan">
+    originDate?: IntFilter<"Plan"> | number
+    category?: StringFilter<"Plan"> | string
     createdAt?: DateTimeFilter<"Plan"> | Date | string
     updatedAt?: DateTimeFilter<"Plan"> | Date | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -6918,10 +6982,13 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
-    region?: SortOrder
-    schedule?: SortOrder
+    destination?: SortOrder
     date?: SortOrder
+    days?: SortOrder
     traffic?: SortOrder
+    start?: SortOrder
+    originDate?: SortOrder
+    category?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     User?: UserOrderByWithRelationInput
@@ -6937,10 +7004,13 @@ export namespace Prisma {
     NOT?: PlanWhereInput | PlanWhereInput[]
     UserId?: IntFilter<"Plan"> | number
     CategoryId?: IntFilter<"Plan"> | number
-    region?: StringFilter<"Plan"> | string
-    schedule?: StringFilter<"Plan"> | string
-    date?: DateTimeFilter<"Plan"> | Date | string
+    destination?: JsonFilter<"Plan">
+    date?: JsonFilter<"Plan">
+    days?: JsonFilter<"Plan">
     traffic?: StringFilter<"Plan"> | string
+    start?: JsonFilter<"Plan">
+    originDate?: IntFilter<"Plan"> | number
+    category?: StringFilter<"Plan"> | string
     createdAt?: DateTimeFilter<"Plan"> | Date | string
     updatedAt?: DateTimeFilter<"Plan"> | Date | string
     User?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -6952,10 +7022,13 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
-    region?: SortOrder
-    schedule?: SortOrder
+    destination?: SortOrder
     date?: SortOrder
+    days?: SortOrder
     traffic?: SortOrder
+    start?: SortOrder
+    originDate?: SortOrder
+    category?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PlanCountOrderByAggregateInput
@@ -6972,10 +7045,13 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Plan"> | number
     UserId?: IntWithAggregatesFilter<"Plan"> | number
     CategoryId?: IntWithAggregatesFilter<"Plan"> | number
-    region?: StringWithAggregatesFilter<"Plan"> | string
-    schedule?: StringWithAggregatesFilter<"Plan"> | string
-    date?: DateTimeWithAggregatesFilter<"Plan"> | Date | string
+    destination?: JsonWithAggregatesFilter<"Plan">
+    date?: JsonWithAggregatesFilter<"Plan">
+    days?: JsonWithAggregatesFilter<"Plan">
     traffic?: StringWithAggregatesFilter<"Plan"> | string
+    start?: JsonWithAggregatesFilter<"Plan">
+    originDate?: IntWithAggregatesFilter<"Plan"> | number
+    category?: StringWithAggregatesFilter<"Plan"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Plan"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Plan"> | Date | string
   }
@@ -7295,10 +7371,13 @@ export namespace Prisma {
   }
 
   export type PlanCreateInput = {
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     User: UserCreateNestedOneWithoutPlanInput
@@ -7310,20 +7389,26 @@ export namespace Prisma {
     id?: number
     UserId: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     Place?: PlaceUncheckedCreateNestedManyWithoutPlanInput
   }
 
   export type PlanUpdateInput = {
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     User?: UserUpdateOneRequiredWithoutPlanNestedInput
@@ -7335,10 +7420,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Place?: PlaceUncheckedUpdateManyWithoutPlanNestedInput
@@ -7348,19 +7436,25 @@ export namespace Prisma {
     id?: number
     UserId: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type PlanUpdateManyMutationInput = {
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7369,10 +7463,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7799,6 +7896,29 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
@@ -7830,10 +7950,13 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
-    region?: SortOrder
-    schedule?: SortOrder
+    destination?: SortOrder
     date?: SortOrder
+    days?: SortOrder
     traffic?: SortOrder
+    start?: SortOrder
+    originDate?: SortOrder
+    category?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7842,16 +7965,16 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
+    originDate?: SortOrder
   }
 
   export type PlanMaxOrderByAggregateInput = {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
-    region?: SortOrder
-    schedule?: SortOrder
-    date?: SortOrder
     traffic?: SortOrder
+    originDate?: SortOrder
+    category?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7860,10 +7983,9 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
-    region?: SortOrder
-    schedule?: SortOrder
-    date?: SortOrder
     traffic?: SortOrder
+    originDate?: SortOrder
+    category?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7872,6 +7994,33 @@ export namespace Prisma {
     id?: SortOrder
     UserId?: SortOrder
     CategoryId?: SortOrder
+    originDate?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type DecimalFilter<$PrismaModel = never> = {
@@ -8578,6 +8727,29 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedDecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
@@ -8607,10 +8779,13 @@ export namespace Prisma {
   }
 
   export type PlanCreateWithoutUserInput = {
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     Category: CategoryCreateNestedOneWithoutPlanInput
@@ -8620,10 +8795,13 @@ export namespace Prisma {
   export type PlanUncheckedCreateWithoutUserInput = {
     id?: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     Place?: PlaceUncheckedCreateNestedManyWithoutPlanInput
@@ -8662,10 +8840,13 @@ export namespace Prisma {
     id?: IntFilter<"Plan"> | number
     UserId?: IntFilter<"Plan"> | number
     CategoryId?: IntFilter<"Plan"> | number
-    region?: StringFilter<"Plan"> | string
-    schedule?: StringFilter<"Plan"> | string
-    date?: DateTimeFilter<"Plan"> | Date | string
+    destination?: JsonFilter<"Plan">
+    date?: JsonFilter<"Plan">
+    days?: JsonFilter<"Plan">
     traffic?: StringFilter<"Plan"> | string
+    start?: JsonFilter<"Plan">
+    originDate?: IntFilter<"Plan"> | number
+    category?: StringFilter<"Plan"> | string
     createdAt?: DateTimeFilter<"Plan"> | Date | string
     updatedAt?: DateTimeFilter<"Plan"> | Date | string
   }
@@ -8881,10 +9062,13 @@ export namespace Prisma {
   }
 
   export type PlanCreateWithoutPlaceInput = {
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     User: UserCreateNestedOneWithoutPlanInput
@@ -8895,10 +9079,13 @@ export namespace Prisma {
     id?: number
     UserId: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9069,10 +9256,13 @@ export namespace Prisma {
   }
 
   export type PlanCreateWithoutCategoryInput = {
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     User: UserCreateNestedOneWithoutPlanInput
@@ -9082,10 +9272,13 @@ export namespace Prisma {
   export type PlanUncheckedCreateWithoutCategoryInput = {
     id?: number
     UserId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
     Place?: PlaceUncheckedCreateNestedManyWithoutPlanInput
@@ -9136,19 +9329,25 @@ export namespace Prisma {
   export type PlanCreateManyUserInput = {
     id?: number
     CategoryId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type PlanUpdateWithoutUserInput = {
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Category?: CategoryUpdateOneRequiredWithoutPlanNestedInput
@@ -9158,10 +9357,13 @@ export namespace Prisma {
   export type PlanUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Place?: PlaceUncheckedUpdateManyWithoutPlanNestedInput
@@ -9170,10 +9372,13 @@ export namespace Prisma {
   export type PlanUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9247,10 +9452,13 @@ export namespace Prisma {
   }
 
   export type PlanUpdateWithoutPlaceInput = {
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     User?: UserUpdateOneRequiredWithoutPlanNestedInput
@@ -9261,10 +9469,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9273,10 +9484,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
     CategoryId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9352,10 +9566,13 @@ export namespace Prisma {
   export type PlanCreateManyCategoryInput = {
     id?: number
     UserId: number
-    region: string
-    schedule: string
-    date: Date | string
+    destination: JsonNullValueInput | InputJsonValue
+    date: JsonNullValueInput | InputJsonValue
+    days: JsonNullValueInput | InputJsonValue
     traffic: string
+    start: JsonNullValueInput | InputJsonValue
+    originDate: number
+    category: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9383,10 +9600,13 @@ export namespace Prisma {
   }
 
   export type PlanUpdateWithoutCategoryInput = {
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     User?: UserUpdateOneRequiredWithoutPlanNestedInput
@@ -9396,10 +9616,13 @@ export namespace Prisma {
   export type PlanUncheckedUpdateWithoutCategoryInput = {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Place?: PlaceUncheckedUpdateManyWithoutPlanNestedInput
@@ -9408,10 +9631,13 @@ export namespace Prisma {
   export type PlanUncheckedUpdateManyWithoutCategoryInput = {
     id?: IntFieldUpdateOperationsInput | number
     UserId?: IntFieldUpdateOperationsInput | number
-    region?: StringFieldUpdateOperationsInput | string
-    schedule?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    destination?: JsonNullValueInput | InputJsonValue
+    date?: JsonNullValueInput | InputJsonValue
+    days?: JsonNullValueInput | InputJsonValue
     traffic?: StringFieldUpdateOperationsInput | string
+    start?: JsonNullValueInput | InputJsonValue
+    originDate?: IntFieldUpdateOperationsInput | number
+    category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

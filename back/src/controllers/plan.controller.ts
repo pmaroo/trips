@@ -6,6 +6,7 @@ import {
   createPlanModel,
   deletePlanModel,
   getPlanByIdModel,
+  getPlanUserByIdModel,
   updatePlanModel,
 } from "../models/plan.model";
 import { PlaceDTO } from "../types/place";
@@ -71,6 +72,22 @@ export const createPlan = async (req: Request, res: Response) => {
   } catch (error) {
     errorConsole(error);
     res.status(401).json({ message: "일정을 생성하는데 실패했습니다." });
+  }
+};
+
+export const getPlanUserById = async (req: Request, res: Response) => {
+  const planData: DeletePlan = req.body;
+  try {
+    if (!planData) {
+      res.status(401).json({ message: "일정의 정보가 없습니다." });
+      return;
+    }
+
+    const data = await getPlanUserByIdModel(planData);
+    res.json(data);
+  } catch (error) {
+    errorConsole(error);
+    res.status(401).json({ message: "일정을 불러오는데 실패했습니다." });
   }
 };
 

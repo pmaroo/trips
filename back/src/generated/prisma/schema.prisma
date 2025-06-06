@@ -34,18 +34,21 @@ model User {
 
 // 일정
 model Plan {
-  id         Int      @id @default(autoincrement())
-  UserId     Int
-  CategoryId Int
-  region     String   @db.VarChar(700)
-  schedule   String   @db.VarChar(700)
-  date       DateTime @db.DateTime()
-  traffic    String   @db.VarChar(100)
-  User       User     @relation(fields: [UserId], references: [id])
-  Category   Category @relation(fields: [CategoryId], references: [id])
-  Place      Place[]  @relation("PlacePlan")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  UserId      Int
+  CategoryId  Int
+  destination Json // { name, lat, lng }
+  date        Json // [{ year, month, day }, ...]
+  days        Json // 2차원 배열 저장 가능
+  traffic     String   @db.VarChar(100)
+  start       Json // { name, lat, lng }
+  originDate  Int
+  category    String   @db.VarChar(100)
+  User        User     @relation(fields: [UserId], references: [id])
+  Category    Category @relation(fields: [CategoryId], references: [id])
+  Place       Place[]  @relation("PlacePlan")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // 유명한 장소

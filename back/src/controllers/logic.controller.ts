@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { errorConsole } from "../utils/error";
-import { ItineraryInput } from "../types/logic";
 import { logic } from "../service/logic.service";
+import { createPlanModel } from "../models/plan.model";
 
 export const findLogic = async (req: Request, res: Response) => {
   const data: any = req.body;
@@ -11,7 +11,9 @@ export const findLogic = async (req: Request, res: Response) => {
       return;
     }
 
-    const result = await logic(data);
+    const logicResult = await logic(data);
+    const result = await createPlanModel(logicResult);
+    console.log(result);
     res.json(result);
   } catch (error) {
     errorConsole(error);

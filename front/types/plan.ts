@@ -28,6 +28,7 @@ export interface Coordinate {
 }
 
 export interface CreatePlan {
+  id?: number;
   CategoryId?: number; // 카테고리
   category?: string;
   destination?: Coordinate; // 지역
@@ -35,4 +36,8 @@ export interface CreatePlan {
   traffic?: string; // 교통수단
   budget?: number; // 숙소가격
   start?: Coordinate; // 출발주소
+}
+
+export interface PlanListById {
+  id: number;
 }

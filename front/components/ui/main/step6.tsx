@@ -3,12 +3,16 @@
 import Components from "@components/shadcn";
 import { useMeState } from "@store/commonStore";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useCreatePlan } from "@hooks/reactQuery/usePlan";
+import { useRouter } from "next/navigation";
 
 export default function Step6() {
   const { Button, Input } = Components;
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
+
+  const router = useRouter();
 
   //////////////////////////////////////////////////////////////
   // HOOK
@@ -23,6 +27,7 @@ export default function Step6() {
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
+
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
@@ -67,10 +72,7 @@ export default function Step6() {
       >
         {meStore && meStore.me.userName}님의 여행일정을{" "}
         <br
-          className="
-            flex
-            sm:hidden
-          "
+          className="flex  sm:hidden"
         />{" "}
         생성 중 입니다 !
       </h1>

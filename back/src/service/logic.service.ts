@@ -24,7 +24,7 @@ interface Result {
   vicinity: string;
   distance?: number;
   duration?: number;
-  photos?: string;
+  photos?: string | null;
 }
 
 interface GooglePlace {
@@ -143,21 +143,27 @@ async function getNearbyGooglePlaces(
       }
     );
 
-    const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${details.data.result.photos[0].photo_reference}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+    let dataUrl = null;
 
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
+    if (details.data.result.photos) {
+      const url = details.data.result.photos
+        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${details.data.result.photos[0].photo_reference}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+        : "";
 
-    const buffer = Buffer.from(arrayBuffer);
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
 
-    // 이미지의 MIME 타입 추정 (구글에서 대부분 JPEG으로 반환됨)
-    const mimeType = "image/jpeg"; // 필요시 content-type 검사로 유동 처리 가능
+      const buffer = Buffer.from(arrayBuffer);
 
-    // base64 인코딩
-    const base64 = buffer.toString("base64");
+      // 이미지의 MIME 타입 추정 (구글에서 대부분 JPEG으로 반환됨)
+      const mimeType = "image/jpeg"; // 필요시 content-type 검사로 유동 처리 가능
 
-    // data URI 생성
-    const dataUrl = `data:${mimeType};base64,${base64}`;
+      // base64 인코딩
+      const base64 = buffer.toString("base64");
+
+      // data URI 생성
+      dataUrl = `data:${mimeType};base64,${base64}`;
+    }
 
     await storeDatum.push({
       name: details.data.result.name,
@@ -206,8 +212,8 @@ async function getDistance(
       ? `${startLng},${startLat},name=${startName}`
       : `${startLng},${startLat}`,
     destination: `${endLng},${endLat},name=${endName}`,
-    priority: "RECOMMEND",
-    roadevent: 2,
+    priority: "TIME",
+    roadevent: 0,
   };
 
   const response = await axios.get(baseUrl, {
@@ -228,8 +234,12 @@ async function getDistance(
 
   return {
     name: endName, // 관광지명소
-    distance: response.data.routes[0].summary.distance,
-    duration: response.data.routes[0].summary.duration,
+    distance: response.data.routes[0].summary
+      ? response.data.routes[0].summary.distance
+      : 0,
+    duration: response.data.routes[0].summary
+      ? response.data.routes[0].summary.duration
+      : 0,
   };
 }
 
@@ -263,13 +273,22 @@ async function getFirstDay(
   originDate: number,
   destinationLat: number,
   destinationLng: number,
-  firstTouristSortDistance: Result[]
+  firstTouristSortDistance: Result[],
+  originLat: number,
+  originLng: number
 ) {
+  // 장소
   let onePlace = null;
   let twoPlace = null;
   let threePlace = null;
   let fourPlace = null;
   let fivePlace = null;
+  // 거리
+  let oneDistance = null;
+  let twoDistance = null;
+  let threeDistance = null;
+  let fourDistance = null;
+  let fiveDistance = null;
 
   // 1박2일
   if (originDate === 2) {
@@ -283,8 +302,36 @@ async function getFirstDay(
       "restaurant",
       1
     );
+
+    oneDistance = await getDistance(
+      null,
+      originLat,
+      originLng,
+      firstFood[0].name,
+      firstFood[0].lat,
+      firstFood[0].lng
+    );
+
     // 1일차 첫 관광 = touristAllSortDistance[1]
+    twoDistance = await getDistance(
+      firstFood[0].name,
+      firstFood[0].lat,
+      firstFood[0].lng,
+      touristAllSortDistance[1].name,
+      touristAllSortDistance[1].lat,
+      touristAllSortDistance[1].lng
+    );
+
     // 1일차 두번째 관광 = touristAllSortDistance[2]
+    threeDistance = await getDistance(
+      touristAllSortDistance[1].name,
+      touristAllSortDistance[1].lat,
+      touristAllSortDistance[1].lng,
+      touristAllSortDistance[2].name,
+      touristAllSortDistance[2].lat,
+      touristAllSortDistance[2].lng
+    );
+
     // 1일차 마지막 음식
     const nMiusFood = await getNearbyGooglePlaces(
       destinationLat,
@@ -294,6 +341,16 @@ async function getFirstDay(
       "restaurant",
       1
     );
+
+    fourDistance = await getDistance(
+      touristAllSortDistance[2].name,
+      touristAllSortDistance[2].lat,
+      touristAllSortDistance[2].lng,
+      nMiusFood[0].name,
+      nMiusFood[0].lat,
+      nMiusFood[0].lng
+    );
+
     // 1일차 숙소
     const nMiusStay = await getNearbyGooglePlaces(
       nMiusFood[0].lat,
@@ -304,11 +361,40 @@ async function getFirstDay(
       1
     );
 
-    onePlace = await firstFood[0];
-    twoPlace = await touristAllSortDistance[1];
-    threePlace = await touristAllSortDistance[2];
-    fourPlace = await nMiusFood[0];
-    fivePlace = await nMiusStay[0];
+    fiveDistance = await getDistance(
+      nMiusFood[0].name,
+      nMiusFood[0].lat,
+      nMiusFood[0].lng,
+      nMiusStay[0].name,
+      nMiusStay[0].lat,
+      nMiusStay[0].lng
+    );
+
+    onePlace = await {
+      ...firstFood[0],
+      distance: oneDistance.distance,
+      duration: oneDistance.duration,
+    };
+    twoPlace = await {
+      ...touristAllSortDistance[1],
+      distance: twoDistance.distance,
+      duration: twoDistance.duration,
+    };
+    threePlace = await {
+      ...touristAllSortDistance[2],
+      distance: threeDistance.distance,
+      duration: threeDistance.duration,
+    };
+    fourPlace = await {
+      ...nMiusFood[0],
+      distance: fourDistance.distance,
+      duration: fourDistance.duration,
+    };
+    fivePlace = await {
+      ...nMiusStay[0],
+      distance: fiveDistance.distance,
+      duration: fiveDistance.duration,
+    };
   } else {
     // N일차
     // 1일차 첫 음식점
@@ -321,8 +407,34 @@ async function getFirstDay(
       "restaurant",
       1
     );
+
+    oneDistance = await getDistance(
+      null,
+      originLat,
+      originLng,
+      firstFood[0].name,
+      firstFood[0].lat,
+      firstFood[0].lng
+    );
     // 1일차 첫 관광 = touristAllSortDistance[1]
+    twoDistance = await getDistance(
+      firstFood[0].name,
+      firstFood[0].lat,
+      firstFood[0].lng,
+      touristAllSortDistance[1].name,
+      touristAllSortDistance[1].lat,
+      touristAllSortDistance[1].lng
+    );
     // 1일차 두번째 관광 = firstTouristSortDistance[0]
+    threeDistance = await getDistance(
+      firstTouristSortDistance[0].name,
+      firstTouristSortDistance[0].lat,
+      firstTouristSortDistance[0].lng,
+      touristAllSortDistance[2].name,
+      touristAllSortDistance[2].lat,
+      touristAllSortDistance[2].lng
+    );
+
     // 1일차 마지막 음식점
     // 첫날 두번째 관광과 가장 가까운곳
     const day1LastFood = await getNearbyGooglePlaces(
@@ -332,6 +444,15 @@ async function getFirstDay(
       "음식",
       "restaurant",
       1
+    );
+
+    fourDistance = await getDistance(
+      firstTouristSortDistance[0].name,
+      firstTouristSortDistance[0].lat,
+      firstTouristSortDistance[0].lng,
+      day1LastFood[0].name,
+      day1LastFood[0].lat,
+      day1LastFood[0].lng
     );
 
     // 1일차 마지막 숙소
@@ -344,11 +465,40 @@ async function getFirstDay(
       1
     );
 
-    onePlace = await firstFood[0];
-    twoPlace = await touristAllSortDistance[1];
-    threePlace = await firstTouristSortDistance[0];
-    fourPlace = await day1LastFood[0];
-    fivePlace = await day1LastStay[0];
+    fiveDistance = await getDistance(
+      day1LastFood[0].name,
+      day1LastFood[0].lat,
+      day1LastFood[0].lng,
+      day1LastStay[0].name,
+      day1LastStay[0].lat,
+      day1LastStay[0].lng
+    );
+
+    onePlace = await {
+      ...firstFood[0],
+      distance: oneDistance.distance,
+      duration: oneDistance.duration,
+    };
+    twoPlace = await {
+      ...touristAllSortDistance[1],
+      distance: twoDistance.distance,
+      duration: twoDistance.duration,
+    };
+    threePlace = await {
+      ...touristAllSortDistance[0],
+      distance: threeDistance.distance,
+      duration: threeDistance.duration,
+    };
+    fourPlace = await {
+      ...day1LastFood[0],
+      distance: fourDistance.distance,
+      duration: fourDistance.duration,
+    };
+    fivePlace = await {
+      ...day1LastStay[0],
+      distance: fiveDistance.distance,
+      duration: fiveDistance.duration,
+    };
   }
 
   return [onePlace, twoPlace, threePlace, fourPlace, fivePlace];
@@ -359,12 +509,20 @@ async function getNDay(
   firstStayDistance: DistnaceDTO[],
   remainFirstStayDistance: Result[]
 ) {
+  // 장소
   let onePlace = null;
   let twoPlace = null;
   let threePlace = null;
   let fourPlace = null;
   let fivePlace = null;
   let sixPlace = null;
+  // 거리
+  let oneDistance = null;
+  let twoDistance = null;
+  let threeDistance = null;
+  let fourDistance = null;
+  let fiveDistance = null;
+  let sixDistance = null;
 
   // 숙소와 가장 가까운 거리순으로 배열 정리
   // firstStaySortDistance[0] : n일째 첫 관광지
@@ -385,6 +543,36 @@ async function getNDay(
     1
   );
 
+  // n일째 첫 음식점 => n일째 두번째 관광지 거리
+  twoDistance = await getDistance(
+    firstStaySortDistance[0].name,
+    firstStaySortDistance[0].lat,
+    firstStaySortDistance[0].lng,
+    nFirstFood[0].name,
+    nFirstFood[0].lat,
+    nFirstFood[0].lng
+  );
+
+  // n일째 첫 음식점 => n일째 두번째 관광지 거리
+  threeDistance = await getDistance(
+    nFirstFood[0].name,
+    nFirstFood[0].lat,
+    nFirstFood[0].lng,
+    firstStaySortDistance[1].name,
+    firstStaySortDistance[1].lat,
+    firstStaySortDistance[1].lng
+  );
+
+  // n일째 두번째 관광지 => n일째 세번째 관광지 거리
+  fourDistance = await getDistance(
+    firstStaySortDistance[1].name,
+    firstStaySortDistance[1].lat,
+    firstStaySortDistance[1].lng,
+    firstStaySortDistance[2].name,
+    firstStaySortDistance[2].lat,
+    firstStaySortDistance[2].lng
+  );
+
   // 마지막 음식점
   const nLastFood = await getNearbyGooglePlaces(
     firstStaySortDistance[2].lat,
@@ -393,6 +581,16 @@ async function getNDay(
     "음식",
     "restaurant",
     1
+  );
+
+  // n일째 세번째 관광지  => n일째 마지막 음식점 거리
+  fiveDistance = await getDistance(
+    firstStaySortDistance[2].name,
+    firstStaySortDistance[2].lat,
+    firstStaySortDistance[2].lng,
+    nLastFood[0].name,
+    nLastFood[0].lat,
+    nLastFood[0].lng
   );
 
   // 숙소
@@ -405,12 +603,42 @@ async function getNDay(
     1
   );
 
+  // n일째  마지막 음식점 => n일째 숙소 거리
+  sixDistance = await getDistance(
+    nLastFood[0].name,
+    nLastFood[0].lat,
+    nLastFood[0].lng,
+    nLastStay[0].name,
+    nLastStay[0].lat,
+    nLastStay[0].lng
+  );
+
   onePlace = await firstStaySortDistance[0];
-  twoPlace = await nFirstFood[0];
-  threePlace = await firstStaySortDistance[1];
-  fourPlace = await firstStaySortDistance[2];
-  fivePlace = await nLastFood[0];
-  sixPlace = await nLastStay[0];
+  twoPlace = await {
+    ...nFirstFood[0],
+    distance: twoDistance.distance,
+    duration: twoDistance.duration,
+  };
+  threePlace = await {
+    ...firstStaySortDistance[1],
+    distance: threeDistance.distance,
+    duration: threeDistance.duration,
+  };
+  fourPlace = await {
+    ...firstStaySortDistance[2],
+    distance: fourDistance.distance,
+    duration: fourDistance.duration,
+  };
+  fivePlace = await {
+    ...nLastFood[0],
+    distance: fiveDistance.distance,
+    duration: fiveDistance.duration,
+  };
+  sixPlace = await {
+    ...nLastStay[0],
+    distance: sixDistance.distance,
+    duration: sixDistance.duration,
+  };
 
   return [onePlace, twoPlace, threePlace, fourPlace, fivePlace, sixPlace];
 }
@@ -422,12 +650,20 @@ async function getNMinusDay(
   remainFirstStayDistance: Result[],
   day1LastStay: Result // 전날숙소
 ) {
+  // 장소
   let onePlace = null;
   let twoPlace = null;
   let threePlace = null;
   let fourPlace = null;
   let fivePlace = null;
   let sixPlace = null;
+  // 거리
+  let oneDistance = null;
+  let twoDistance = null;
+  let threeDistance = null;
+  let fourDistance = null;
+  let fiveDistance = null;
+  let sixDistance = null;
 
   // 남은 관광지 중 숙소와 가장 가까운 곳
   const firstStayDistance: DistnaceDTO[] = await Promise.all(
@@ -444,15 +680,15 @@ async function getNMinusDay(
   );
 
   // 숙소와 가장 가까운 거리순으로 배열 정리
-  // firstStaySortDistance[0] : n일째 첫 관광지
-  // firstStaySortDistance[1] : n일째 두번째 관광지
-  // firstStaySortDistance[2] : n일째 세번째 관광지
+  // firstStaySortDistance[0] : n-1일째 첫 관광지
+  // firstStaySortDistance[1] : n-1일째 두번째 관광지
+  // firstStaySortDistance[2] : n-1일째 세번째 관광지
   const firstStaySortDistance: Result[] = await arrayDistances(
     firstStayDistance,
     remainFirstStayDistance
   );
 
-  // n일째 첫 음식점 (n일째 첫 관광지 근처)
+  // n-1일째 첫 음식점 (n-1일째 첫 관광지 근처)
   const nFirstFood = await getNearbyGooglePlaces(
     firstStaySortDistance[0].lat,
     firstStaySortDistance[0].lng,
@@ -461,6 +697,37 @@ async function getNMinusDay(
     "restaurant",
     1
   );
+
+  // n-1일째 첫 음식점 => n-1일째 두번째 관광지 거리
+  twoDistance = await getDistance(
+    firstStaySortDistance[0].name,
+    firstStaySortDistance[0].lat,
+    firstStaySortDistance[0].lng,
+    nFirstFood[0].name,
+    nFirstFood[0].lat,
+    nFirstFood[0].lng
+  );
+
+  // n-1일째 첫 음식점 => n-1일째 두번째 관광지 거리
+  threeDistance = await getDistance(
+    nFirstFood[0].name,
+    nFirstFood[0].lat,
+    nFirstFood[0].lng,
+    firstStaySortDistance[1].name,
+    firstStaySortDistance[1].lat,
+    firstStaySortDistance[1].lng
+  );
+
+  // n-1일째 두번째 관광지 => n-1일째 세번째 관광지 거리
+  fourDistance = await getDistance(
+    firstStaySortDistance[1].name,
+    firstStaySortDistance[1].lat,
+    firstStaySortDistance[1].lng,
+    firstStaySortDistance[2].name,
+    firstStaySortDistance[2].lat,
+    firstStaySortDistance[2].lng
+  );
+
   // N-1일차 핫플 근처 음식점
   const nMiusFood = await getNearbyGooglePlaces(
     destinationLat,
@@ -469,6 +736,16 @@ async function getNMinusDay(
     "음식",
     "restaurant",
     1
+  );
+
+  // n-1일째 세번째 관광지  => n-1일째 마지막 음식점 거리
+  fiveDistance = await getDistance(
+    firstStaySortDistance[2].name,
+    firstStaySortDistance[2].lat,
+    firstStaySortDistance[2].lng,
+    nMiusFood[0].name,
+    nMiusFood[0].lat,
+    nMiusFood[0].lng
   );
 
   // N-1일차 숙소
@@ -481,24 +758,71 @@ async function getNMinusDay(
     1
   );
 
-  console.log(nMiusStay);
+  // n-1일째  마지막 음식점 => n-1일째 숙소 거리
+  sixDistance = await getDistance(
+    nMiusFood[0].name,
+    nMiusFood[0].lat,
+    nMiusFood[0].lng,
+    nMiusStay[0].name,
+    nMiusStay[0].lat,
+    nMiusStay[0].lng
+  );
 
   onePlace = await firstStaySortDistance[0];
-  twoPlace = await nFirstFood[0];
-  threePlace = await firstStaySortDistance[1];
-  fourPlace = await firstStaySortDistance[2];
-  fivePlace = await nMiusFood[0];
-  sixPlace = await nMiusStay[0];
+  twoPlace = await {
+    ...nFirstFood[0],
+    distance: twoDistance.distance,
+    duration: twoDistance.duration,
+  };
+  threePlace = await {
+    ...firstStaySortDistance[1],
+    distance: threeDistance.distance,
+    duration: threeDistance.duration,
+  };
+  fourPlace = await {
+    ...firstStaySortDistance[2],
+    distance: fourDistance.distance,
+    duration: fourDistance.duration,
+  };
+  fivePlace = await {
+    ...nMiusFood[0],
+    distance: fiveDistance.distance,
+    duration: fiveDistance.duration,
+  };
+  sixPlace = await {
+    ...nMiusStay[0],
+    distance: sixDistance.distance,
+    duration: sixDistance.duration,
+  };
 
   return [onePlace, twoPlace, threePlace, fourPlace, fivePlace, sixPlace];
 }
 
 // 마지막날
-async function getLastDay(touristAllSortDistance: Result[]) {
+async function getLastDay(
+  touristAllSortDistance: Result[],
+  nMinusStay: Result,
+  originLat: number,
+  originLng: number
+) {
+  // 장소
   let onePlace = null;
   let twoPlace = null;
+  // 거리
+  let oneDistance = null;
+  let twoDistance = null;
+  let threeDistance = null;
 
   // 마지막 관광지 = touristAllSortDistance[0]
+  // n-1일째 숙소 => 마지막 첫 관광지
+  oneDistance = await getDistance(
+    nMinusStay.name,
+    nMinusStay.lat,
+    nMinusStay.lng,
+    touristAllSortDistance[0].name,
+    touristAllSortDistance[0].lat,
+    touristAllSortDistance[0].lng
+  );
   // 마지막 음식점
   const lastFood = await getNearbyGooglePlaces(
     touristAllSortDistance[0].lat,
@@ -508,11 +832,37 @@ async function getLastDay(touristAllSortDistance: Result[]) {
     "restaurant",
     1
   );
+  // 마지막 첫 관광지 => 마지막 음식점
+  twoDistance = await getDistance(
+    touristAllSortDistance[0].name,
+    touristAllSortDistance[0].lat,
+    touristAllSortDistance[0].lng,
+    lastFood[0].name,
+    lastFood[0].lat,
+    lastFood[0].lng
+  );
+  // 마지막 첫 관광지 => 마지막 음식점
+  threeDistance = await getDistance(
+    lastFood[0].name,
+    lastFood[0].lat,
+    lastFood[0].lng,
+    "집",
+    originLat,
+    originLng
+  );
 
-  onePlace = await touristAllSortDistance[0];
-  twoPlace = await lastFood[0];
+  onePlace = await {
+    ...touristAllSortDistance[0],
+    duration: oneDistance.duration,
+    distance: oneDistance.distance,
+  };
+  twoPlace = await {
+    ...lastFood[0],
+    duration: twoDistance.duration,
+    distance: twoDistance.distance,
+  };
 
-  return [onePlace, twoPlace];
+  return [onePlace, twoPlace, threeDistance];
 }
 
 export async function logic(data: any) {
@@ -552,7 +902,6 @@ export async function logic(data: any) {
   // ex ) 1박2일 = 2 , 2박3일 = 3
   // 실제 여행일정 일차
 
-  console.log(data);
   const startMonth = parseInt(data.date[0].month);
   const endMonth = parseInt(data.date[1].month);
   const startDay = parseInt(data.date[0].day);
@@ -636,8 +985,8 @@ export async function logic(data: any) {
   // n = originDate
   // N일 = 관광지 3 + (3 * (n - 2))
   const touristPlaces = await getNearbyGooglePlaces(
-    35.16001944,
-    129.1658083,
+    destinationLat,
+    destinationLng,
     10000,
     "관광명소",
     "establishment",
@@ -702,6 +1051,8 @@ export async function logic(data: any) {
 
   // 최종 일정 담을 곳
   let days = [];
+  // 마지막 전날 숙소
+  let nMinusStay = null;
 
   // 1일차 구하기
   const firstDay = await getFirstDay(
@@ -709,11 +1060,15 @@ export async function logic(data: any) {
     originDate,
     destinationLat,
     destinationLng,
-    firstTouristSortDistance
+    firstTouristSortDistance,
+    originLat,
+    originLng
   );
 
   // 1일차 추가
   await days.push(firstDay);
+  // 1박2일일때 마지막 전날 숙소
+  nMinusStay = firstDay[4];
 
   // 2박 3일부터
   if (firstTouristSortDistance.length > 1) {
@@ -785,6 +1140,8 @@ export async function logic(data: any) {
 
       // n일차 추가
       await days.push(nMinusDay);
+      // 3박4일이상일때 마지막 전날 숙소
+      nMinusStay = nMinusDay[5];
     } else {
       // 2박 3일
       // 1일차 - n-1일차 - 마지막
@@ -798,11 +1155,18 @@ export async function logic(data: any) {
 
       // n일차 추가
       await days.push(nMinusDay);
+      // 2박3일일때 마지막 전날 숙소
+      nMinusStay = nMinusDay[5];
     }
   }
 
   // 마지막 구하기
-  const lastDay = await getLastDay(touristAllSortDistance);
+  const lastDay = await getLastDay(
+    touristAllSortDistance,
+    nMinusStay,
+    originLat,
+    originLng
+  );
 
   // 마지막 추가
   await days.push(lastDay);

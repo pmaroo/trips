@@ -136,10 +136,13 @@ exports.Prisma.PlanScalarFieldEnum = {
   id: 'id',
   UserId: 'UserId',
   CategoryId: 'CategoryId',
-  region: 'region',
-  schedule: 'schedule',
+  destination: 'destination',
   date: 'date',
+  days: 'days',
   traffic: 'traffic',
+  start: 'start',
+  originDate: 'originDate',
+  category: 'category',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -178,6 +181,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
@@ -193,10 +200,20 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   refreshToken: 'refreshToken'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
 exports.Prisma.PlanOrderByRelevanceFieldEnum = {
-  region: 'region',
-  schedule: 'schedule',
-  traffic: 'traffic'
+  traffic: 'traffic',
+  category: 'category'
 };
 
 exports.Prisma.PlaceOrderByRelevanceFieldEnum = {

@@ -4,6 +4,7 @@ import {
   deletePlan,
   getAllPlan,
   getPlanById,
+  getPlanUserById,
   updatePlan,
 } from "../controllers/plan.controller";
 
@@ -19,7 +20,7 @@ router.post("/update", updatePlan);
 router.post("/create", createPlan);
 
 // 일정상세
-router.post("/:id", getPlanById);
+router.post("/id", getPlanById);
 
 // 일정리스트
 router.post("/", getAllPlan);
