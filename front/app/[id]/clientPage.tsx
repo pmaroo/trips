@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import HashTag from "@components/ui/hash";
@@ -39,8 +39,18 @@ import {
 import { usePlanStore, useResultPlan } from "@store/planStore";
 import { useCreatePlan } from "@hooks/reactQuery/usePlan";
 import Bus from "@components/svg/bus";
+import Leins from "@lib/lenis";
+import { CreatePlan, DayPlace, PlanListById } from "@/types/plan";
 
-const SortableItem = ({ id, index }: { id: string; index: number }) => {
+const SortableItem = ({
+  id,
+  index,
+  lastIndex,
+}: {
+  id: string;
+  index: number;
+  lastIndex: string;
+}) => {
   const {
     attributes,
     listeners,
@@ -60,62 +70,162 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
     Components;
 
   return (
-    <ul
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      className="flex flex-col items-start justify-center w-full "
-    >
-      <li
-        className="
-          flex
-          flex-row
-          items-center
-          w-full
-          relative
-          justify-end
-          bg-[--lightGrey]
-          p-[20px]
-          rounded-[5px]
-        "
+    <>
+      <ul
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        className="flex flex-col items-start justify-center w-full "
       >
-        <div
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            h-full
-            text-center
-            rounded-[5px]
-            w-[20px]
-            bg-[--main]
-            text-[hsl(var(--background))]
-            text-[12px]
-            mr-[10px]
-            absolute
-            top-[0]
-            left-[0]
-          "
-        >
-          {index + 1}
-        </div>
-        <div
+        <li
           className="
             flex
             flex-row
             items-center
-            justify-between
-            w-[calc(100%-30px)]
+            w-full
+            relative
+            justify-end
+            bg-[--lightGrey]
+            p-[20px]
+            rounded-[5px]
           "
         >
           <div
             className="
               flex
               flex-col
-              items-start
+              items-center
               justify-center
-              w-[60%]
+              h-full
+              text-center
+              rounded-[5px]
+              w-[20px]
+              bg-[--main]
+              text-[hsl(var(--background))]
+              text-[12px]
+              mr-[10px]
+              absolute
+              top-[0]
+              left-[0]
+            "
+          >
+            {index + 1}
+          </div>
+          <div
+            className="
+              flex
+              flex-row
+              items-center
+              justify-between
+              w-[calc(100%-30px)]
+            "
+          >
+            <div
+              className="
+                flex
+                flex-col
+                items-start
+                justify-center
+                w-[60%]
+              "
+            >
+              <div
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  justify-start
+                  mb-[5px]
+                "
+              >
+                <p
+                  className="
+                    text-[--main]
+                    text-[14px]
+                    font-[700]
+                    mr-[5px]
+                  "
+                >
+                  명소{" "}
+                  <span
+                    className="
+                      text-[14px]
+                      font-[700]
+                      text-[hsl(var(--foreground))]
+                    "
+                  >
+                    대전 마루집
+                  </span>
+                </p>
+                <motion.p
+                  whileHover={{
+                    rotate: `90deg`,
+                    transition: { duration: 0.5 },
+                  }}
+                  className="
+                    text-[--darkGrey2]
+                    text-[12px]
+                    cursor-pointer
+                  "
+                >
+                  <XCircle size={16} color="#ff0000" />
+                </motion.p>
+              </div>
+              <div
+                className="flex flex-row items-center justify-start "
+              >
+                <p
+                  className="
+                    mr-[10px]
+                  "
+                >
+                  <Repeat size={16} />
+                </p>
+                <Select>
+                  <SelectTrigger
+                    className="
+                      bg-[hsl(var(--background))]
+                      h-[30px]
+                    "
+                  >
+                    <SelectValue placeholder="이용시간을 선택해주세요" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1시간</SelectItem>
+                    <SelectItem value="2">2시간</SelectItem>
+                    <SelectItem value="3">3시간</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <p
+              {...listeners}
+              className="
+                text-[--darkGrey2]
+                text-[12px]
+                cursor-grab
+                mr-[10px]
+              "
+            >
+              <Menu size={16} />
+            </p>
+          </div>
+        </li>
+
+        {parseInt(lastIndex) !== index + 1 && (
+          <li
+            className="
+              flex
+              flex-row
+              items-center
+              w-full
+              justify-between
+              border-l-2
+              border-dashed
+              border-l-[--grey2]
+              pl-[20px]
+              py-[30px]
+              ml-[9px]
             "
           >
             <div
@@ -124,119 +234,23 @@ const SortableItem = ({ id, index }: { id: string; index: number }) => {
                 flex-row
                 items-center
                 justify-start
-                mb-[5px]
+                text-[grey]
               "
             >
+              <Car width="15" height="15" />
               <p
                 className="
-                  text-[--main]
                   text-[14px]
-                  font-[700]
-                  mr-[5px]
+                  ml-[5px]
                 "
               >
-                명소{" "}
-                <span
-                  className="
-                    text-[14px]
-                    font-[700]
-                    text-[hsl(var(--foreground))]
-                  "
-                >
-                  대전 마루집
-                </span>
+                1시간 소요
               </p>
-              <motion.p
-                whileHover={{
-                  rotate: `90deg`,
-                  transition: { duration: 0.5 },
-                }}
-                className="
-                  text-[--darkGrey2]
-                  text-[12px]
-                  cursor-pointer
-                "
-              >
-                <XCircle size={16} color="#ff0000" />
-              </motion.p>
             </div>
-            <div
-              className="flex flex-row items-center justify-start "
-            >
-              <p
-                className="
-                  mr-[10px]
-                "
-              >
-                <Repeat size={16} />
-              </p>
-              <Select>
-                <SelectTrigger
-                  className="
-                    bg-[hsl(var(--background))]
-                    h-[30px]
-                  "
-                >
-                  <SelectValue placeholder="이용시간을 선택해주세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1시간</SelectItem>
-                  <SelectItem value="2">2시간</SelectItem>
-                  <SelectItem value="3">3시간</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <p
-            {...listeners}
-            className="
-              text-[--darkGrey2]
-              text-[12px]
-              cursor-grab
-              mr-[10px]
-            "
-          >
-            <Menu size={16} />
-          </p>
-        </div>
-      </li>
-
-      <li
-        className="
-          flex
-          flex-row
-          items-center
-          w-full
-          justify-between
-          border-l-2
-          border-dashed
-          border-l-[--grey2]
-          pl-[20px]
-          py-[30px]
-          ml-[9px]
-        "
-      >
-        <div
-          className="
-            flex
-            flex-row
-            items-center
-            justify-start
-            text-[grey]
-          "
-        >
-          <Car width="15" height="15" />
-          <p
-            className="
-              text-[14px]
-              ml-[5px]
-            "
-          >
-            13:50 ~ 15:50 (1시간)
-          </p>
-        </div>
-      </li>
-    </ul>
+          </li>
+        )}
+      </ul>
+    </>
   );
 };
 
@@ -253,11 +267,10 @@ export default function ClientPage({ planData }) {
     TooltipTrigger,
   } = Components;
 
-  console.log(planData);
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
-  const [isNum, setIsNum] = useState<number>(0);
+  const [isNum, setIsNum] = useState<number | null>(null);
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [isAddress, setIsAddress] = useState<boolean>(false);
   const [items, setItems] = useState(
@@ -349,6 +362,12 @@ export default function ClientPage({ planData }) {
     setIsNum(data);
   };
 
+  const filteredItems = useMemo(() => {
+    if (isNum === null) return planData.days;
+    if (planData.days[isNum] !== undefined) return [planData.days[isNum]];
+    return []; // invalid index fallback
+  }, [planData, isNum]);
+
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
@@ -361,12 +380,15 @@ export default function ClientPage({ planData }) {
   return (
     <>
       <article
-        // className="w-screen min-h-screen "
+        className="
+          w-[100vw]
+          h-[100vh]
+        "
       >
         <ul
-          className="flex flex-row items-center justify-end size-full "
+          className="relative flex flex-row flex-wrap items-center justify-end  size-full"
         >
-          {/* <motion.li
+          <motion.li
             initial={{ left: `-300px` }}
             animate={{ left: isAddress ? `0` : `-300px` }}
             className="
@@ -529,7 +551,7 @@ export default function ClientPage({ planData }) {
                 </motion.p>
               </div>
             </div>
-          </motion.li> */}
+          </motion.li>
           <motion.li
             initial={{ left: `-600px` }}
             animate={{ left: isAddress ? `300px` : `0` }}
@@ -541,13 +563,15 @@ export default function ClientPage({ planData }) {
               w-full
               h-auto
               shadow-lg
-              static
+              absolute
               top-[0]
               p-[30px]
-              overflow-scroll
-              sm:h-screen
+              overflow-y-scroll
+              sm:h-[100vh]
               sm:w-[600px]
             "
+            data-lenis-prevent
+            style={{ touchAction: "auto", pointerEvents: "auto" }}
           >
             <ul
               className="
@@ -557,10 +581,11 @@ export default function ClientPage({ planData }) {
                 w-full
                 justify-between
                 mb-[10px]
+                flex-wrap
               "
             >
               <li
-                className="flex flex-col items-start justify-start sm:flex-row sm:items-center"
+                className="flex flex-col items-start justify-start  sm:flex-row sm:items-center"
               >
                 <div
                   className="flex flex-row items-center justify-center "
@@ -673,8 +698,8 @@ export default function ClientPage({ planData }) {
                     mr-[5px]
                     mb-[5px]
                   "
-                  variant={isNum === 0 ? "default" : "outline"}
-                  onClick={() => tabHandler(0)}
+                  variant={isNum === null ? "default" : "outline"}
+                  onClick={() => tabHandler(null)}
                 >
                   전체일정
                 </Button>
@@ -688,8 +713,8 @@ export default function ClientPage({ planData }) {
                         mr-[5px]
                         mb-[5px]
                       "
-                      variant={isNum === 1 ? "default" : "outline"}
-                      onClick={() => tabHandler(1)}
+                      variant={isNum === index ? "default" : "outline"}
+                      onClick={() => tabHandler(index)}
                     >
                       {index + 1}일차
                     </Button>
@@ -697,204 +722,360 @@ export default function ClientPage({ planData }) {
                 ),
               )}
             </ul>
-            {planData &&
-              planData.days.map((data, index) => {
-                return (
-                  <div
-                    className="w-full "
-                    key={index}
+            {filteredItems.map((data, index) => {
+              return (
+                <div
+                  className="w-full "
+                  key={index}
+                >
+                  <ul
+                    className="
+                      flex
+                      flex-row
+                      items-center
+                      w-full
+                      justify-between
+                      mb-[10px]
+                      mt-[40px]
+                    "
                   >
-                    <ul
-                      className="
-                        flex
-                        flex-row
-                        items-center
-                        w-full
-                        justify-between
-                        mb-[10px]
-                        mt-[40px]
-                      "
+                    <li
+                      className="flex flex-row items-center justify-center "
                     >
+                      <p
+                        className="
+                          font-[700]
+                          text-[14px]
+                        "
+                      >
+                        {isNum !== null ? isNum + 1 : index + 1}일차
+                      </p>
+
+                      {isUpdate && (
+                        <motion.p
+                          initial={{
+                            rotate: `0deg`,
+                          }}
+                          whileHover={{
+                            rotate: `90deg`,
+                            transition: {
+                              duration: 0.5,
+                            },
+                          }}
+                          className="
+                            ml-[10px]
+                            cursor-pointer
+                          "
+                          onClick={addressToggle}
+                        >
+                          <PlusCircle size={24} />
+                        </motion.p>
+                      )}
+                    </li>
+                    {isUpdate ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className="
+                              justify-start
+                              text-left
+                              w-[150px]
+                              font-normal
+                            "
+                          >
+                            <Calendar />
+                            <span>2025-05-30</span>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="
+                            w-[550px]
+                          "
+                        >
+                          <UpdateCalender />
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
                       <li
-                        className="flex flex-row items-center justify-center "
+                        className="
+                          font-[700]
+                          text-[14px]
+                        "
+                      >
+                        {planData.date[isNum !== null ? isNum : index].year}-
+                        {planData.date[isNum !== null ? isNum : index].month}-
+                        {planData.date[isNum !== null ? isNum : index].day}
+                      </li>
+                    )}
+                  </ul>
+
+                  <ul
+                    className={`
+                          flex
+                          flex-col
+                          items-start
+                          justify-center
+                          w-full
+                      `}
+                  >
+                    <li
+                      className="flex flex-row items-center justify-start w-full "
+                    >
+                      <div
+                        className="
+                          flex
+                          flex-col
+                          items-center
+                          justify-center
+                          text-center
+                          rounded-[10px]
+                          size-[20px]
+                          bg-[--main3]
+                          text-[hsl(var(--background))]
+                          text-[12px]
+                          mr-[10px]
+                        "
+                      >
+                        1
+                      </div>
+                      <div
+                        className="
+                          flex
+                          flex-row
+                          items-center
+                          justify-between
+                          w-[calc(100%-30px)]
+                        "
                       >
                         <p
                           className="
-                            font-[700]
+                            text-[grey]
                             text-[14px]
                           "
                         >
-                          {index + 1}일차
+                          {index === 0
+                            ? planData && planData.start.name
+                            : planData &&
+                              planData.days[index - 1][
+                                planData.days[index - 1].length - 1
+                              ].name}
                         </p>
-
-                        {isUpdate && (
-                          <motion.p
-                            initial={{
-                              rotate: `0deg`,
-                            }}
-                            whileHover={{
-                              rotate: `90deg`,
-                              transition: {
-                                duration: 0.5,
-                              },
-                            }}
-                            className="
-                              ml-[10px]
-                              cursor-pointer
-                            "
-                            onClick={addressToggle}
-                          >
-                            <PlusCircle size={24} />
-                          </motion.p>
-                        )}
-                      </li>
-                      {isUpdate ? (
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className="
-                                justify-start
-                                text-left
-                                w-[150px]
-                                font-normal
-                              "
-                            >
-                              <Calendar />
-                              <span>2025-05-30</span>
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="
-                              w-[550px]
-                            "
-                          >
-                            <UpdateCalender />
-                          </PopoverContent>
-                        </Popover>
-                      ) : (
-                        <li
+                        <p
                           className="
-                            font-[700]
-                            text-[14px]
-                          "
-                        >
-                          {planData.date[index].year}-
-                          {planData.date[index].month}-
-                          {planData.date[index].day}
-                        </li>
-                      )}
-                    </ul>
-
-                    <ul
-                      className="flex flex-col items-start justify-center w-full "
-                    >
-                      <li
-                        className="flex flex-row items-center justify-start w-full "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            text-center
-                            rounded-[10px]
-                            size-[20px]
-                            bg-[--main3]
-                            text-[hsl(var(--background))]
+                            text-[--darkGrey2]
                             text-[12px]
-                            mr-[10px]
                           "
                         >
-                          1
-                        </div>
+                          {isNum !== null ? isNum + 1 : index + 1}일차 시작
+                        </p>
+                      </div>
+                    </li>
+
+                    {isUpdate && (
+                      <li
+                        className="
+                          flex
+                          flex-row
+                          items-center
+                          w-full
+                          justify-between
+                          border-l-2
+                          border-dashed
+                          border-l-[--grey2]
+                          pl-[20px]
+                          py-[30px]
+                          ml-[9px]
+                        "
+                      >
                         <div
                           className="
                             flex
                             flex-row
                             items-center
-                            justify-between
-                            w-[calc(100%-30px)]
+                            justify-start
+                            text-[grey]
                           "
                         >
+                          <Car width="15" height="15" />
                           <p
                             className="
-                              text-[grey]
                               text-[14px]
+                              ml-[5px]
                             "
                           >
-                            {index === 0
-                              ? planData && planData.start.name
-                              : planData &&
-                                planData.days[index - 1][
-                                  planData.days[index - 1].length - 1
-                                ].name}
-                          </p>
-                          <p
-                            className="
-                              text-[--darkGrey2]
-                              text-[12px]
-                            "
-                          >
-                            {index + 1}일차 시작
+                            1시간 소요
                           </p>
                         </div>
                       </li>
-                    </ul>
+                    )}
+                  </ul>
 
-                    {isUpdate ? (
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={({ active, over }) => {
-                          if (active.id !== over?.id) {
-                            const oldIndex = items.indexOf(active.id as string);
-                            const newIndex = items.indexOf(over?.id as string);
-                            setItems((items) =>
-                              arrayMove(items, oldIndex, newIndex),
-                            );
-                          }
-                        }}
+                  {isUpdate ? (
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={({ active, over }) => {
+                        if (active.id !== over?.id) {
+                          const oldIndex = items.indexOf(active.id as string);
+                          const newIndex = items.indexOf(over?.id as string);
+                          setItems((items) =>
+                            arrayMove(items, oldIndex, newIndex),
+                          );
+                        }
+                      }}
+                    >
+                      <SortableContext
+                        items={data}
+                        strategy={verticalListSortingStrategy}
                       >
-                        <SortableContext
-                          items={items}
-                          strategy={verticalListSortingStrategy}
+                        {data.map((value, idx) => (
+                          <SortableItem
+                            key={`${index}-${idx}`}
+                            id={value.name}
+                            index={idx}
+                            lastIndex={data.length}
+                          />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  ) : (
+                    data.map((value, idx) => {
+                      // 👇🏻 전체일정일때 마지막 날 마지막 일정 노란색원표시
+                      // (idx === data.length - 1 && planData && planData.days.length - 1 === index)
+                      // 👇🏻 특정 일차 선택시 마지막 날 마지막 일정 노란색원표시
+                      // (isNum !== null && isNum === (planData && planData.days.length - 1) && idx === data.length - 1)
+                      return (idx === data.length - 1 &&
+                        planData &&
+                        planData.days.length - 1 === index) ||
+                        (isNum !== null &&
+                          isNum === (planData && planData.days.length - 1) &&
+                          idx === data.length - 1) ? (
+                        <ul
+                          className="
+                            flex
+                            flex-col
+                            items-start
+                            justify-center
+                            w-full
+                            mb-[50px]
+                          "
+                          key={`${index}-${idx}`}
                         >
-                          {items.map((id, index) => (
-                            <SortableItem key={id} id={id} index={index} />
-                          ))}
-                        </SortableContext>
-                      </DndContext>
-                    ) : (
-                      data.map((value, idx) => {
-                        return idx === data.length - 1 &&
-                          planData &&
-                          planData.days.length - 1 === index ? (
-                          <ul
+                          <li
                             className="
                               flex
-                              flex-col
-                              items-start
-                              justify-center
+                              flex-row
+                              items-center
                               w-full
-                              mb-[50px]
+                              justify-between
+                              border-l-2
+                              border-dashed
+                              border-l-[--grey2]
+                              pl-[20px]
+                              py-[30px]
+                              ml-[9px]
                             "
-                            key={`${index}-${idx}`}
                           >
-                            <li
+                            <div
                               className="
                                 flex
                                 flex-row
                                 items-center
-                                w-full
+                                justify-start
+                                text-[grey]
+                              "
+                            >
+                              <Car width="15" height="15" />{" "}
+                              <p
+                                className="
+                                  text-[14px]
+                                  ml-[5px]
+                                "
+                              >
+                                {Math.floor(value.duration / 3600)}시간{" "}
+                                {Math.floor((value.duration % 3600) / 60)}분
+                                소요
+                              </p>
+                            </div>
+                          </li>
+                          <li
+                            className="flex flex-row items-center justify-start w-full "
+                          >
+                            <div
+                              className="
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                text-center
+                                rounded-[10px]
+                                size-[20px]
+                                bg-[--main3]
+                                text-[hsl(var(--background))]
+                                text-[12px]
+                                mr-[10px]
+                              "
+                            >
+                              {data.length + 1}
+                            </div>
+                            <div
+                              className="
+                                flex
+                                flex-row
+                                items-center
                                 justify-between
-                                border-l-2
-                                border-dashed
-                                border-l-[--grey2]
-                                pl-[20px]
-                                py-[30px]
-                                ml-[9px]
+                                w-[calc(100%-30px)]
+                              "
+                            >
+                              <p
+                                className="
+                                  text-[grey]
+                                  text-[14px]
+                                "
+                              >
+                                {index === planData.days.length - 1
+                                  ? planData && planData.start.name
+                                  : data[data.length - 1].name}
+                              </p>
+                              <p
+                                className="
+                                  text-[--darkGrey2]
+                                  text-[12px]
+                                "
+                              >
+                                여행 마무리
+                              </p>
+                            </div>
+                          </li>
+                        </ul>
+                      ) : (
+                        <ul
+                          key={`${idx}-${index}`}
+                          className="flex flex-col items-start justify-center w-full "
+                        >
+                          <li
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              w-full
+                              justify-between
+                              border-l-2
+                              border-dashed
+                              border-l-[--grey2]
+                              pl-[20px]
+                              py-[30px]
+                              ml-[9px]
+                            "
+                          >
+                            <div
+                              className="
+                                flex
+                                flex-col
+                                items-start
+                                justify-center
+                                w-[60%]
                               "
                             >
                               <div
@@ -918,75 +1099,49 @@ export default function ClientPage({ planData }) {
                                   소요
                                 </p>
                               </div>
-                            </li>
-                            <li
-                              className="flex flex-row items-center justify-start w-full "
-                            >
-                              <div
-                                className="
+                            </div>
+
+                            <div
+                              className="
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                w-[40%]
+                              "
+                            ></div>
+                          </li>
+                          <li
+                            className="relative flex flex-row items-center justify-end w-full "
+                          >
+                            <div
+                              className={`
                                   flex
                                   flex-col
                                   items-center
                                   justify-center
+                                  h-full
                                   text-center
-                                  rounded-[10px]
-                                  size-[20px]
-                                  bg-[--main3]
+                                  rounded-[5px]
+                                  w-[20px]
+                                  ${idx === data.length - 1 && planData && planData.days.length - 1 !== index ? "bg-[--main3]" : "bg-[--main]"}
                                   text-[hsl(var(--background))]
                                   text-[12px]
                                   mr-[10px]
-                                "
-                              >
-                                {data.length + 1}
-                              </div>
-                              <div
-                                className="
-                                  flex
-                                  flex-row
-                                  items-center
-                                  justify-between
-                                  w-[calc(100%-30px)]
-                                "
-                              >
-                                <p
-                                  className="
-                                    text-[grey]
-                                    text-[14px]
-                                  "
-                                >
-                                  {index === planData.days.length - 1
-                                    ? planData && planData.start.name
-                                    : data[data.length - 1].name}
-                                </p>
-                                <p
-                                  className="
-                                    text-[--darkGrey2]
-                                    text-[12px]
-                                  "
-                                >
-                                  여행 마무리
-                                </p>
-                              </div>
-                            </li>
-                          </ul>
-                        ) : (
-                          <ul
-                            key={`${idx}-${index}`}
-                            className="flex flex-col items-start justify-center w-full "
-                          >
-                            <li
+                                  absolute
+                                  top-[0]
+                                  left-[0]
+                              `}
+                            >
+                              {idx + 2}
+                            </div>
+                            <div
                               className="
                                 flex
                                 flex-row
                                 items-center
-                                w-full
                                 justify-between
-                                border-l-2
-                                border-dashed
-                                border-l-[--grey2]
-                                pl-[20px]
-                                py-[30px]
-                                ml-[9px]
+                                w-[calc(100%-30px)]
                               "
                             >
                               <div
@@ -998,161 +1153,86 @@ export default function ClientPage({ planData }) {
                                   w-[60%]
                                 "
                               >
-                                <div
+                                <p
                                   className="
-                                    flex
-                                    flex-row
-                                    items-center
-                                    justify-start
-                                    text-[grey]
+                                    text-[--main]
+                                    text-[14px]
+                                    font-[700]
                                   "
                                 >
-                                  <Car width="15" height="15" />{" "}
+                                  명소
+                                </p>
+
+                                <p
+                                  className="
+                                    text-[14px]
+                                    font-[700]
+                                  "
+                                >
+                                  {value.name}
+                                </p>
+                                <p
+                                  className="
+                                    text-[grey]
+                                    text-[14px]
+                                  "
+                                >
+                                  {value.address}
+                                </p>
+                                <div
+                                  className="flex flex-row items-center justify-start "
+                                >
+                                  <Star
+                                    className="
+                                      w-[15px]
+                                      text-[grey]
+                                    "
+                                  />{" "}
                                   <p
                                     className="
                                       text-[14px]
                                       ml-[5px]
+                                      text-[grey]
                                     "
                                   >
-                                    {Math.floor(value.duration / 3600)}시간{" "}
-                                    {Math.floor((value.duration % 3600) / 60)}분
-                                    소요
+                                    {value.rating}
                                   </p>
                                 </div>
                               </div>
 
-                              <div
-                                className="
-                                  flex
-                                  flex-col
-                                  items-center
-                                  justify-center
-                                  w-[40%]
-                                "
-                              ></div>
-                            </li>
-                            <li
-                              className="relative flex flex-row items-center justify-end w-full "
-                            >
                               <div
                                 className={`
-                                      flex
-                                      flex-col
-                                      items-center
-                                      justify-center
-                                      h-full
-                                      text-center
-                                      rounded-[5px]
-                                      w-[20px]
-                                      ${idx === data.length - 1 && planData && planData.days.length - 1 !== index ? "bg-[--main3]" : "bg-[--main]"}
-                                      text-[hsl(var(--background))]
-                                      text-[12px]
-                                      mr-[10px]
-                                      absolute
-                                      top-[0]
-                                      left-[0]
-                                  `}
-                              >
-                                {idx + 2}
-                              </div>
-                              <div
-                                className="
-                                  flex
-                                  flex-row
-                                  items-center
-                                  justify-between
-                                  w-[calc(100%-30px)]
-                                "
-                              >
-                                <div
-                                  className="
-                                    flex
-                                    flex-col
-                                    items-start
-                                    justify-center
-                                    w-[60%]
-                                  "
-                                >
-                                  <p
-                                    className="
-                                      text-[--main]
-                                      text-[14px]
-                                      font-[700]
-                                    "
-                                  >
-                                    명소
-                                  </p>
-
-                                  <p
-                                    className="
-                                      text-[14px]
-                                      font-[700]
-                                    "
-                                  >
-                                    {value.name}
-                                  </p>
-                                  <p
-                                    className="
-                                      text-[grey]
-                                      text-[14px]
-                                    "
-                                  >
-                                    {value.address}
-                                  </p>
-                                  <div
-                                    className="flex flex-row items-center justify-start "
-                                  >
-                                    <Star
-                                      className="
-                                        w-[15px]
-                                        text-[grey]
-                                      "
-                                    />{" "}
-                                    <p
-                                      className="
-                                        text-[14px]
-                                        ml-[5px]
-                                        text-[grey]
-                                      "
-                                    >
-                                      {value.rating}
-                                    </p>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`
         flex
         flex-col
         items-center
         justify-center
         w-[40%]
     `}
-                                >
-                                  <img
-                                    src={value.photos}
-                                    className="
-                                      size-[80px]
-                                      rounded-[10px]
-                                    "
-                                  />
-                                </div>
-
-                                <p
+                              >
+                                <img
+                                  src={value.photos}
                                   className="
-                                    text-[--darkGrey2]
-                                    text-[12px]
+                                    size-[80px]
+                                    rounded-[10px]
                                   "
-                                ></p>
+                                />
                               </div>
-                            </li>
-                          </ul>
-                        );
-                      })
-                    )}
-                  </div>
-                );
-              })}
+
+                              <p
+                                className="
+                                  text-[--darkGrey2]
+                                  text-[12px]
+                                "
+                              ></p>
+                            </div>
+                          </li>
+                        </ul>
+                      );
+                    })
+                  )}
+                </div>
+              );
+            })}
           </motion.li>
           <motion.li
             className={`
@@ -1160,6 +1240,7 @@ export default function ClientPage({ planData }) {
         ${isAddress ? "w-[calc(100%-600px-300px)]" : "w-[calc(100%-600px)]"}
         hidden
         duration-300
+        bg-black
         sm:flex
     `}
             id="map"
