@@ -25,6 +25,7 @@ interface Result {
   distance?: number;
   duration?: number;
   photos?: string | null;
+  types?: string;
 }
 
 interface GooglePlace {
@@ -186,6 +187,7 @@ async function getNearbyGooglePlaces(
       vicinity: details.data.result.vicinity,
       lat: details.data.result.geometry.location.lat,
       lng: details.data.result.geometry.location.lng,
+      types: details.data.result.types[0],
       photos: dataUrl,
     });
   }

@@ -27,3 +27,15 @@ export const useResultPlan = create<ResultPlanState>((set) => ({
   setPlan: (plan) => set({ plan }),
   clearPlan: () => set({ plan: null }),
 }));
+
+interface FindPlaceState {
+  place: any;
+  setPlace: (place: any) => void;
+  clearPlace: () => void;
+}
+
+export const useFindPlaceStore = create<FindPlaceState>((set) => ({
+  place: null,
+  setPlace: (place) => set({ place }),
+  clearPlace: () => set({ place: null }),
+}));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import HashTag from "@components/ui/hash";
@@ -36,20 +36,28 @@ import {
   Star,
   XCircle,
 } from "lucide-react";
-import { usePlanStore, useResultPlan } from "@store/planStore";
-import { useCreatePlan } from "@hooks/reactQuery/usePlan";
+import {
+  useFindPlaceStore,
+  usePlanStore,
+  useResultPlan,
+} from "@store/planStore";
+import { useCreatePlan, useFindPlace } from "@hooks/reactQuery/usePlan";
 import Bus from "@components/svg/bus";
 import Leins from "@lib/lenis";
 import { CreatePlan, DayPlace, PlanListById } from "@/types/plan";
+import useInput from "@hooks/useInput";
+import { useKeywordForm } from "@hooks/form/usePlanForm";
 
 const SortableItem = ({
   id,
   index,
   lastIndex,
+  data,
 }: {
   id: string;
   index: number;
   lastIndex: string;
+  data: DayPlace;
 }) => {
   const {
     attributes,
@@ -75,7 +83,13 @@ const SortableItem = ({
         ref={setNodeRef}
         style={style}
         {...attributes}
-        className="flex flex-col items-start justify-center w-full "
+        className="
+          flex
+          flex-col
+          items-start
+          justify-center
+          w-full
+        "
       >
         <li
           className="
@@ -91,7 +105,7 @@ const SortableItem = ({
           "
         >
           <div
-            className="
+            className={`
               flex
               flex-col
               items-center
@@ -100,14 +114,14 @@ const SortableItem = ({
               text-center
               rounded-[5px]
               w-[20px]
-              bg-[--main]
+              ${parseInt(lastIndex) === index + 1 ? "bg-[--main3]" : "bg-[--main]"}
               text-[hsl(var(--background))]
               text-[12px]
               mr-[10px]
               absolute
               top-[0]
               left-[0]
-            "
+          `}
           >
             {index + 1}
           </div>
@@ -139,14 +153,21 @@ const SortableItem = ({
                 "
               >
                 <p
-                  className="
-                    text-[--main]
+                  className={`
+
+                    ${data.types === "lodging" ? "text-[--main3]" : "text-[--main]"}
                     text-[14px]
                     font-[700]
                     mr-[5px]
-                  "
+                `}
                 >
-                  명소{" "}
+                  {data.name === "집"
+                    ? ""
+                    : data.types === "restaurant" || data.types === "food"
+                      ? "맛집"
+                      : data.types === "point_of_interest"
+                        ? "명소"
+                        : "숙소"}{" "}
                   <span
                     className="
                       text-[14px]
@@ -154,61 +175,43 @@ const SortableItem = ({
                       text-[hsl(var(--foreground))]
                     "
                   >
-                    대전 마루집
+                    {data.name}
                   </span>
                 </p>
-                <motion.p
-                  whileHover={{
-                    rotate: `90deg`,
-                    transition: { duration: 0.5 },
-                  }}
-                  className="
-                    text-[--darkGrey2]
-                    text-[12px]
-                    cursor-pointer
-                  "
-                >
-                  <XCircle size={16} color="#ff0000" />
-                </motion.p>
-              </div>
-              <div
-                className="flex flex-row items-center justify-start "
-              >
-                <p
-                  className="
-                    mr-[10px]
-                  "
-                >
-                  <Repeat size={16} />
-                </p>
-                <Select>
-                  <SelectTrigger
-                    className="
-                      bg-[hsl(var(--background))]
-                      h-[30px]
-                    "
-                  >
-                    <SelectValue placeholder="이용시간을 선택해주세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1시간</SelectItem>
-                    <SelectItem value="2">2시간</SelectItem>
-                    <SelectItem value="3">3시간</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </div>
-            <p
-              {...listeners}
+            <div
               className="
-                text-[--darkGrey2]
-                text-[12px]
-                cursor-grab
-                mr-[10px]
+                flex
+                flex-row
+                w-auto
               "
             >
-              <Menu size={16} />
-            </p>
+              <p
+                {...listeners}
+                className="
+                  text-[--darkGrey2]
+                  text-[12px]
+                  cursor-grab
+                  mr-[10px]
+                "
+              >
+                <Menu size={16} />
+              </p>
+              <motion.p
+                whileHover={{
+                  rotate: `90deg`,
+                  transition: { duration: 0.5 },
+                }}
+                className="
+                  text-[--darkGrey2]
+                  text-[12px]
+                  cursor-pointer
+                "
+              >
+                <XCircle size={16} color="#ff0000" />
+              </motion.p>
+            </div>
           </div>
         </li>
 
@@ -227,27 +230,7 @@ const SortableItem = ({
               py-[30px]
               ml-[9px]
             "
-          >
-            <div
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-                text-[grey]
-              "
-            >
-              <Car width="15" height="15" />
-              <p
-                className="
-                  text-[14px]
-                  ml-[5px]
-                "
-              >
-                1시간 소요
-              </p>
-            </div>
-          </li>
+          ></li>
         )}
       </ul>
     </>
@@ -265,17 +248,24 @@ export default function ClientPage({ planData }) {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
+    Form,
+    FormControl,
+    FormItem,
+    FormLabel,
+    CustomFormMessage,
+    FormField,
   } = Components;
 
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
-  const [isNum, setIsNum] = useState<number | null>(null);
-  const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  const [isAddress, setIsAddress] = useState<boolean>(false);
-  const [items, setItems] = useState(
-    Array.from({ length: 8 }, (_, i) => `item-${i}`),
-  );
+  const [isNum, setIsNum] = useState<number | null>(null); // 일정 null=전체일정
+  const [isUpdate, setIsUpdate] = useState<boolean>(false); // 업데이트 모달
+  const [isAddress, setIsAddress] = useState<boolean>(false); // 일차별 장소추가 모달
+  const [rangeDate, setRangeDate] = useState<
+    { year: string; month: string; day: string }[]
+  >(planData && planData.date); // 여행 날짜
+  const [items, setItems] = useState([]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -286,17 +276,40 @@ export default function ClientPage({ planData }) {
   //////////////////////////////////////////////////////////////
   const { isDesktop, isTablet, isMobile } = useDeviceSize();
 
+  const findPlace = useFindPlace(() => {});
+
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
+
+  const findPlaceStore = useFindPlaceStore((state) => state);
+
+  console.log(findPlaceStore);
 
   //////////////////////////////////////////////////////////////
   // FORM
   //////////////////////////////////////////////////////////////
 
+  const keywordForm = useKeywordForm();
+
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    if (isNum === null) {
+      setItems(planData.days);
+    } else if (planData.days[isNum]) {
+      setItems([planData.days[isNum]]);
+    } else {
+      setItems([]);
+    }
+  }, [isNum]);
+
+  useEffect(() => {
+    // 초기값 세팅
+    if (planData) setItems(planData.days);
+  }, [planData]);
 
   // useEffect(() => {
   //   const container = document.getElementById("map");
@@ -362,15 +375,14 @@ export default function ClientPage({ planData }) {
     setIsNum(data);
   };
 
-  const filteredItems = useMemo(() => {
-    if (isNum === null) return planData.days;
-    if (planData.days[isNum] !== undefined) return [planData.days[isNum]];
-    return []; // invalid index fallback
-  }, [planData, isNum]);
-
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
+  const findPlaceHandler = useCallback((data) => {
+    findPlace.mutate({ keyword: data.keyword });
+  }, []);
+
   //////////////////////////////////////////////////////////////
   //  TABLE
   //////////////////////////////////////////////////////////////
@@ -386,7 +398,15 @@ export default function ClientPage({ planData }) {
         "
       >
         <ul
-          className="relative flex flex-row flex-wrap items-center justify-end  size-full"
+          className="
+            flex
+            flex-row
+            items-center
+            relative
+            flex-wrap
+            justify-end
+            size-full
+          "
         >
           <motion.li
             initial={{ left: `-300px` }}
@@ -434,7 +454,12 @@ export default function ClientPage({ planData }) {
                       <Info />
                     </p>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">
+                  <TooltipContent
+                    side="bottom"
+                    className="
+                      z-[100]
+                    "
+                  >
                     1일차 일정을 추가합니다. <br />
                     다른 일차의 일정을 추가하시려면
                     <br />
@@ -448,12 +473,46 @@ export default function ClientPage({ planData }) {
               className="
                 flex
                 w-full
-                space-x-2
                 my-[10px]
               "
             >
-              <Input placeholder="장소를 검색해주세요." />
-              <Button>검색</Button>
+              <Form {...keywordForm}>
+                <form
+                  onSubmit={keywordForm.handleSubmit((e) => {
+                    findPlaceHandler(e);
+                  })}
+                  className="
+                    flex
+                    flex-row
+                    w-full
+                    space-x-2
+                  "
+                >
+                  <FormField
+                    control={keywordForm.control}
+                    name="keyword"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          className="
+                            w-full
+                          "
+                        >
+                          <FormControl>
+                            <Input
+                              autoFocus
+                              {...field}
+                              placeholder="장소를 검색해주세요."
+                            />
+                          </FormControl>
+                          <CustomFormMessage name="keyword" />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                  <Button type="submit">검색</Button>
+                </form>
+              </Form>
             </div>
 
             <div
@@ -467,10 +526,17 @@ export default function ClientPage({ planData }) {
                 bg-[--lightGrey]
                 p-[10px]
                 rounded-[5px]
+                mb-[5px]
               "
             >
               <div
-                className="flex flex-row items-center justify-between w-full "
+                className="
+                  flex
+                  flex-row
+                  items-center
+                  w-full
+                  justify-between
+                "
               >
                 <div
                   className="
@@ -492,7 +558,9 @@ export default function ClientPage({ planData }) {
                   >
                     <img
                       src="/daejeon.png"
-                      className=" size-full"
+                      className="
+                        size-full
+                      "
                     />
                   </div>
                   <div
@@ -585,10 +653,22 @@ export default function ClientPage({ planData }) {
               "
             >
               <li
-                className="flex flex-col items-start justify-start  sm:flex-row sm:items-center"
+                className="
+                  flex
+                  flex-col
+                  items-start
+                  justify-start
+                  sm:flex-row
+                  sm:items-center
+                "
               >
                 <div
-                  className="flex flex-row items-center justify-center "
+                  className="
+                    flex
+                    flex-row
+                    items-center
+                    justify-center
+                  "
                 >
                   <div
                     className="
@@ -638,7 +718,9 @@ export default function ClientPage({ planData }) {
                       repeatType: "reverse",
                     },
                   }}
-                  className="cursor-pointer "
+                  className="
+                    cursor-pointer
+                  "
                   onClick={updateToggle}
                 >
                   <CheckCircle />
@@ -654,7 +736,9 @@ export default function ClientPage({ planData }) {
                       duration: 0.5,
                     },
                   }}
-                  className="cursor-pointer "
+                  className="
+                    cursor-pointer
+                  "
                   onClick={updateToggle}
                 >
                   <Settings />
@@ -690,7 +774,13 @@ export default function ClientPage({ planData }) {
               <HashTag title={planData && planData.category} type={1} />
             </ul>
             <ul
-              className="flex flex-row items-center justify-start w-full "
+              className="
+                flex
+                flex-row
+                items-center
+                justify-start
+                w-full
+              "
             >
               <li>
                 <Button
@@ -722,10 +812,12 @@ export default function ClientPage({ planData }) {
                 ),
               )}
             </ul>
-            {filteredItems.map((data, index) => {
+            {items.map((data, index) => {
               return (
                 <div
-                  className="w-full "
+                  className="
+                    w-full
+                  "
                   key={index}
                 >
                   <ul
@@ -740,7 +832,12 @@ export default function ClientPage({ planData }) {
                     "
                   >
                     <li
-                      className="flex flex-row items-center justify-center "
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-center
+                      "
                     >
                       <p
                         className="
@@ -785,7 +882,10 @@ export default function ClientPage({ planData }) {
                             "
                           >
                             <Calendar />
-                            <span>2025-05-30</span>
+                            <span>
+                              {rangeDate[index].year}-{rangeDate[index].month}-
+                              {rangeDate[index].day}
+                            </span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
@@ -793,7 +893,10 @@ export default function ClientPage({ planData }) {
                             w-[550px]
                           "
                         >
-                          <UpdateCalender />
+                          <UpdateCalender
+                            data={rangeDate}
+                            setData={setRangeDate}
+                          />
                         </PopoverContent>
                       </Popover>
                     ) : (
@@ -820,7 +923,13 @@ export default function ClientPage({ planData }) {
                       `}
                   >
                     <li
-                      className="flex flex-row items-center justify-start w-full "
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-start
+                        w-full
+                      "
                     >
                       <div
                         className="
@@ -887,54 +996,48 @@ export default function ClientPage({ planData }) {
                           py-[30px]
                           ml-[9px]
                         "
-                      >
-                        <div
-                          className="
-                            flex
-                            flex-row
-                            items-center
-                            justify-start
-                            text-[grey]
-                          "
-                        >
-                          <Car width="15" height="15" />
-                          <p
-                            className="
-                              text-[14px]
-                              ml-[5px]
-                            "
-                          >
-                            1시간 소요
-                          </p>
-                        </div>
-                      </li>
+                      ></li>
                     )}
                   </ul>
 
                   {isUpdate ? (
+                    // 모든 값은 변수로 관리되어야 dnd를 사용할 수 있음
                     <DndContext
                       sensors={sensors}
                       collisionDetection={closestCenter}
                       onDragEnd={({ active, over }) => {
-                        if (active.id !== over?.id) {
-                          const oldIndex = items.indexOf(active.id as string);
-                          const newIndex = items.indexOf(over?.id as string);
-                          setItems((items) =>
-                            arrayMove(items, oldIndex, newIndex),
-                          );
-                        }
+                        if (!over || active.id === over.id) return;
+
+                        const oldIndex = data.findIndex(
+                          (item) => item.name === active.id,
+                        );
+                        const newIndex = data.findIndex(
+                          (item) => item.name === over.id,
+                        );
+
+                        const newSection = arrayMove(data, oldIndex, newIndex);
+
+                        setItems((prev) =>
+                          // 해당 배열 안에서만 움직일것
+                          prev.map((section, i) =>
+                            i === index ? newSection : section,
+                          ),
+                        );
                       }}
                     >
                       <SortableContext
-                        items={data}
+                        // sortableItem값과 일치해야함
+                        items={data.map((d) => d.name)}
                         strategy={verticalListSortingStrategy}
                       >
                         {data.map((value, idx) => (
                           <SortableItem
                             key={`${index}-${idx}`}
+                            // id값는 항상 string값일것
                             id={value.name}
                             index={idx}
                             lastIndex={data.length}
+                            data={value}
                           />
                         ))}
                       </SortableContext>
@@ -1000,7 +1103,13 @@ export default function ClientPage({ planData }) {
                             </div>
                           </li>
                           <li
-                            className="flex flex-row items-center justify-start w-full "
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              justify-start
+                              w-full
+                            "
                           >
                             <div
                               className="
@@ -1052,7 +1161,13 @@ export default function ClientPage({ planData }) {
                       ) : (
                         <ul
                           key={`${idx}-${index}`}
-                          className="flex flex-col items-start justify-center w-full "
+                          className="
+                            flex
+                            flex-col
+                            items-start
+                            justify-center
+                            w-full
+                          "
                         >
                           <li
                             className="
@@ -1112,26 +1227,33 @@ export default function ClientPage({ planData }) {
                             ></div>
                           </li>
                           <li
-                            className="relative flex flex-row items-center justify-end w-full "
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              w-full
+                              relative
+                              justify-end
+                            "
                           >
                             <div
                               className={`
-                                  flex
-                                  flex-col
-                                  items-center
-                                  justify-center
-                                  h-full
-                                  text-center
-                                  rounded-[5px]
-                                  w-[20px]
-                                  ${idx === data.length - 1 && planData && planData.days.length - 1 !== index ? "bg-[--main3]" : "bg-[--main]"}
-                                  text-[hsl(var(--background))]
-                                  text-[12px]
-                                  mr-[10px]
-                                  absolute
-                                  top-[0]
-                                  left-[0]
-                              `}
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    h-full
+                                    text-center
+                                    rounded-[5px]
+                                    w-[20px]
+                                    ${idx === data.length - 1 && planData && planData.days.length - 1 !== index ? "bg-[--main3]" : "bg-[--main]"}
+                                    text-[hsl(var(--background))]
+                                    text-[12px]
+                                    mr-[10px]
+                                    absolute
+                                    top-[0]
+                                    left-[0]
+                                `}
                             >
                               {idx + 2}
                             </div>
@@ -1154,13 +1276,19 @@ export default function ClientPage({ planData }) {
                                 "
                               >
                                 <p
-                                  className="
-                                    text-[--main]
-                                    text-[14px]
-                                    font-[700]
-                                  "
+                                  className={`
+
+                                      ${value.types === "lodging" ? "text-[--main3]" : "text-[--main]"}
+                                      text-[14px]
+                                      font-[700]
+                                  `}
                                 >
-                                  명소
+                                  {value.types === "restaurant" ||
+                                  value.types === "food"
+                                    ? "맛집"
+                                    : value.types === "point_of_interest"
+                                      ? "명소"
+                                      : "숙소"}
                                 </p>
 
                                 <p
@@ -1180,7 +1308,12 @@ export default function ClientPage({ planData }) {
                                   {value.address}
                                 </p>
                                 <div
-                                  className="flex flex-row items-center justify-start "
+                                  className="
+                                    flex
+                                    flex-row
+                                    items-center
+                                    justify-start
+                                  "
                                 >
                                   <Star
                                     className="

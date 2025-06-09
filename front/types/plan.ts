@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { UserDTO } from "./user";
 
 export interface PlanDTO {
@@ -51,6 +52,7 @@ export interface DayPlace {
   url: string;
   userRatingsTotal: number;
   vicinity: string;
+  types?: string;
 }
 
 export interface CreatePlan {
@@ -67,3 +69,7 @@ export interface CreatePlan {
 export interface PlanListById {
   id: number;
 }
+
+export const keywordSchema = z.object({
+  keyword: z.string().min(1, "검색어는 필수입니다."),
+});
