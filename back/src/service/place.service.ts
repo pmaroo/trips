@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function findPlaceGoogle(data: any) {
   const apiKey = process.env.KAKAO_REST_API;
-
+                                                                                                       
   if (!data.keyword || !apiKey) {
     console.error("Missing keyword or API key");
     return [];

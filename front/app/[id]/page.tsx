@@ -28,7 +28,8 @@ export default async function Page(context: { params: { id: string } }) {
     }
   };
 
-  const data = await getPlan();
+  // const data = await getPlan();
+  const data = [];
 
   return <ClientPage planData={data} />;
 }

@@ -30,8 +30,8 @@ export const findLogic = async (req: Request, res: Response) => {
     }
 
     const logicResult = await logic(data);
-    const result = await createPlanModel(logicResult);
-    res.json(result);
+    // const result = await createPlanModel(logicResult);
+    res.json({ result: true });
   } catch (error) {
     errorConsole(error);
     res.status(401).json({ message: "일정을 계획하는데 실패했습니다." });

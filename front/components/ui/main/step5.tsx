@@ -22,7 +22,7 @@ export default function Step5() {
   //////////////////////////////////////////////////////////////
 
   const createPlan = useCreatePlan(() => {
-    router.push(`/${String(createPlan.data.id)}`);
+    // router.push(`/${String(createPlan.data.id)}`);
   });
 
   //////////////////////////////////////////////////////////////

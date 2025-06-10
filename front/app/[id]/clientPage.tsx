@@ -83,13 +83,7 @@ const SortableItem = ({
         ref={setNodeRef}
         style={style}
         {...attributes}
-        className="
-          flex
-          flex-col
-          items-start
-          justify-center
-          w-full
-        "
+        className="flex flex-col items-start justify-center w-full "
       >
         <li
           className="
@@ -181,11 +175,7 @@ const SortableItem = ({
               </div>
             </div>
             <div
-              className="
-                flex
-                flex-row
-                w-auto
-              "
+              className="flex flex-row w-auto "
             >
               <p
                 {...listeners}
@@ -255,6 +245,8 @@ export default function ClientPage({ planData }) {
     CustomFormMessage,
     FormField,
   } = Components;
+
+  console.log(planData);
 
   //////////////////////////////////////////////////////////////
   // STATE
@@ -398,17 +390,9 @@ export default function ClientPage({ planData }) {
         "
       >
         <ul
-          className="
-            flex
-            flex-row
-            items-center
-            relative
-            flex-wrap
-            justify-end
-            size-full
-          "
+          className="relative flex flex-row flex-wrap items-center justify-end  size-full"
         >
-          <motion.li
+          {/* <motion.li
             initial={{ left: `-300px` }}
             animate={{ left: isAddress ? `0` : `-300px` }}
             className="
@@ -481,12 +465,7 @@ export default function ClientPage({ planData }) {
                   onSubmit={keywordForm.handleSubmit((e) => {
                     findPlaceHandler(e);
                   })}
-                  className="
-                    flex
-                    flex-row
-                    w-full
-                    space-x-2
-                  "
+                  className="flex flex-row w-full space-x-2 "
                 >
                   <FormField
                     control={keywordForm.control}
@@ -494,9 +473,7 @@ export default function ClientPage({ planData }) {
                     render={({ field }) => {
                       return (
                         <FormItem
-                          className="
-                            w-full
-                          "
+                          className="w-full "
                         >
                           <FormControl>
                             <Input
@@ -530,13 +507,7 @@ export default function ClientPage({ planData }) {
               "
             >
               <div
-                className="
-                  flex
-                  flex-row
-                  items-center
-                  w-full
-                  justify-between
-                "
+                className="flex flex-row items-center justify-between w-full "
               >
                 <div
                   className="
@@ -558,9 +529,7 @@ export default function ClientPage({ planData }) {
                   >
                     <img
                       src="/daejeon.png"
-                      className="
-                        size-full
-                      "
+                      className=" size-full"
                     />
                   </div>
                   <div
@@ -619,8 +588,8 @@ export default function ClientPage({ planData }) {
                 </motion.p>
               </div>
             </div>
-          </motion.li>
-          <motion.li
+          </motion.li> */}
+          {/* <motion.li
             initial={{ left: `-600px` }}
             animate={{ left: isAddress ? `300px` : `0` }}
             className="
@@ -653,22 +622,10 @@ export default function ClientPage({ planData }) {
               "
             >
               <li
-                className="
-                  flex
-                  flex-col
-                  items-start
-                  justify-start
-                  sm:flex-row
-                  sm:items-center
-                "
+                className="flex flex-col items-start justify-start  sm:flex-row sm:items-center"
               >
                 <div
-                  className="
-                    flex
-                    flex-row
-                    items-center
-                    justify-center
-                  "
+                  className="flex flex-row items-center justify-center "
                 >
                   <div
                     className="
@@ -718,9 +675,7 @@ export default function ClientPage({ planData }) {
                       repeatType: "reverse",
                     },
                   }}
-                  className="
-                    cursor-pointer
-                  "
+                  className="cursor-pointer "
                   onClick={updateToggle}
                 >
                   <CheckCircle />
@@ -736,9 +691,7 @@ export default function ClientPage({ planData }) {
                       duration: 0.5,
                     },
                   }}
-                  className="
-                    cursor-pointer
-                  "
+                  className="cursor-pointer "
                   onClick={updateToggle}
                 >
                   <Settings />
@@ -774,13 +727,7 @@ export default function ClientPage({ planData }) {
               <HashTag title={planData && planData.category} type={1} />
             </ul>
             <ul
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-                w-full
-              "
+              className="flex flex-row items-center justify-start w-full "
             >
               <li>
                 <Button
@@ -815,9 +762,7 @@ export default function ClientPage({ planData }) {
             {items.map((data, index) => {
               return (
                 <div
-                  className="
-                    w-full
-                  "
+                  className="w-full "
                   key={index}
                 >
                   <ul
@@ -832,12 +777,7 @@ export default function ClientPage({ planData }) {
                     "
                   >
                     <li
-                      className="
-                        flex
-                        flex-row
-                        items-center
-                        justify-center
-                      "
+                      className="flex flex-row items-center justify-center "
                     >
                       <p
                         className="
@@ -923,13 +863,7 @@ export default function ClientPage({ planData }) {
                       `}
                   >
                     <li
-                      className="
-                        flex
-                        flex-row
-                        items-center
-                        justify-start
-                        w-full
-                      "
+                      className="flex flex-row items-center justify-start w-full "
                     >
                       <div
                         className="
@@ -1103,13 +1037,7 @@ export default function ClientPage({ planData }) {
                             </div>
                           </li>
                           <li
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              justify-start
-                              w-full
-                            "
+                            className="flex flex-row items-center justify-start w-full "
                           >
                             <div
                               className="
@@ -1161,13 +1089,7 @@ export default function ClientPage({ planData }) {
                       ) : (
                         <ul
                           key={`${idx}-${index}`}
-                          className="
-                            flex
-                            flex-col
-                            items-start
-                            justify-center
-                            w-full
-                          "
+                          className="flex flex-col items-start justify-center w-full "
                         >
                           <li
                             className="
@@ -1227,14 +1149,7 @@ export default function ClientPage({ planData }) {
                             ></div>
                           </li>
                           <li
-                            className="
-                              flex
-                              flex-row
-                              items-center
-                              w-full
-                              relative
-                              justify-end
-                            "
+                            className="relative flex flex-row items-center justify-end w-full "
                           >
                             <div
                               className={`
@@ -1308,12 +1223,7 @@ export default function ClientPage({ planData }) {
                                   {value.address}
                                 </p>
                                 <div
-                                  className="
-                                    flex
-                                    flex-row
-                                    items-center
-                                    justify-start
-                                  "
+                                  className="flex flex-row items-center justify-start "
                                 >
                                   <Star
                                     className="
@@ -1366,7 +1276,7 @@ export default function ClientPage({ planData }) {
                 </div>
               );
             })}
-          </motion.li>
+          </motion.li> */}
           <motion.li
             className={`
         h-screen

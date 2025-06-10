@@ -12,6 +12,7 @@ interface CitiesType {
   name: string;
   lat: number;
   lng: number;
+  radius: number;
 }
 
 interface RegionType {
@@ -96,10 +97,7 @@ export default function Step1(data: { regionList: RegionType[] }) {
       >
         {meStore.me && meStore.me.userName}님의 여행비서,
         <br
-          className="
-            flex
-            sm:hidden
-          "
+          className="flex  sm:hidden"
         />{" "}
         AI마루입니다.
       </h1>
@@ -130,14 +128,7 @@ export default function Step1(data: { regionList: RegionType[] }) {
         클릭 !
       </motion.p>
       <motion.div
-        className="
-          flex
-          flex-row
-          items-center
-          justify-start
-          w-full
-          flex-wrap
-        "
+        className="flex flex-row flex-wrap items-center justify-start w-full "
       >
         {cities.length === 0 ? (
           data.regionList.map((data, idx) => {
