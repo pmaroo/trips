@@ -149,7 +149,7 @@ const SortableItem = ({
                 <p
                   className={`
 
-                    ${data.types === "lodging" ? "text-[--main3]" : "text-[--main]"}
+                    ${data.category_group_code === "AD5" ? "text-[--main3]" : "text-[--main]"}
                     text-[14px]
                     font-[700]
                     mr-[5px]
@@ -157,9 +157,9 @@ const SortableItem = ({
                 >
                   {data.name === "집"
                     ? ""
-                    : data.types === "restaurant" || data.types === "food"
+                    : data.category_group_code === "FD6"
                       ? "맛집"
-                      : data.types === "point_of_interest"
+                      : data.category_group_code === "AT4"
                         ? "명소"
                         : "숙소"}{" "}
                   <span
@@ -169,7 +169,7 @@ const SortableItem = ({
                       text-[hsl(var(--foreground))]
                     "
                   >
-                    {data.name}
+                    {data.place_name}
                   </span>
                 </p>
               </div>
@@ -256,7 +256,7 @@ export default function ClientPage({ planData }) {
   const [isAddress, setIsAddress] = useState<boolean>(false); // 일차별 장소추가 모달
   const [rangeDate, setRangeDate] = useState<
     { year: string; month: string; day: string }[]
-  >(planData && planData.date); // 여행 날짜
+  >([]); // 여행 날짜
   const [items, setItems] = useState([]);
 
   const sensors = useSensors(
@@ -275,8 +275,6 @@ export default function ClientPage({ planData }) {
   //////////////////////////////////////////////////////////////
 
   const findPlaceStore = useFindPlaceStore((state) => state);
-
-  console.log(findPlaceStore);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -300,7 +298,10 @@ export default function ClientPage({ planData }) {
 
   useEffect(() => {
     // 초기값 세팅
-    if (planData) setItems(planData.days);
+    if (planData) {
+      setItems(planData.days);
+      setRangeDate(planData.date);
+    }
   }, [planData]);
 
   // useEffect(() => {
@@ -392,7 +393,7 @@ export default function ClientPage({ planData }) {
         <ul
           className="relative flex flex-row flex-wrap items-center justify-end  size-full"
         >
-          {/* <motion.li
+          <motion.li
             initial={{ left: `-300px` }}
             animate={{ left: isAddress ? `0` : `-300px` }}
             className="
@@ -588,8 +589,8 @@ export default function ClientPage({ planData }) {
                 </motion.p>
               </div>
             </div>
-          </motion.li> */}
-          {/* <motion.li
+          </motion.li>
+          <motion.li
             initial={{ left: `-600px` }}
             animate={{ left: isAddress ? `300px` : `0` }}
             className="
@@ -902,7 +903,7 @@ export default function ClientPage({ planData }) {
                             : planData &&
                               planData.days[index - 1][
                                 planData.days[index - 1].length - 1
-                              ].name}
+                              ].place_name}
                         </p>
                         <p
                           className="
@@ -943,10 +944,10 @@ export default function ClientPage({ planData }) {
                         if (!over || active.id === over.id) return;
 
                         const oldIndex = data.findIndex(
-                          (item) => item.name === active.id,
+                          (item) => item.place_name === active.id,
                         );
                         const newIndex = data.findIndex(
-                          (item) => item.name === over.id,
+                          (item) => item.place_name === over.id,
                         );
 
                         const newSection = arrayMove(data, oldIndex, newIndex);
@@ -961,14 +962,14 @@ export default function ClientPage({ planData }) {
                     >
                       <SortableContext
                         // sortableItem값과 일치해야함
-                        items={data.map((d) => d.name)}
+                        items={data.map((d) => d.place_name)}
                         strategy={verticalListSortingStrategy}
                       >
                         {data.map((value, idx) => (
                           <SortableItem
                             key={`${index}-${idx}`}
                             // id값는 항상 string값일것
-                            id={value.name}
+                            id={value.place_name}
                             index={idx}
                             lastIndex={data.length}
                             data={value}
@@ -1073,7 +1074,7 @@ export default function ClientPage({ planData }) {
                               >
                                 {index === planData.days.length - 1
                                   ? planData && planData.start.name
-                                  : data[data.length - 1].name}
+                                  : data[data.length - 1].place_name}
                               </p>
                               <p
                                 className="
@@ -1193,15 +1194,14 @@ export default function ClientPage({ planData }) {
                                 <p
                                   className={`
 
-                                      ${value.types === "lodging" ? "text-[--main3]" : "text-[--main]"}
+                                      ${value.category_group_code === "AD5" ? "text-[--main3]" : "text-[--main]"}
                                       text-[14px]
                                       font-[700]
                                   `}
                                 >
-                                  {value.types === "restaurant" ||
-                                  value.types === "food"
+                                  {value.types === "FD6"
                                     ? "맛집"
-                                    : value.types === "point_of_interest"
+                                    : value.types === "AD5"
                                       ? "명소"
                                       : "숙소"}
                                 </p>
@@ -1212,7 +1212,7 @@ export default function ClientPage({ planData }) {
                                     font-[700]
                                   "
                                 >
-                                  {value.name}
+                                  {value.place_name}
                                 </p>
                                 <p
                                   className="
@@ -1220,7 +1220,7 @@ export default function ClientPage({ planData }) {
                                     text-[14px]
                                   "
                                 >
-                                  {value.address}
+                                  {value.address_name}
                                 </p>
                                 <div
                                   className="flex flex-row items-center justify-start "
@@ -1238,7 +1238,7 @@ export default function ClientPage({ planData }) {
                                       text-[grey]
                                     "
                                   >
-                                    {value.rating}
+                                    {value.display_sitename}
                                   </p>
                                 </div>
                               </div>
@@ -1253,7 +1253,7 @@ export default function ClientPage({ planData }) {
     `}
                               >
                                 <img
-                                  src={value.photos}
+                                  src={value.thumbnail_url}
                                   className="
                                     size-[80px]
                                     rounded-[10px]
@@ -1276,7 +1276,7 @@ export default function ClientPage({ planData }) {
                 </div>
               );
             })}
-          </motion.li> */}
+          </motion.li>
           <motion.li
             className={`
         h-screen

@@ -29,30 +29,29 @@ export interface Coordinate {
 }
 
 export interface DayPlace {
-  name: string; // 장소 이름
-  address: string; // 주소
-  lat: number; // 위도
-  lng: number; // 경도
-  distance: number; // 도보 거리 (미터 단위)
-  duration: number; // 소요 시간 (초 단위)
-  number: string; // 전화번호
-  icon: string; // 아이콘 이미지 (기본 아이콘)
-  iconUrl: string; // 아이콘 이미지 (핀 모양)
-  iconBgColor: string; // 아이콘 배경색
-  photos: string; // base64로 인코딩된 대표 이미지
-  placeId: string;
-  rating: number;
-  reviews: [];
-  servesBeer: boolean;
-  servesBrunch: boolean;
-  servesDinner: boolean;
-  servesLunch: boolean;
-  servesWine: boolean;
-  takeout: boolean;
-  url: string;
-  userRatingsTotal: number;
-  vicinity: string;
-  types?: string;
+  address_name: string;
+  category_group_code: string;
+  category_group_name: string;
+  category_name: string;
+  distance: string; // 중심좌표까지의 거리
+  id: string; // 장소ID
+  phone: string;
+  place_name: string;
+  place_url: string;
+  road_address_name: string; // 도로명주소
+  x: string;
+  y: string;
+  startDistance?: number; // 출발지점에서 거리
+  duration?: number;
+  name?: string;
+  collection?: string;
+  thumbnail_url: string;
+  image_url: string;
+  width?: number;
+  height?: number;
+  display_stiename?: string;
+  doc_url?: string;
+  datetime?: Date;
 }
 
 export interface CreatePlan {

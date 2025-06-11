@@ -30,7 +30,7 @@ export const findLogic = async (req: Request, res: Response) => {
     }
 
     const logicResult = await logic(data);
-    // const result = await createPlanModel(logicResult);
+    const result = await createPlanModel(logicResult);
     res.json({ result: true });
   } catch (error) {
     errorConsole(error);
