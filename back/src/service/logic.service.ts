@@ -25,6 +25,7 @@ interface KakaoResult {
   display_stiename?: string;
   doc_url?: string;
   datetime?: Date;
+  status?: number;
 }
 
 interface DistnaceDTO {
@@ -105,7 +106,11 @@ async function getKakaoKeywordSearch(
       },
     });
 
-    storeDatum.push({ ...allPlaces[i], ...imageRes.data.documents[0] });
+    storeDatum.push({
+      ...allPlaces[i],
+      ...imageRes.data.documents[0],
+      status: 0,
+    });
   }
 
   return storeDatum;
@@ -818,12 +823,12 @@ export async function logic(data: any) {
   // https://console.cloud.google.com/apis/dashboard?inv=1&invt=Abyjyg&project=secret-helper-460706-b7&pageState=(%22duration%22:(%22groupValue%22:%22PT1H%22,%22customValue%22:null))
 
   // 출발장소 경도위도
-  const originLat = `${data.start.lat}`;
-  const originLng = `${data.start.lng}`;
+  const originLat = `${data.start.y}`;
+  const originLng = `${data.start.x}`;
 
   // 도착장소 경도위도
-  const destinationLat = `${data.destination.lat}`;
-  const destinationLng = `${data.destination.lng}`;
+  const destinationLat = `${data.destination.y}`;
+  const destinationLng = `${data.destination.x}`;
 
   // 여행 일정
   // ex ) 1박2일 = 2 , 2박3일 = 3

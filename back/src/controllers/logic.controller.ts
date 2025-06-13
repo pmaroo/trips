@@ -1,8 +1,27 @@
 import { Request, Response } from "express";
 import { errorConsole } from "../utils/error";
 import { logic } from "../service/logic.service";
-import { createPlanModel } from "../models/plan.model";
-import { findPlaceGoogle } from "../service/place.service";
+import { createPlanModel, updatePlanModel } from "../models/plan.model";
+import { findPlaceKakao, updateDataLogic } from "../service/place.service";
+import { CreatePlan } from "../types/plan";
+
+export const updatePlan = async (req: Request, res: Response) => {
+  const data: CreatePlan = req.body;
+  try {
+    if (!data) {
+      res.status(401).json({ message: "일정의 정보가 없습니다." });
+      return;
+    }
+
+    const result: CreatePlan = await updateDataLogic(data);
+    await updatePlanModel(result);
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    errorConsole(error);
+    res.status(401).json({ message: "일정을 계획하는데 실패했습니다." });
+  }
+};
 
 export const findPlace = async (req: Request, res: Response) => {
   const data: { keyword: string } = req.body;
@@ -12,7 +31,7 @@ export const findPlace = async (req: Request, res: Response) => {
       return;
     }
 
-    const result = await findPlaceGoogle(data);
+    const result = await findPlaceKakao(data);
 
     res.json(result);
   } catch (error) {
@@ -31,7 +50,7 @@ export const findLogic = async (req: Request, res: Response) => {
 
     const logicResult = await logic(data);
     const result = await createPlanModel(logicResult);
-    res.json({ result: true });
+    res.json(result);
   } catch (error) {
     errorConsole(error);
     res.status(401).json({ message: "일정을 계획하는데 실패했습니다." });
