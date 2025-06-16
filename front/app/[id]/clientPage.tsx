@@ -41,7 +41,11 @@ import {
   usePlanStore,
   useResultPlan,
 } from "@store/planStore";
-import { useCreatePlan, useFindPlace } from "@hooks/reactQuery/usePlan";
+import {
+  useCreatePlan,
+  useFindPlace,
+  useUpdatePlan,
+} from "@hooks/reactQuery/usePlan";
 import Bus from "@components/svg/bus";
 import Leins from "@lib/lenis";
 import { CreatePlan, DayPlace, PlanListById } from "@/types/plan";
@@ -53,11 +57,13 @@ const SortableItem = ({
   index,
   lastIndex,
   data,
+  placeDeleteHandler,
 }: {
   id: string;
   index: number;
   lastIndex: string;
   data: DayPlace;
+  placeDeleteHandler: Function;
 }) => {
   const {
     attributes,
@@ -155,13 +161,7 @@ const SortableItem = ({
                     mr-[5px]
                 `}
                 >
-                  {data.name === "집"
-                    ? ""
-                    : data.category_group_code === "FD6"
-                      ? "맛집"
-                      : data.category_group_code === "AT4"
-                        ? "명소"
-                        : "숙소"}{" "}
+                  {data.name === "집" ? "" : data.category_group_name}
                   <span
                     className="
                       text-[14px]
@@ -198,6 +198,7 @@ const SortableItem = ({
                   text-[12px]
                   cursor-pointer
                 "
+                onClick={() => placeDeleteHandler(data)}
               >
                 <XCircle size={16} color="#ff0000" />
               </motion.p>
@@ -246,8 +247,6 @@ export default function ClientPage({ planData }) {
     FormField,
   } = Components;
 
-  console.log(planData);
-
   //////////////////////////////////////////////////////////////
   // STATE
   //////////////////////////////////////////////////////////////
@@ -258,6 +257,7 @@ export default function ClientPage({ planData }) {
     { year: string; month: string; day: string }[]
   >([]); // 여행 날짜
   const [items, setItems] = useState([]);
+  const [updateDay, setUpdateDay] = useState<number | null>(null); // 수정할때 몇일차인지 선택
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -269,12 +269,17 @@ export default function ClientPage({ planData }) {
   const { isDesktop, isTablet, isMobile } = useDeviceSize();
 
   const findPlace = useFindPlace(() => {});
+  const updatePlan = useUpdatePlan(() => {
+    setIsUpdate(false);
+    setIsAddress(false);
+  });
 
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
   const findPlaceStore = useFindPlaceStore((state) => state);
+  const resultPlanStore = useResultPlan((state) => state);
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -301,8 +306,16 @@ export default function ClientPage({ planData }) {
     if (planData) {
       setItems(planData.days);
       setRangeDate(planData.date);
+      resultPlanStore.setPlan(planData);
     }
   }, [planData]);
+
+  useEffect(() => {
+    if (resultPlanStore.plan) {
+      setItems(resultPlanStore.plan.days);
+      setRangeDate(resultPlanStore.plan.date);
+    }
+  }, [resultPlanStore.plan]);
 
   // useEffect(() => {
   //   const container = document.getElementById("map");
@@ -356,12 +369,14 @@ export default function ClientPage({ planData }) {
   // TOGGLE
   //////////////////////////////////////////////////////////////
 
-  const addressToggle = () => {
+  const addressToggle = (index) => {
+    setUpdateDay(index);
     setIsAddress(!isAddress);
   };
 
   const updateToggle = () => {
     setIsUpdate(!isUpdate);
+    setIsAddress(false);
   };
 
   const tabHandler = (data: number) => {
@@ -371,6 +386,78 @@ export default function ClientPage({ planData }) {
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
+
+  const updateHandler = useCallback(() => {
+    for (let i = 0; i < items.length; i++) {
+      items[i].map((value, index) => {
+        if (
+          value.status === 1 &&
+          i !== items.length - 1 &&
+          items[i].length - 1 === index
+        ) {
+          items[i + 1][0] = { ...items[i + 1][0], status: 1 };
+        }
+      });
+    }
+
+    const result = {
+      ...planData,
+      days: items,
+    };
+
+    updatePlan.mutate(result);
+  }, [updatePlan, items]);
+
+  const placeDeleteHandler = useCallback(
+    (data: DayPlace) => {
+      let parentIndex = null;
+
+      for (let i = 0; i < items.length; i++) {
+        for (let o = 0; o < items[i].length; o++) {
+          if (data === items[i][o]) {
+            parentIndex = i;
+          }
+        }
+      }
+
+      const deleteIndex = items[parentIndex].findIndex(
+        (value) => value === data,
+      );
+
+      setItems((prev) =>
+        // section : 일차별 장소
+        // i : 일차 index
+        prev.map((section, i) => {
+          if (i !== parentIndex) return section;
+          if (items[i][deleteIndex] === data) {
+            section.splice(deleteIndex, 1);
+          }
+          if (deleteIndex > section.length - 1) return section;
+          section[deleteIndex] = {
+            ...section[deleteIndex],
+            status: 1,
+          };
+          return section;
+        }),
+      );
+    },
+    [items],
+  );
+
+  const placePlusHandler = useCallback(
+    (data: DayPlace) => {
+      setItems((prev) =>
+        // section : 일차별 장소
+        // i : 일차 index
+        prev.map((section, i) => {
+          // 일차 Index와 같으면 장소 추가, 아니라면 장소 그대로
+          if (i !== updateDay) return section;
+          return [...section, { ...data, status: 1 }];
+        }),
+      );
+    },
+    [updateDay],
+  );
 
   const findPlaceHandler = useCallback((data) => {
     findPlace.mutate({ keyword: data.keyword });
@@ -411,7 +498,9 @@ export default function ClientPage({ planData }) {
               px-[20px]
               z-[100]
               shadow-lg
+              overflow-y-scroll
             "
+            data-lenis-prevent
           >
             <div
               className="
@@ -493,102 +582,94 @@ export default function ClientPage({ planData }) {
               </Form>
             </div>
 
-            <div
-              className="
-                flex
-                flex-row
-                items-center
-                w-full
-                relative
-                justify-end
-                bg-[--lightGrey]
-                p-[10px]
-                rounded-[5px]
-                mb-[5px]
-              "
-            >
-              <div
-                className="flex flex-row items-center justify-between w-full "
-              >
-                <div
-                  className="
-                    flex
-                    flex-row
-                    items-center
-                    justify-start
-                    w-[calc(100%-20px)]
-                  "
-                >
+            {findPlaceStore.place &&
+              findPlaceStore.place.map((data) => {
+                return (
                   <div
-                    className="
-                      size-[50px]
-                      rounded-[5px]
-                      bg-[--grey]
-                      mr-[10px]
-                      overflow-hidden
-                    "
-                  >
-                    <img
-                      src="/daejeon.png"
-                      className=" size-full"
-                    />
-                  </div>
-                  <div
+                    key={data.id}
                     className="
                       flex
-                      flex-col
-                      items-start
-                      justify-center
-                      w-[calc(100%-50px-10px]
+                      flex-row
+                      items-center
+                      w-full
+                      relative
+                      justify-end
+                      bg-[--lightGrey]
+                      p-[10px]
+                      rounded-[5px]
+                      mb-[5px]
                     "
                   >
-                    <p
-                      className="
-                        text-[--main]
-                        text-[14px]
-                        font-[700]
-                      "
+                    <div
+                      className="flex flex-row items-center justify-between w-full "
                     >
-                      명소{" "}
-                      <span
+                      <div
                         className="
-                          text-[14px]
-                          font-[700]
-                          text-[hsl(var(--foreground))]
+                          flex
+                          flex-row
+                          items-center
+                          justify-start
+                          w-[calc(100%-20px)]
                         "
                       >
-                        대전 마루집
-                      </span>
-                    </p>
-                    <p
-                      className="
-                        text-[--grey]
-                        text-[12px]
-                      "
-                    >
-                      대전 삼성동 346-3
-                    </p>
-                  </div>
-                </div>
+                        <div
+                          className="
+                            flex
+                            flex-col
+                            items-start
+                            justify-center
+                            w-[calc(100%-50px-10px]
+                          "
+                        >
+                          <p
+                            className="
+                              text-[--main]
+                              text-[14px]
+                              font-[700]
+                            "
+                          >
+                            {data.category_group_name}{" "}
+                            <span
+                              className="
+                                text-[14px]
+                                font-[700]
+                                text-[hsl(var(--foreground))]
+                              "
+                            >
+                              {data.place_name}
+                            </span>
+                          </p>
+                          <p
+                            className="
+                              text-[--grey]
+                              text-[12px]
+                            "
+                          >
+                            {data.address_name}
+                          </p>
+                        </div>
+                      </div>
 
-                <motion.p
-                  whileHover={{
-                    rotate: `90deg`,
-                    transition: {
-                      duration: 0.5,
-                    },
-                  }}
-                  className="
-                    text-[--darkGrey2]
-                    text-[12px]
-                    cursor-pointer
-                  "
-                  onClick={addressToggle}
-                >
-                  <PlusCircle />
-                </motion.p>
-              </div>
-            </div>
+                      <motion.p
+                        whileHover={{
+                          rotate: `90deg`,
+                          transition: {
+                            duration: 0.5,
+                          },
+                        }}
+                        className="
+                          text-[--darkGrey2]
+                          text-[12px]
+                          cursor-pointer
+                        "
+                        onClick={() => placePlusHandler(data)}
+                      >
+                        <PlusCircle />
+                      </motion.p>
+                    </div>
+                  </div>
+                );
+              })}
           </motion.li>
           <motion.li
             initial={{ left: `-600px` }}
@@ -677,7 +758,7 @@ export default function ClientPage({ planData }) {
                     },
                   }}
                   className="cursor-pointer "
-                  onClick={updateToggle}
+                  onClick={updateHandler}
                 >
                   <CheckCircle />
                 </motion.li>
@@ -804,7 +885,7 @@ export default function ClientPage({ planData }) {
                             ml-[10px]
                             cursor-pointer
                           "
-                          onClick={addressToggle}
+                          onClick={() => addressToggle(index)}
                         >
                           <PlusCircle size={24} />
                         </motion.p>
@@ -899,10 +980,11 @@ export default function ClientPage({ planData }) {
                           "
                         >
                           {index === 0
-                            ? planData && planData.start.name
-                            : planData &&
-                              planData.days[index - 1][
-                                planData.days[index - 1].length - 1
+                            ? resultPlanStore.plan &&
+                              resultPlanStore.plan.start.name
+                            : resultPlanStore.plan &&
+                              resultPlanStore.plan.days[index - 1][
+                                resultPlanStore.plan.days[index - 1].length - 1
                               ].place_name}
                         </p>
                         <p
@@ -973,6 +1055,7 @@ export default function ClientPage({ planData }) {
                             index={idx}
                             lastIndex={data.length}
                             data={value}
+                            placeDeleteHandler={placeDeleteHandler}
                           />
                         ))}
                       </SortableContext>
@@ -1199,11 +1282,7 @@ export default function ClientPage({ planData }) {
                                       font-[700]
                                   `}
                                 >
-                                  {value.types === "FD6"
-                                    ? "맛집"
-                                    : value.types === "AD5"
-                                      ? "명소"
-                                      : "숙소"}
+                                  {value.category_group_name}
                                 </p>
 
                                 <p

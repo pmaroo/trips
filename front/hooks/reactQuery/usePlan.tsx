@@ -6,9 +6,31 @@ import { toast } from "sonner";
 import { imageUpload, latlongAPI } from "@lib/api/common.api";
 import { useImageState, useLatLongState } from "@store/commonStore";
 import { useFindPlaceStore, useResultPlan } from "@store/planStore";
-import { createPlan, placeFind, planListById } from "@lib/api/plan.api";
+import {
+  createPlan,
+  placeFind,
+  planListById,
+  updatePlan,
+} from "@lib/api/plan.api";
 import { CreatePlan, PlanListById } from "@/types/plan";
 import { useRouter } from "next/navigation";
+
+// 일정 수정하기
+export const useUpdatePlan = (onSuccessCallback: () => void) => {
+  const resultPlan = useResultPlan((state) => state);
+
+  return useMutation({
+    mutationFn: (planData: any) => updatePlan(planData),
+    onSuccess: async (data) => {
+      resultPlan.setPlan(data);
+      toast("일정이 수정되었습니다.");
+      onSuccessCallback?.();
+    },
+    onError: (error: any) => {
+      toast(error?.response.data.message);
+    },
+  });
+};
 
 // 장소 검색하기
 export const useFindPlace = (onSuccessCallback: () => void) => {

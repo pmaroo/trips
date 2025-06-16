@@ -15,7 +15,6 @@ export const updatePlan = async (req: Request, res: Response) => {
 
     const result: CreatePlan = await updateDataLogic(data);
     await updatePlanModel(result);
-    console.log(result);
     res.json(result);
   } catch (error) {
     errorConsole(error);

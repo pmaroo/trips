@@ -13,6 +13,11 @@ export const apiPlanClient = axios.create({
   withCredentials: true, // ✅ 쿠키 포함 요청
 });
 
+export const updatePlan = async (planData: CreatePlan): Promise<CreatePlan> => {
+  const { data } = await apiClient.post<CreatePlan>("/update", planData);
+  return data;
+};
+
 export const placeFind = async (planData: { keyword: string }) => {
   const { data } = await apiClient.post("/find/place", planData);
   return data;
