@@ -7,8 +7,6 @@ import {
 } from "../middlewares/jwtVerify";
 import { kakaoToken, successToken } from "../controllers/jwt.controller";
 
-import { loginUser } from "../controllers/user.controller";
-
 const router = express.Router();
 
 // 선택적회원 JWT검증

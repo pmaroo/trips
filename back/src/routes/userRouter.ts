@@ -5,10 +5,11 @@ import {
   exitUser,
   getAllUsers,
   getUserById,
-  loginUser,
+  loginUserController,
   logoutUser,
   updateUser,
 } from "../controllers/user.controller";
+import { snsLoginMiddleware } from "../middlewares/snsLogin";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post("/logout", logoutUser);
 router.post("/adminLogin", adminLoginUser);
 
 // 로그인
-router.post("/login", loginUser);
+router.post("/login", snsLoginMiddleware, loginUserController);
 
 // 회원탈퇴
 router.post("/exit", exitUser);

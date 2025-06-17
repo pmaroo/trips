@@ -1400,6 +1400,7 @@ export namespace Prisma {
     password: string | null
     userName: string | null
     nickName: string | null
+    mobile: string | null
     type: string | null
     isAdmin: boolean | null
     isDelete: boolean | null
@@ -1415,6 +1416,7 @@ export namespace Prisma {
     password: string | null
     userName: string | null
     nickName: string | null
+    mobile: string | null
     type: string | null
     isAdmin: boolean | null
     isDelete: boolean | null
@@ -1430,6 +1432,7 @@ export namespace Prisma {
     password: number
     userName: number
     nickName: number
+    mobile: number
     type: number
     isAdmin: number
     isDelete: number
@@ -1455,6 +1458,7 @@ export namespace Prisma {
     password?: true
     userName?: true
     nickName?: true
+    mobile?: true
     type?: true
     isAdmin?: true
     isDelete?: true
@@ -1470,6 +1474,7 @@ export namespace Prisma {
     password?: true
     userName?: true
     nickName?: true
+    mobile?: true
     type?: true
     isAdmin?: true
     isDelete?: true
@@ -1485,6 +1490,7 @@ export namespace Prisma {
     password?: true
     userName?: true
     nickName?: true
+    mobile?: true
     type?: true
     isAdmin?: true
     isDelete?: true
@@ -1587,6 +1593,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile: string
     type: string
     isAdmin: boolean
     isDelete: boolean
@@ -1621,6 +1628,7 @@ export namespace Prisma {
     password?: boolean
     userName?: boolean
     nickName?: boolean
+    mobile?: boolean
     type?: boolean
     isAdmin?: boolean
     isDelete?: boolean
@@ -1640,6 +1648,7 @@ export namespace Prisma {
     password?: boolean
     userName?: boolean
     nickName?: boolean
+    mobile?: boolean
     type?: boolean
     isAdmin?: boolean
     isDelete?: boolean
@@ -1649,7 +1658,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "userName" | "nickName" | "type" | "isAdmin" | "isDelete" | "reason" | "refreshToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "userName" | "nickName" | "mobile" | "type" | "isAdmin" | "isDelete" | "reason" | "refreshToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Plan?: boolean | User$PlanArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1666,6 +1675,7 @@ export namespace Prisma {
       password: string
       userName: string
       nickName: string
+      mobile: string
       type: string
       isAdmin: boolean
       isDelete: boolean
@@ -2048,6 +2058,7 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly userName: FieldRef<"User", 'String'>
     readonly nickName: FieldRef<"User", 'String'>
+    readonly mobile: FieldRef<"User", 'String'>
     readonly type: FieldRef<"User", 'String'>
     readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly isDelete: FieldRef<"User", 'Boolean'>
@@ -6644,6 +6655,7 @@ export namespace Prisma {
     password: 'password',
     userName: 'userName',
     nickName: 'nickName',
+    mobile: 'mobile',
     type: 'type',
     isAdmin: 'isAdmin',
     isDelete: 'isDelete',
@@ -6740,6 +6752,7 @@ export namespace Prisma {
     password: 'password',
     userName: 'userName',
     nickName: 'nickName',
+    mobile: 'mobile',
     type: 'type',
     reason: 'reason',
     refreshToken: 'refreshToken'
@@ -6873,6 +6886,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     userName?: StringFilter<"User"> | string
     nickName?: StringFilter<"User"> | string
+    mobile?: StringFilter<"User"> | string
     type?: StringFilter<"User"> | string
     isAdmin?: BoolFilter<"User"> | boolean
     isDelete?: BoolFilter<"User"> | boolean
@@ -6889,6 +6903,7 @@ export namespace Prisma {
     password?: SortOrder
     userName?: SortOrder
     nickName?: SortOrder
+    mobile?: SortOrder
     type?: SortOrder
     isAdmin?: SortOrder
     isDelete?: SortOrder
@@ -6909,6 +6924,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     userName?: StringFilter<"User"> | string
     nickName?: StringFilter<"User"> | string
+    mobile?: StringFilter<"User"> | string
     type?: StringFilter<"User"> | string
     isAdmin?: BoolFilter<"User"> | boolean
     isDelete?: BoolFilter<"User"> | boolean
@@ -6925,6 +6941,7 @@ export namespace Prisma {
     password?: SortOrder
     userName?: SortOrder
     nickName?: SortOrder
+    mobile?: SortOrder
     type?: SortOrder
     isAdmin?: SortOrder
     isDelete?: SortOrder
@@ -6948,6 +6965,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     userName?: StringWithAggregatesFilter<"User"> | string
     nickName?: StringWithAggregatesFilter<"User"> | string
+    mobile?: StringWithAggregatesFilter<"User"> | string
     type?: StringWithAggregatesFilter<"User"> | string
     isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     isDelete?: BoolWithAggregatesFilter<"User"> | boolean
@@ -7269,6 +7287,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile?: string
     type: string
     isAdmin?: boolean
     isDelete?: boolean
@@ -7285,6 +7304,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile?: string
     type: string
     isAdmin?: boolean
     isDelete?: boolean
@@ -7300,6 +7320,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
@@ -7316,6 +7337,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
@@ -7332,6 +7354,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile?: string
     type: string
     isAdmin?: boolean
     isDelete?: boolean
@@ -7346,6 +7369,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
@@ -7361,6 +7385,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
@@ -7776,6 +7801,7 @@ export namespace Prisma {
     password?: SortOrder
     userName?: SortOrder
     nickName?: SortOrder
+    mobile?: SortOrder
     type?: SortOrder
     isAdmin?: SortOrder
     isDelete?: SortOrder
@@ -7795,6 +7821,7 @@ export namespace Prisma {
     password?: SortOrder
     userName?: SortOrder
     nickName?: SortOrder
+    mobile?: SortOrder
     type?: SortOrder
     isAdmin?: SortOrder
     isDelete?: SortOrder
@@ -7810,6 +7837,7 @@ export namespace Prisma {
     password?: SortOrder
     userName?: SortOrder
     nickName?: SortOrder
+    mobile?: SortOrder
     type?: SortOrder
     isAdmin?: SortOrder
     isDelete?: SortOrder
@@ -8856,6 +8884,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile?: string
     type: string
     isAdmin?: boolean
     isDelete?: boolean
@@ -8871,6 +8900,7 @@ export namespace Prisma {
     password: string
     userName: string
     nickName: string
+    mobile?: string
     type: string
     isAdmin?: boolean
     isDelete?: boolean
@@ -8957,6 +8987,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean
@@ -8972,6 +9003,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     userName?: StringFieldUpdateOperationsInput | string
     nickName?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     isDelete?: BoolFieldUpdateOperationsInput | boolean

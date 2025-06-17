@@ -24,7 +24,7 @@ model User {
   password          String      @db.VarChar(700)
   userName          String      @db.VarChar(100)
   nickName          String      @db.VarChar(100)
-  mobile            String      @db.VarChar(100)
+  mobile            String      @db.VarChar(100) @default("")
   type              String      @db.VarChar(100)
   isAdmin           Boolean     @default(false)
   isDelete          Boolean     @default(false)

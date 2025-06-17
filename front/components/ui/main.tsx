@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Components from "@components/shadcn";
-import { Kakao } from "./login/kakao";
+import { KakaoButton } from "./login/kakao";
 import { Naver } from "./login/naver";
 import { Google } from "./login/google";
 
@@ -23,6 +23,12 @@ import {
   Plane,
   PlusCircle,
 } from "lucide-react";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "@node_modules/next/navigation";
 
 export default function Main(data: {
   isStart: boolean;
@@ -50,10 +56,12 @@ export default function Main(data: {
   // STORE
   //////////////////////////////////////////////////////////////
   const meStore = useMeState();
-  const kakaoStore = useKakaoStore();
+
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
+
+  const searchParams = useSearchParams();
 
   const loginUser = useLoginUser(meStore.me && meStore.me.id.toString());
 
@@ -63,28 +71,6 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-
-      const { type, payload } = event.data;
-      if (type === "KAKAO_AUTH_SUCCESS") {
-        fetch("http://localhost:8080/api/auth/kakao", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: payload.code }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            // 로그인 처리 (토큰 저장, 리디렉션 등)
-          });
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [kakaoStore]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -100,13 +86,14 @@ export default function Main(data: {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
+  const { Kakao } = window;
+
   const kakaoLogin = () => {
-    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=9c5894d38bae2a1785adabd46325ccc6&redirect_uri=http://localhost:3000/kakao`;
-    window.open(
-      kakaoAuthURL,
-      "_blank", // 새 창 (또는 새 탭)
-      "width=500,height=600", // 옵션: 팝업 형태로 열기
-    );
+    // 1. 카카오 요청
+    Kakao.Auth.authorize({
+      redirectUri: "http://localhost:3000/kakao",
+      scope: "profile_nickname,account_email,name,phone_number",
+    });
   };
 
   //////////////////////////////////////////////////////////////
@@ -209,21 +196,14 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-              "
+              className="flex flex-row items-center justify-start "
             >
               <motion.div
                 className="
@@ -495,15 +475,13 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>
             </DialogHeader>
 
-            <Kakao onClick={kakaoLogin} />
+            <KakaoButton onClick={kakaoLogin} />
             <Naver />
             <Google />
           </DialogContent>

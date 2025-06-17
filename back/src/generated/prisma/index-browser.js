@@ -123,6 +123,7 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   userName: 'userName',
   nickName: 'nickName',
+  mobile: 'mobile',
   type: 'type',
   isAdmin: 'isAdmin',
   isDelete: 'isDelete',
@@ -195,6 +196,7 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   password: 'password',
   userName: 'userName',
   nickName: 'nickName',
+  mobile: 'mobile',
   type: 'type',
   reason: 'reason',
   refreshToken: 'refreshToken'

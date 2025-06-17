@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `mobile` VARCHAR(100) NOT NULL DEFAULT '';

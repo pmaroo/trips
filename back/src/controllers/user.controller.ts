@@ -87,8 +87,8 @@ export const adminLoginUser = async (req: Request, res: Response) => {
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
-  const loginData: LoginUser = req.body;
+export const loginUserController = async (req: Request, res: Response) => {
+  const loginData: CreateUser = req.body;
 
   try {
     if (!loginData) {
@@ -96,18 +96,19 @@ export const loginUser = async (req: Request, res: Response) => {
       return;
     }
 
-    const jwtData = await login(loginData);
-
-    if (typeof jwtData === "string") {
-      res.status(401).json({ message: jwtData });
+    if (!req.jwtUser) {
       return;
     }
 
-    const toeknData = await generateToken(jwtData);
-    const localStroage = new LocalStorage("./scratch");
-    await localStroage.setItem("user_login", JSON.stringify(toeknData));
+    const jwtData: JwtUserDTO = req.jwtUser;
 
-    res.json({ data: true });
+    // 토큰발급
+    const toeknData = await generateToken(jwtData);
+
+    // 토큰 쿠키 및 DB 저장
+    const data = await setAuthToken(res, toeknData, jwtData);
+
+    res.json(data);
   } catch (error) {
     errorConsole(error);
     res.status(401).json({ message: "로그인 할 수 없습니다." });
@@ -158,6 +159,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     const data = await createUserModel(createData);
+
     res.json(data);
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {

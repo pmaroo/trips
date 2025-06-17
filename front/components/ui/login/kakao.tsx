@@ -3,7 +3,7 @@
 import Components from "@components/shadcn";
 import KakaoIcon from "@components/svg/kakaoIcon";
 
-export function Kakao(data: { onClick: Function }) {
+export function KakaoButton(data: { onClick: Function }) {
   const { Button } = Components;
 
   return (
