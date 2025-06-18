@@ -6,7 +6,7 @@ import { KakaoButton } from "./login/kakao";
 import { Naver } from "./login/naver";
 import { Google } from "./login/google";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMeState } from "@store/commonStore";
 import axios from "axios";
 import { useKakaoStore } from "@store/loginStore";
@@ -29,6 +29,7 @@ import {
   useRouter,
   useSearchParams,
 } from "@node_modules/next/navigation";
+import { usePlanStore } from "@store/planStore";
 
 export default function Main(data: {
   isStart: boolean;
@@ -56,14 +57,15 @@ export default function Main(data: {
   // STORE
   //////////////////////////////////////////////////////////////
   const meStore = useMeState();
+  const planStore = usePlanStore((state) => state);
 
   //////////////////////////////////////////////////////////////
   // HOOK
   //////////////////////////////////////////////////////////////
 
-  const searchParams = useSearchParams();
-
-  const loginUser = useLoginUser(meStore.me && meStore.me.id.toString());
+  const loginUser = useLoginUser(
+    meStore.me && meStore.me.id ? meStore.me.id.toString() : null,
+  );
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -71,6 +73,8 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
+  const [naver, setNaver] = useState<any>(null);
+  const [state, setState] = useState(null);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -78,15 +82,19 @@ export default function Main(data: {
   const createToggle = () => {
     if (loginUser.data && loginUser.data.Plan.length === 0) {
       data.startToggle();
+      planStore.setPlan({ UserId: meStore.me.id });
     } else {
       setIsCreate(!isCreate);
     }
   };
+
   //////////////////////////////////////////////////////////////
   // HANDLER
   //////////////////////////////////////////////////////////////
 
   const { Kakao } = window;
+
+  const naverLogin = useCallback(() => {}, [naver, state]);
 
   const kakaoLogin = () => {
     // 1. 카카오 요청
@@ -154,20 +162,6 @@ export default function Main(data: {
       >
         언제 어디든 일정계획 맡겨만 주세요.
       </p>
-
-      {/* <p
-        onClick={() => {
-          console.log("로그아웃");
-          fetch("https://kapi.kakao.com/v2/user/me", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer 1TtCZhjuhtlOR64PR9SowkZIsE1_4CrPAAAAAQoNIpkAAAGW8UQbbIE8pQXSEbh1`,
-            },
-          });
-        }}
-      >
-        로그아웃
-      </p> */}
 
       <Dialog open={isCreate} onOpenChange={createToggle}>
         <DialogTrigger asChild>
@@ -255,7 +249,7 @@ export default function Main(data: {
               >
                 <CarouselContent>
                   {loginUser.data &&
-                    loginUser.data.Plan.map((_, index) => (
+                    loginUser.data.Plan.map((data, index) => (
                       <CarouselItem
                         key={index}
                         className="
@@ -266,7 +260,7 @@ export default function Main(data: {
                         "
                       >
                         <motion.div
-                          className="
+                          className={`
                             w-full
                             h-[300px]
                             rounded-[10px]
@@ -275,8 +269,7 @@ export default function Main(data: {
                             border
                             border-[--lightGrey]
                             shadow-lg
-                            bg-[url(/daejeon.png)]
-                          "
+                        `}
                         >
                           <div
                             className="
@@ -284,7 +277,7 @@ export default function Main(data: {
                               flex-col
                               items-start
                               justify-start
-                              bg-[rgba(0,0,0,0.3)]
+                              bg-[rgba(0,0,0,0.4)]
                               size-full
                               p-[20px]
                               duration-500
@@ -303,7 +296,7 @@ export default function Main(data: {
                               <li
                                 className="
                                   mr-[5px]
-                                  text-[hsl(var(--foreground))]
+                                  text-[hsl(var(--background))]
                                 "
                               >
                                 <Plane />
@@ -318,7 +311,7 @@ export default function Main(data: {
                                     hover:text-[hsl(var(--background))]
                                   "
                                 >
-                                  대전광역시
+                                  {data.destination.name}
                                 </h1>
                               </li>
                             </ul>
@@ -334,7 +327,7 @@ export default function Main(data: {
                               <li
                                 className="
                                   mr-[5px]
-                                  text-[hsl(var(--foreground))]
+                                  text-[hsl(var(--background))]
                                 "
                               >
                                 <Briefcase />
@@ -348,7 +341,7 @@ export default function Main(data: {
                                     hover:text-[hsl(var(--background))]
                                   "
                                 >
-                                  커플여행
+                                  {data.category}
                                 </h1>
                               </li>
                             </ul>
@@ -364,7 +357,7 @@ export default function Main(data: {
                               <li
                                 className="
                                   mr-[5px]
-                                  text-[hsl(var(--foreground))]
+                                  text-[hsl(var(--background))]
                                 "
                               >
                                 <CarFront />
@@ -378,39 +371,7 @@ export default function Main(data: {
                                     hover:text-[hsl(var(--background))]
                                   "
                                 >
-                                  차량
-                                </h1>
-                              </li>
-                            </ul>
-                            <ul
-                              className="
-                                flex
-                                flex-row
-                                items-start
-                                justify-start
-                                mb-[5px]
-                              "
-                            >
-                              <li
-                                className="
-                                  mr-[5px]
-                                  mt-[3px]
-                                  text-[hsl(var(--foreground))]
-                                "
-                              >
-                                <AlarmClock />
-                              </li>
-                              <li>
-                                <h1
-                                  className="
-                                    text-[14px]
-                                    text-[--lightGrey2]
-                                    duration-500
-                                    hover:text-[hsl(var(--background))]
-                                  "
-                                >
-                                  2025년1월25일
-                                  <br />~ 2025년2월20일
+                                  {data.traffic}
                                 </h1>
                               </li>
                             </ul>
@@ -426,10 +387,11 @@ export default function Main(data: {
                               <li
                                 className="
                                   mr-[5px]
-                                  text-[hsl(var(--foreground))]
+                                  mt-[3px]
+                                  text-[hsl(var(--background))]
                                 "
                               >
-                                <House />
+                                <AlarmClock />
                               </li>
                               <li>
                                 <h1
@@ -440,7 +402,11 @@ export default function Main(data: {
                                     hover:text-[hsl(var(--background))]
                                   "
                                 >
-                                  숙소 ~ 50,000원
+                                  {data.date[0].year}년{data.date[0].month}월
+                                  {data.date[0].day}일
+                                  <br />~ {data.date[data.date.length - 1].year}
+                                  년{data.date[data.date.length - 1].month}월
+                                  {data.date[data.date.length - 1].day}일
                                 </h1>
                               </li>
                             </ul>
@@ -482,7 +448,7 @@ export default function Main(data: {
             </DialogHeader>
 
             <KakaoButton onClick={kakaoLogin} />
-            <Naver />
+            <Naver onClick={naverLogin} />
             <Google />
           </DialogContent>
         )}

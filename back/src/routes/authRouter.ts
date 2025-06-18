@@ -5,7 +5,12 @@ import {
   authenticateToken,
   optionalAuthenticateToken,
 } from "../middlewares/jwtVerify";
-import { kakaoToken, successToken } from "../controllers/jwt.controller";
+import {
+  kakaoToken,
+  naverLogin,
+  successToken,
+} from "../controllers/jwt.controller";
+import { naverToken } from "../middlewares/snsLogin";
 
 const router = express.Router();
 
@@ -13,9 +18,12 @@ const router = express.Router();
 router.post("/verify/optional", optionalAuthenticateToken, successToken);
 
 // 무조건적관리자회원 JWT검증
-router.post("/verify", adminAuthenticateToken, successToken);
+router.post("/verify", authenticateToken, successToken);
 
 // 카카오로그인
 router.post("/kakao", kakaoToken);
+
+// 네이버로그인
+router.post("/naver", naverToken, naverLogin);
 
 export default router;

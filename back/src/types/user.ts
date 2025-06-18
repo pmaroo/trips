@@ -24,6 +24,7 @@ export interface CreateUser {
   password: string;
   userName: string;
   nickName: string;
+  mobile?: string;
   isAdmin: boolean;
   type: string;
 }

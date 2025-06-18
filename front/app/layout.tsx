@@ -36,8 +36,6 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("jwt")?.value;
   const refreshToken = cookieStore.get("refresh")?.value;
-  const kakaoAccessToken = cookieStore.get("kakao_access")?.value;
-  const kakaoRefreshToken = cookieStore.get("kakao_refresh")?.value;
 
   const apiClient = axios.create({
     baseURL: "http://localhost:8080/api/auth", // api 주소
@@ -51,14 +49,13 @@ export default async function RootLayout({
   const verify = async () => {
     try {
       const { data } = await apiClient.post("/verify");
-
       return data;
     } catch (error) {
       console.log(error.response.data.message || error);
     }
   };
 
-  const user = accessToken && refreshToken ? await verify() : null;
+  const user = accessToken || refreshToken ? await verify() : null;
 
   return (
     <html lang="ko">
@@ -74,10 +71,6 @@ export default async function RootLayout({
         </Providers>
         <Toaster />
         <Leins />
-        {/* <script
-          type="text/javascript"
-          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=66560f77cf5a1dac46c7395a202f8825&libraries=services,clusterer,drawing"
-        ></script> */}
 
         <script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"
@@ -89,6 +82,11 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `Kakao.init('66560f77cf5a1dac46c7395a202f8825')`,
           }}
+        ></script>
+        <script
+          type="text/javascript"
+          src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js"
+          charSet="utf-8"
         ></script>
       </body>
     </html>

@@ -24,3 +24,8 @@ export interface KakaoDTO {
   connected_at: string;
   kakao: ProfileDTO;
 }
+
+export interface NaverTokenDTO {
+  code: string;
+  state: string;
+}

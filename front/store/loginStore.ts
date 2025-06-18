@@ -11,3 +11,5 @@ export const useKakaoStore = create<KakaoState>((set) => ({
   setProfile: (profile) => set({ profile }),
   clearProfile: () => set({ profile: null }),
 }));
+
+////////////////////////////////////////////////////////

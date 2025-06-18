@@ -2,9 +2,37 @@
 
 import Components from "@components/shadcn";
 import NaverIcon from "@components/svg/naverIcon";
+import { useEffect, useRef } from "react";
 
-export function Naver() {
+export function Naver(data: { onClick: Function }) {
   const { Button } = Components;
+  const stateRef = useRef<string>("");
+
+  useEffect(() => {
+    const { naver_id_login } = window;
+    const login = new naver_id_login(
+      "n3PeuCW9wnyTixQ4nRtv",
+      "http://localhost:3000/naver",
+    );
+
+    const state = login.getUniqState(); // CSRF 방지용 state
+    login.setState(state);
+    login.setDomain("http://localhost:3000");
+    stateRef.current = state;
+  }, []);
+
+  const handleClick = () => {
+    const clientId = "n3PeuCW9wnyTixQ4nRtv";
+    const redirectUri = encodeURIComponent("http://localhost:3000/naver");
+    const state = stateRef.current;
+
+    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
+
+    // 로그인 시도
+    window.location.href = naverAuthUrl;
+
+    data.onClick?.(); // 필요하면 콜백 실행
+  };
 
   return (
     <Button
@@ -14,8 +42,9 @@ export function Naver() {
         h-[50px]
         hover:bg-[#c2eec7]
       "
+      onClick={handleClick}
     >
-      <NaverIcon /> 네이버로그인
+      <NaverIcon /> 네이버 로그인
     </Button>
   );
 }

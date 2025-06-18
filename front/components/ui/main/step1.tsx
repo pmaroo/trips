@@ -65,6 +65,7 @@ export default function Step1(data: { regionList: RegionType[] }) {
     await planStore.setPlan({ destination: result });
     stepStore.setStep(1);
   };
+
   //////////////////////////////////////////////////////////////
   //  TABLE
   //////////////////////////////////////////////////////////////

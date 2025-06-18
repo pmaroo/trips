@@ -8,6 +8,7 @@ import { login } from "../service/login.service";
 import { generateToken } from "../service/jwt.service";
 import { LocalStorage } from "node-localstorage";
 import { setAuthToken, setKakaoToken } from "../utils/token";
+import axios from "axios";
 
 dotenv.config();
 
@@ -27,14 +28,6 @@ export const kakaoToken = async (req: Request, res: Response) => {
   const REDIRECT_URI = "http://localhost:3000/kakao";
 
   let tokenData = null;
-  // let access_token =
-  //   "1TtCZhjuhtlOR64PR9SowkZIsE1_4CrPAAAAAQoNIpkAAAGW8UQbbIE8pQXSEbh1";
-
-  // setKakaoToken(res, {
-  //   accessToken:
-  //     "1TtCZhjuhtlOR64PR9SowkZIsE1_4CrPAAAAAQoNIpkAAAGW8UQbbIE8pQXSEbh1",
-  //   refreshToken: "",
-  // });
 
   if (!accessToken) {
     // 1. 인가 코드로 토큰 요청
@@ -126,4 +119,76 @@ export const kakaoToken = async (req: Request, res: Response) => {
   }
 
   return;
+};
+
+// 네이버 로그인
+export const naverLogin = async (req: Request, res: Response) => {
+  const { accessToken, refreshToken } = req.naverToken;
+
+  try {
+    const result: any = await axios.get("https://openapi.naver.com/v1/nid/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!result) {
+      console.log("네이버에서 정보 못받아옴");
+      res.status(500).json({ message: "로그인에 실패했습니다." });
+      return;
+    }
+
+    const loginResult: JwtUserDTO | string = await login({
+      email: result.data.response.email,
+      password: result.data.response.email,
+    });
+
+    const loginData: LoginUser = {
+      email: result.data.response.email,
+      password: result.data.response.email,
+    };
+
+    // 일치하는 회원이 없다면 회원가입
+    if (typeof loginResult === "string") {
+      try {
+        const createData: CreateUser = {
+          email: result.data.response.email,
+          password: result.data.response.email,
+          userName: result.data.response.name,
+          nickName: result.data.response.nickname,
+          mobile: result.data.response.mobile,
+          isAdmin: false,
+          type: "naver",
+        };
+
+        await createUserModel(createData);
+      } catch (error) {
+        errorConsole(error);
+        res.status(401).json({ message: "회원가입에 실패했습니다." });
+        return;
+      }
+    }
+
+    try {
+      const jwtData = await login(loginData);
+
+      if (typeof jwtData === "string") {
+        res.status(401).json({ message: jwtData });
+        return;
+      }
+
+      const toeknData = await generateToken(jwtData);
+      const data = await setAuthToken(res, toeknData, jwtData);
+
+      res.json(data);
+      return;
+    } catch (error) {
+      errorConsole(error);
+      res.status(401).json({ message: "로그인에 실패했습니다." });
+      return;
+    }
+  } catch (error) {
+    console.error("토큰 요청 실패", error);
+    res.status(500).json({ message: "토큰 요청 실패" });
+  }
 };

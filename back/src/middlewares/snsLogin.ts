@@ -2,6 +2,8 @@ import { createUserModel, emailCheckModel } from "../models/user.model";
 import bcrypt from "bcrypt";
 import { CreateUser, JwtUserDTO, LoginUser } from "../types/user";
 import { NextFunction, Request, Response } from "express";
+import axios from "axios";
+import { errorConsole } from "../utils/error";
 
 export const snsLoginMiddleware = async (
   req: Request,
@@ -30,6 +32,7 @@ export const snsLoginMiddleware = async (
       req.jwtUser = jwtData;
 
       next();
+      return;
     }
 
     const message = "회원가입에 실패했습니다.";
@@ -49,4 +52,39 @@ export const snsLoginMiddleware = async (
   }
 
   next();
+};
+
+// 네이버로그인토큰발급
+export const naverToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { code, state } = req.body;
+
+  try {
+    const result: any = await axios.get(
+      "https://nid.naver.com/oauth2.0/token",
+      {
+        params: {
+          grant_type: "authorization_code",
+          client_id: process.env.NAVER_LOGIN_CLIENT_ID,
+          client_secret: process.env.NAVER_LOGIN_CLIENT_SECRET,
+          redirect_uri: "http://localhost:3000/naver", // 정확히 네이버에 등록된 것과 동일해야 함
+          code,
+          state,
+        },
+      }
+    );
+
+    req.naverToken = {
+      accessToken: result.data.access_token,
+      refreshToken: result.data.refresh_token,
+    };
+
+    next();
+  } catch (error) {
+    console.error("토큰 요청 실패", error);
+    res.status(500).json({ message: "토큰 요청 실패" });
+  }
 };

@@ -66,7 +66,7 @@ export const createPlanModel = async (data: CreatePlan) => {
 
   return prisma.plan.create({
     data: {
-      UserId: 1,
+      UserId: data.UserId,
       CategoryId: data.CategoryId,
       destination,
       start,

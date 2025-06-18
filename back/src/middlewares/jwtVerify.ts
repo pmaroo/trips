@@ -41,11 +41,11 @@ export const authenticateToken = async (
   }
   // 2. refreshToken 검증 trycatch
   try {
-    await verifyToken(refreshToken);
+    const data = await verifyToken(refreshToken);
 
     const tokenPattern = /^[A-Za-z0-9-._~+\/]+=*$/;
     if (!tokenPattern.test(refreshToken)) {
-      res.status(400).json({ message: "잘못된 토큰 형식입니다." });
+      console.log({ message: "잘못된 토큰 형식입니다." });
       res.redirect("/");
       return;
     }
@@ -53,7 +53,7 @@ export const authenticateToken = async (
     errorConsole(error);
     // refreshToken 만료됨
     if (error instanceof TokenExpiredError) {
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
       console.log("토큰 유효시간 만료");
       return;
@@ -61,28 +61,29 @@ export const authenticateToken = async (
 
     if (error instanceof NotBeforeError) {
       console.log("토큰 사용 가능 시간이 아직 아닙니다.");
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
       return;
     }
 
     if (error instanceof JsonWebTokenError) {
-      console.log("토큰이 유효하지 않습니다.");
-      res.status(403).json({ message: "다시 로그인을 해주세요." });
+      console.log("refresh 토큰이 유효하지 않습니다.");
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
 
       return;
     }
 
     console.log("인증 중 서버 오류가 발생했습니다.");
-    res.status(500).json({ message: "다시 로그인을 해주세요." });
+    console.log("다시 로그인을 해주세요.");
     res.redirect("/");
 
     return;
   }
 
   // 3. accessToken이 없을때 => refreshToken으로 재발급 후 다시 cookie저장
-  if (!accessToken) {
+
+  if (accessToken === "undefined" || !accessToken) {
     const decoded = verifyToken(refreshToken);
 
     if (!decoded) {
@@ -169,21 +170,21 @@ export const authenticateToken = async (
 
     if (error instanceof NotBeforeError) {
       console.log("토큰 사용 가능 시간이 아직 아닙니다.");
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
       return;
     }
 
     if (error instanceof JsonWebTokenError) {
-      console.log("토큰이 유효하지 않습니다.");
-      res.status(403).json({ message: "다시 로그인을 해주세요." });
+      console.log("accessToken 토큰이 유효하지 않습니다.");
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
 
       return;
     }
 
     console.log("인증 중 서버 오류가 발생했습니다.");
-    res.status(500).json({ message: "다시 로그인을 해주세요." });
+    console.log("다시 로그인을 해주세요.");
     res.redirect("/");
 
     return;
@@ -341,21 +342,21 @@ export const optionalAuthenticateToken = async (
 
     if (error instanceof NotBeforeError) {
       console.log("토큰 사용 가능 시간이 아직 아닙니다.");
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
       return;
     }
 
     if (error instanceof JsonWebTokenError) {
       console.log("토큰이 유효하지 않습니다.");
-      res.status(403).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/");
 
       return;
     }
 
     console.log("인증 중 서버 오류가 발생했습니다.");
-    res.status(500).json({ message: "다시 로그인을 해주세요." });
+    console.log("다시 로그인을 해주세요.");
     res.redirect("/");
 
     return;
@@ -390,7 +391,7 @@ export const adminAuthenticateToken = async (
 
     const tokenPattern = /^[A-Za-z0-9-._~+\/]+=*$/;
     if (!tokenPattern.test(refreshToken)) {
-      res.status(400).json({ message: "잘못된 토큰 형식입니다." });
+      console.log("잘못된 토큰 형식입니다.");
       res.redirect("/admin");
       return;
     }
@@ -398,7 +399,7 @@ export const adminAuthenticateToken = async (
     errorConsole(error);
     // refreshToken 만료됨
     if (error instanceof TokenExpiredError) {
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/admin");
       console.log("토큰 유효시간 만료");
       return;
@@ -406,21 +407,21 @@ export const adminAuthenticateToken = async (
 
     if (error instanceof NotBeforeError) {
       console.log("토큰 사용 가능 시간이 아직 아닙니다.");
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/admin");
       return;
     }
 
     if (error instanceof JsonWebTokenError) {
       console.log("토큰이 유효하지 않습니다.");
-      res.status(403).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/admin");
 
       return;
     }
 
     console.log("인증 중 서버 오류가 발생했습니다.");
-    res.status(500).json({ message: "다시 로그인을 해주세요." });
+    console.log("다시 로그인을 해주세요.");
     res.redirect("/admin");
 
     return;
@@ -468,7 +469,7 @@ export const adminAuthenticateToken = async (
     const user = verifyToken(accessToken) as JwtUserDTO;
 
     if (!user.isAdmin) {
-      res.status(400).send("관리자 회원이 아닙니다.");
+      console.log("관리자 회원이 아닙니다.");
       res.redirect("/admin");
       return;
     }
@@ -477,6 +478,7 @@ export const adminAuthenticateToken = async (
     console.log("무조건적관리자확인");
 
     next();
+    return;
   } catch (error) {
     errorConsole(error);
     if (error instanceof TokenExpiredError) {
@@ -520,21 +522,21 @@ export const adminAuthenticateToken = async (
 
     if (error instanceof NotBeforeError) {
       console.log("토큰 사용 가능 시간이 아직 아닙니다.");
-      res.status(401).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/admin");
       return;
     }
 
     if (error instanceof JsonWebTokenError) {
       console.log("토큰이 유효하지 않습니다.");
-      res.status(403).json({ message: "다시 로그인을 해주세요." });
+      console.log("다시 로그인을 해주세요.");
       res.redirect("/admin");
 
       return;
     }
 
     console.log("인증 중 서버 오류가 발생했습니다.");
-    res.status(500).json({ message: "다시 로그인을 해주세요." });
+    console.log("다시 로그인을 해주세요.");
     res.redirect("/admin");
 
     return;
