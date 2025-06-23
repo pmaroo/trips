@@ -192,3 +192,73 @@ export const naverLogin = async (req: Request, res: Response) => {
     res.status(500).json({ message: "토큰 요청 실패" });
   }
 };
+
+// 구글로그인
+export const googleLogin = async (req: Request, res: Response) => {
+  const { accessToken } = req.body;
+
+  try {
+    // 1. 액세스 토큰으로 사용자 정보 요청
+    const profileRes = await fetch(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!profileRes.ok) throw new Error("Failed to fetch user profile");
+
+    const profile = await profileRes.json();
+
+    console.log(profile);
+
+    const loginResult: JwtUserDTO | string = await login({
+      email: profile.email,
+      password: profile.email,
+    });
+
+    // 2. 불러온 사용자정보가 회원가입이 안되어있으면 회원가입처리
+    if (typeof loginResult === "string") {
+      try {
+        const createData: CreateUser = {
+          email: profile.email,
+          password: profile.email,
+          userName: profile.name,
+          nickName: profile.name,
+          mobile: "-",
+          isAdmin: false,
+          type: "google",
+        };
+
+        await createUserModel(createData);
+      } catch (error) {
+        console.error("회원가입 실패", error);
+        res.status(500).json({ message: "회원가입 실패" });
+      }
+    }
+
+    const loginData: LoginUser = {
+      email: profile.email,
+      password: profile.email,
+    };
+
+    // 3. 로그인처리
+    const jwtData = await login(loginData);
+
+    if (typeof jwtData === "string") {
+      res.status(401).json({ message: jwtData });
+      return;
+    }
+
+    const toeknData = await generateToken(jwtData);
+    const data = await setAuthToken(res, toeknData, jwtData);
+
+    res.json(data);
+  } catch (error) {
+    console.error("토큰 요청 실패", error);
+    res.status(500).json({ message: "토큰 요청 실패" });
+  }
+};

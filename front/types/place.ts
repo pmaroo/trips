@@ -76,9 +76,6 @@ export const createPlaceSchema = z.object({
   postcode: z.string().min(1, "우편번호는 필수입니다."),
   lat: z.string(),
   lng: z.string(),
-  descript: z.string().min(1, "내용은 필수입니다."),
-  image: z.string().optional(),
-  source: z.string(),
 });
 
 export const updatePlaceSchema = z.object({

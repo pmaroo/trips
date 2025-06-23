@@ -73,8 +73,6 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   // USEEFFECT
   //////////////////////////////////////////////////////////////
-  const [naver, setNaver] = useState<any>(null);
-  const [state, setState] = useState(null);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -92,9 +90,9 @@ export default function Main(data: {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const { Kakao } = window;
+  const { Kakao, google } = window;
 
-  const naverLogin = useCallback(() => {}, [naver, state]);
+  console.log(google);
 
   const kakaoLogin = () => {
     // 1. 카카오 요청
@@ -190,14 +188,21 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="flex flex-row items-center justify-start "
+              className="
+                flex
+                flex-row
+                items-center
+                justify-start
+              "
             >
               <motion.div
                 className="
@@ -441,14 +446,17 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>
             </DialogHeader>
 
             <KakaoButton onClick={kakaoLogin} />
-            <Naver onClick={naverLogin} />
+            <Naver />
+
             <Google />
           </DialogContent>
         )}

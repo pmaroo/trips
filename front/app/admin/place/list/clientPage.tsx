@@ -478,60 +478,6 @@ export default function ClientPage(data) {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={placeDTOForm.control}
-                      name="descript"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>설명</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              className="
-                                h-[150px]
-                                resize-none
-                              "
-                              placeholder="설명을 입력해주세요."
-                            />
-                          </FormControl>
-                          <CustomFormMessage name="descript" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={placeDTOForm.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>이미지</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Button onClick={imageToggle} type="button">
-                              업로드
-                              <input
-                                ref={imageRef}
-                                type="file"
-                                accept="image/*"
-                                hidden={true}
-                                onChange={imageUploadHandler}
-                              />
-                            </Button>
-                          </FormControl>
-                          <CustomFormMessage name="image" />
-                        </FormItem>
-                      )}
-                    />
 
                     {imageStore.images.map((data) => {
                       return (
@@ -727,8 +673,6 @@ export default function ClientPage(data) {
                     postcode: "",
                     address: "",
                     detailAddress: "",
-                    descript: "",
-                    source: "local",
                   })
                 }
                 variant="outline"
@@ -919,60 +863,6 @@ export default function ClientPage(data) {
                             />
                           </FormControl>
                           <CustomFormMessage name="detailAddress" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={createPlaceForm.control}
-                      name="descript"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>설명</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              className="
-                                h-[150px]
-                                resize-none
-                              "
-                              placeholder="설명을 입력해주세요."
-                            />
-                          </FormControl>
-                          <CustomFormMessage name="descript" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={createPlaceForm.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem
-                          className="
-                            mb-[10px]
-                          "
-                        >
-                          <FormLabel>이미지</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Button onClick={imageToggle} type="button">
-                              업로드
-                              <input
-                                ref={imageRef}
-                                type="file"
-                                accept="image/*"
-                                hidden={true}
-                                onChange={imageUploadHandler}
-                              />
-                            </Button>
-                          </FormControl>
-                          <CustomFormMessage name="image" />
                         </FormItem>
                       )}
                     />

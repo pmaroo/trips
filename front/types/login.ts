@@ -29,3 +29,7 @@ export interface NaverTokenDTO {
   code: string;
   state: string;
 }
+
+export interface GoogleTokenDTO {
+  accessToken: string;
+}

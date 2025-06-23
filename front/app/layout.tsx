@@ -88,6 +88,11 @@ export default async function RootLayout({
           src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js"
           charSet="utf-8"
         ></script>
+        <script
+          src="https://accounts.google.com/gsi/client"
+          async
+          defer
+        ></script>
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import {
   optionalAuthenticateToken,
 } from "../middlewares/jwtVerify";
 import {
+  googleLogin,
   kakaoToken,
   naverLogin,
   successToken,
@@ -25,5 +26,8 @@ router.post("/kakao", kakaoToken);
 
 // 네이버로그인
 router.post("/naver", naverToken, naverLogin);
+
+// 구글로그인
+router.post("/google", googleLogin);
 
 export default router;

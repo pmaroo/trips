@@ -4,7 +4,7 @@ import Components from "@components/shadcn";
 import NaverIcon from "@components/svg/naverIcon";
 import { useEffect, useRef } from "react";
 
-export function Naver(data: { onClick: Function }) {
+export function Naver() {
   const { Button } = Components;
   const stateRef = useRef<string>("");
 
@@ -30,8 +30,6 @@ export function Naver(data: { onClick: Function }) {
 
     // 로그인 시도
     window.location.href = naverAuthUrl;
-
-    data.onClick?.(); // 필요하면 콜백 실행
   };
 
   return (

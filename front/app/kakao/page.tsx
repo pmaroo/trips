@@ -17,8 +17,6 @@ export default function KakaoCallback() {
     router.push("/");
   });
 
-  console.log(login);
-
   useEffect(() => {
     if (searchParams.get("code")) {
       let code = searchParams.get("code");

@@ -1,4 +1,4 @@
-import { NaverTokenDTO } from "@/types/login";
+import { GoogleTokenDTO, NaverTokenDTO } from "@/types/login";
 import axios from "axios";
 
 export const apiClient = axios.create({
@@ -9,5 +9,10 @@ export const apiClient = axios.create({
 
 export const naverLoginAPI = async (tokenData: NaverTokenDTO) => {
   const { data } = await apiClient.post("/naver", tokenData);
+  return data;
+};
+
+export const googleLoginAPI = async (tokenData: GoogleTokenDTO) => {
+  const { data } = await apiClient.post("/google", { accessToken: tokenData });
   return data;
 };
