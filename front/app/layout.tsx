@@ -49,6 +49,7 @@ export default async function RootLayout({
   const verify = async () => {
     try {
       const { data } = await apiClient.post("/verify");
+
       return data;
     } catch (error) {
       console.log(error.response.data.message || error);

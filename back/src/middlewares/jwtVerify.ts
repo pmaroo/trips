@@ -8,6 +8,7 @@ import {
   TokenExpiredError,
 } from "jsonwebtoken";
 import {
+  getUserByIdModel,
   refreshTokenCheckModel,
   refreshTokenDeleteModel,
 } from "../models/user.model";
@@ -122,7 +123,17 @@ export const authenticateToken = async (
   try {
     // as <== 특정 타입임을 확신
     const user = verifyToken(accessToken) as JwtUserDTO;
-    req.jwtUser = user;
+    const result: any = await getUserByIdModel(user.id);
+
+    const jwtData = {
+      id: result.id,
+      email: result.email,
+      userName: result.userName,
+      nickName: result.nickName,
+      isAdmin: result.isAdmin,
+    };
+
+    req.jwtUser = jwtData;
 
     console.log("무조건적회원확인");
 

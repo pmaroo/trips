@@ -22,6 +22,9 @@ router.post("/create", createPlan);
 // 일정상세
 router.post("/id", getPlanById);
 
+// 유저별 일정 구하기
+router.post("/user", getPlanUserById);
+
 // 일정리스트
 router.post("/", getAllPlan);
 

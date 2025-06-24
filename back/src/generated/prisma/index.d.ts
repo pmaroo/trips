@@ -38,6 +38,11 @@ export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
  * 
  */
 export type Category = $Result.DefaultSelection<Prisma.$CategoryPayload>
+/**
+ * Model Error
+ * 
+ */
+export type Error = $Result.DefaultSelection<Prisma.$ErrorPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -213,6 +218,16 @@ export class PrismaClient<
     * ```
     */
   get category(): Prisma.CategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.error`: Exposes CRUD operations for the **Error** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Errors
+    * const errors = await prisma.error.findMany()
+    * ```
+    */
+  get error(): Prisma.ErrorDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -657,7 +672,8 @@ export namespace Prisma {
     Plan: 'Plan',
     Place: 'Place',
     Tag: 'Tag',
-    Category: 'Category'
+    Category: 'Category',
+    Error: 'Error'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -676,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "plan" | "place" | "tag" | "category"
+      modelProps: "user" | "plan" | "place" | "tag" | "category" | "error"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1010,6 +1026,72 @@ export namespace Prisma {
           }
         }
       }
+      Error: {
+        payload: Prisma.$ErrorPayload<ExtArgs>
+        fields: Prisma.ErrorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ErrorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ErrorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          findFirst: {
+            args: Prisma.ErrorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ErrorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          findMany: {
+            args: Prisma.ErrorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>[]
+          }
+          create: {
+            args: Prisma.ErrorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          createMany: {
+            args: Prisma.ErrorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.ErrorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          update: {
+            args: Prisma.ErrorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          deleteMany: {
+            args: Prisma.ErrorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ErrorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ErrorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ErrorPayload>
+          }
+          aggregate: {
+            args: Prisma.ErrorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateError>
+          }
+          groupBy: {
+            args: Prisma.ErrorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ErrorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ErrorCountArgs<ExtArgs>
+            result: $Utils.Optional<ErrorCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1099,6 +1181,7 @@ export namespace Prisma {
     place?: PlaceOmit
     tag?: TagOmit
     category?: CategoryOmit
+    error?: ErrorOmit
   }
 
   /* Types for Logging */
@@ -3553,8 +3636,6 @@ export namespace Prisma {
     postcode: string | null
     lat: Decimal | null
     lng: Decimal | null
-    descript: string | null
-    image: string | null
     source: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3568,8 +3649,6 @@ export namespace Prisma {
     postcode: string | null
     lat: Decimal | null
     lng: Decimal | null
-    descript: string | null
-    image: string | null
     source: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3583,8 +3662,6 @@ export namespace Prisma {
     postcode: number
     lat: number
     lng: number
-    descript: number
-    image: number
     source: number
     createdAt: number
     updatedAt: number
@@ -3612,8 +3689,6 @@ export namespace Prisma {
     postcode?: true
     lat?: true
     lng?: true
-    descript?: true
-    image?: true
     source?: true
     createdAt?: true
     updatedAt?: true
@@ -3627,8 +3702,6 @@ export namespace Prisma {
     postcode?: true
     lat?: true
     lng?: true
-    descript?: true
-    image?: true
     source?: true
     createdAt?: true
     updatedAt?: true
@@ -3642,8 +3715,6 @@ export namespace Prisma {
     postcode?: true
     lat?: true
     lng?: true
-    descript?: true
-    image?: true
     source?: true
     createdAt?: true
     updatedAt?: true
@@ -3744,8 +3815,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal
     lng: Decimal
-    descript: string
-    image: string | null
     source: string
     createdAt: Date
     updatedAt: Date
@@ -3778,8 +3847,6 @@ export namespace Prisma {
     postcode?: boolean
     lat?: boolean
     lng?: boolean
-    descript?: boolean
-    image?: boolean
     source?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3798,14 +3865,12 @@ export namespace Prisma {
     postcode?: boolean
     lat?: boolean
     lng?: boolean
-    descript?: boolean
-    image?: boolean
     source?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PlaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "detailAddress" | "postcode" | "lat" | "lng" | "descript" | "image" | "source" | "createdAt" | "updatedAt", ExtArgs["result"]["place"]>
+  export type PlaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "detailAddress" | "postcode" | "lat" | "lng" | "source" | "createdAt" | "updatedAt", ExtArgs["result"]["place"]>
   export type PlaceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Tag?: boolean | Place$TagArgs<ExtArgs>
     Plan?: boolean | Place$PlanArgs<ExtArgs>
@@ -3826,8 +3891,6 @@ export namespace Prisma {
       postcode: string
       lat: Prisma.Decimal
       lng: Prisma.Decimal
-      descript: string
-      image: string | null
       source: string
       createdAt: Date
       updatedAt: Date
@@ -4209,8 +4272,6 @@ export namespace Prisma {
     readonly postcode: FieldRef<"Place", 'String'>
     readonly lat: FieldRef<"Place", 'Decimal'>
     readonly lng: FieldRef<"Place", 'Decimal'>
-    readonly descript: FieldRef<"Place", 'String'>
-    readonly image: FieldRef<"Place", 'String'>
     readonly source: FieldRef<"Place", 'String'>
     readonly createdAt: FieldRef<"Place", 'DateTime'>
     readonly updatedAt: FieldRef<"Place", 'DateTime'>
@@ -6636,6 +6697,933 @@ export namespace Prisma {
 
 
   /**
+   * Model Error
+   */
+
+  export type AggregateError = {
+    _count: ErrorCountAggregateOutputType | null
+    _avg: ErrorAvgAggregateOutputType | null
+    _sum: ErrorSumAggregateOutputType | null
+    _min: ErrorMinAggregateOutputType | null
+    _max: ErrorMaxAggregateOutputType | null
+  }
+
+  export type ErrorAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ErrorSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ErrorMinAggregateOutputType = {
+    id: number | null
+    action: string | null
+    context: string | null
+    backCode: string | null
+    error: string | null
+    scope: string | null
+  }
+
+  export type ErrorMaxAggregateOutputType = {
+    id: number | null
+    action: string | null
+    context: string | null
+    backCode: string | null
+    error: string | null
+    scope: string | null
+  }
+
+  export type ErrorCountAggregateOutputType = {
+    id: number
+    action: number
+    context: number
+    backCode: number
+    error: number
+    scope: number
+    _all: number
+  }
+
+
+  export type ErrorAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ErrorSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ErrorMinAggregateInputType = {
+    id?: true
+    action?: true
+    context?: true
+    backCode?: true
+    error?: true
+    scope?: true
+  }
+
+  export type ErrorMaxAggregateInputType = {
+    id?: true
+    action?: true
+    context?: true
+    backCode?: true
+    error?: true
+    scope?: true
+  }
+
+  export type ErrorCountAggregateInputType = {
+    id?: true
+    action?: true
+    context?: true
+    backCode?: true
+    error?: true
+    scope?: true
+    _all?: true
+  }
+
+  export type ErrorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Error to aggregate.
+     */
+    where?: ErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Errors to fetch.
+     */
+    orderBy?: ErrorOrderByWithRelationInput | ErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Errors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Errors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Errors
+    **/
+    _count?: true | ErrorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ErrorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ErrorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ErrorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ErrorMaxAggregateInputType
+  }
+
+  export type GetErrorAggregateType<T extends ErrorAggregateArgs> = {
+        [P in keyof T & keyof AggregateError]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateError[P]>
+      : GetScalarType<T[P], AggregateError[P]>
+  }
+
+
+
+
+  export type ErrorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ErrorWhereInput
+    orderBy?: ErrorOrderByWithAggregationInput | ErrorOrderByWithAggregationInput[]
+    by: ErrorScalarFieldEnum[] | ErrorScalarFieldEnum
+    having?: ErrorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ErrorCountAggregateInputType | true
+    _avg?: ErrorAvgAggregateInputType
+    _sum?: ErrorSumAggregateInputType
+    _min?: ErrorMinAggregateInputType
+    _max?: ErrorMaxAggregateInputType
+  }
+
+  export type ErrorGroupByOutputType = {
+    id: number
+    action: string
+    context: string
+    backCode: string
+    error: string
+    scope: string
+    _count: ErrorCountAggregateOutputType | null
+    _avg: ErrorAvgAggregateOutputType | null
+    _sum: ErrorSumAggregateOutputType | null
+    _min: ErrorMinAggregateOutputType | null
+    _max: ErrorMaxAggregateOutputType | null
+  }
+
+  type GetErrorGroupByPayload<T extends ErrorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ErrorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ErrorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ErrorGroupByOutputType[P]>
+            : GetScalarType<T[P], ErrorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ErrorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    action?: boolean
+    context?: boolean
+    backCode?: boolean
+    error?: boolean
+    scope?: boolean
+  }, ExtArgs["result"]["error"]>
+
+
+
+  export type ErrorSelectScalar = {
+    id?: boolean
+    action?: boolean
+    context?: boolean
+    backCode?: boolean
+    error?: boolean
+    scope?: boolean
+  }
+
+  export type ErrorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "action" | "context" | "backCode" | "error" | "scope", ExtArgs["result"]["error"]>
+
+  export type $ErrorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Error"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      action: string
+      context: string
+      backCode: string
+      error: string
+      scope: string
+    }, ExtArgs["result"]["error"]>
+    composites: {}
+  }
+
+  type ErrorGetPayload<S extends boolean | null | undefined | ErrorDefaultArgs> = $Result.GetResult<Prisma.$ErrorPayload, S>
+
+  type ErrorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ErrorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ErrorCountAggregateInputType | true
+    }
+
+  export interface ErrorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Error'], meta: { name: 'Error' } }
+    /**
+     * Find zero or one Error that matches the filter.
+     * @param {ErrorFindUniqueArgs} args - Arguments to find a Error
+     * @example
+     * // Get one Error
+     * const error = await prisma.error.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ErrorFindUniqueArgs>(args: SelectSubset<T, ErrorFindUniqueArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Error that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ErrorFindUniqueOrThrowArgs} args - Arguments to find a Error
+     * @example
+     * // Get one Error
+     * const error = await prisma.error.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ErrorFindUniqueOrThrowArgs>(args: SelectSubset<T, ErrorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Error that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorFindFirstArgs} args - Arguments to find a Error
+     * @example
+     * // Get one Error
+     * const error = await prisma.error.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ErrorFindFirstArgs>(args?: SelectSubset<T, ErrorFindFirstArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Error that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorFindFirstOrThrowArgs} args - Arguments to find a Error
+     * @example
+     * // Get one Error
+     * const error = await prisma.error.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ErrorFindFirstOrThrowArgs>(args?: SelectSubset<T, ErrorFindFirstOrThrowArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Errors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Errors
+     * const errors = await prisma.error.findMany()
+     * 
+     * // Get first 10 Errors
+     * const errors = await prisma.error.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const errorWithIdOnly = await prisma.error.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ErrorFindManyArgs>(args?: SelectSubset<T, ErrorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Error.
+     * @param {ErrorCreateArgs} args - Arguments to create a Error.
+     * @example
+     * // Create one Error
+     * const Error = await prisma.error.create({
+     *   data: {
+     *     // ... data to create a Error
+     *   }
+     * })
+     * 
+     */
+    create<T extends ErrorCreateArgs>(args: SelectSubset<T, ErrorCreateArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Errors.
+     * @param {ErrorCreateManyArgs} args - Arguments to create many Errors.
+     * @example
+     * // Create many Errors
+     * const error = await prisma.error.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ErrorCreateManyArgs>(args?: SelectSubset<T, ErrorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Error.
+     * @param {ErrorDeleteArgs} args - Arguments to delete one Error.
+     * @example
+     * // Delete one Error
+     * const Error = await prisma.error.delete({
+     *   where: {
+     *     // ... filter to delete one Error
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ErrorDeleteArgs>(args: SelectSubset<T, ErrorDeleteArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Error.
+     * @param {ErrorUpdateArgs} args - Arguments to update one Error.
+     * @example
+     * // Update one Error
+     * const error = await prisma.error.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ErrorUpdateArgs>(args: SelectSubset<T, ErrorUpdateArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Errors.
+     * @param {ErrorDeleteManyArgs} args - Arguments to filter Errors to delete.
+     * @example
+     * // Delete a few Errors
+     * const { count } = await prisma.error.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ErrorDeleteManyArgs>(args?: SelectSubset<T, ErrorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Errors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Errors
+     * const error = await prisma.error.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ErrorUpdateManyArgs>(args: SelectSubset<T, ErrorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Error.
+     * @param {ErrorUpsertArgs} args - Arguments to update or create a Error.
+     * @example
+     * // Update or create a Error
+     * const error = await prisma.error.upsert({
+     *   create: {
+     *     // ... data to create a Error
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Error we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ErrorUpsertArgs>(args: SelectSubset<T, ErrorUpsertArgs<ExtArgs>>): Prisma__ErrorClient<$Result.GetResult<Prisma.$ErrorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Errors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorCountArgs} args - Arguments to filter Errors to count.
+     * @example
+     * // Count the number of Errors
+     * const count = await prisma.error.count({
+     *   where: {
+     *     // ... the filter for the Errors we want to count
+     *   }
+     * })
+    **/
+    count<T extends ErrorCountArgs>(
+      args?: Subset<T, ErrorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ErrorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Error.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ErrorAggregateArgs>(args: Subset<T, ErrorAggregateArgs>): Prisma.PrismaPromise<GetErrorAggregateType<T>>
+
+    /**
+     * Group by Error.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ErrorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ErrorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ErrorGroupByArgs['orderBy'] }
+        : { orderBy?: ErrorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ErrorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetErrorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Error model
+   */
+  readonly fields: ErrorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Error.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ErrorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Error model
+   */
+  interface ErrorFieldRefs {
+    readonly id: FieldRef<"Error", 'Int'>
+    readonly action: FieldRef<"Error", 'String'>
+    readonly context: FieldRef<"Error", 'String'>
+    readonly backCode: FieldRef<"Error", 'String'>
+    readonly error: FieldRef<"Error", 'String'>
+    readonly scope: FieldRef<"Error", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Error findUnique
+   */
+  export type ErrorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which Error to fetch.
+     */
+    where: ErrorWhereUniqueInput
+  }
+
+  /**
+   * Error findUniqueOrThrow
+   */
+  export type ErrorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which Error to fetch.
+     */
+    where: ErrorWhereUniqueInput
+  }
+
+  /**
+   * Error findFirst
+   */
+  export type ErrorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which Error to fetch.
+     */
+    where?: ErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Errors to fetch.
+     */
+    orderBy?: ErrorOrderByWithRelationInput | ErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Errors.
+     */
+    cursor?: ErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Errors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Errors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Errors.
+     */
+    distinct?: ErrorScalarFieldEnum | ErrorScalarFieldEnum[]
+  }
+
+  /**
+   * Error findFirstOrThrow
+   */
+  export type ErrorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which Error to fetch.
+     */
+    where?: ErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Errors to fetch.
+     */
+    orderBy?: ErrorOrderByWithRelationInput | ErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Errors.
+     */
+    cursor?: ErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Errors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Errors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Errors.
+     */
+    distinct?: ErrorScalarFieldEnum | ErrorScalarFieldEnum[]
+  }
+
+  /**
+   * Error findMany
+   */
+  export type ErrorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which Errors to fetch.
+     */
+    where?: ErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Errors to fetch.
+     */
+    orderBy?: ErrorOrderByWithRelationInput | ErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Errors.
+     */
+    cursor?: ErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Errors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Errors.
+     */
+    skip?: number
+    distinct?: ErrorScalarFieldEnum | ErrorScalarFieldEnum[]
+  }
+
+  /**
+   * Error create
+   */
+  export type ErrorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Error.
+     */
+    data: XOR<ErrorCreateInput, ErrorUncheckedCreateInput>
+  }
+
+  /**
+   * Error createMany
+   */
+  export type ErrorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Errors.
+     */
+    data: ErrorCreateManyInput | ErrorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Error update
+   */
+  export type ErrorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Error.
+     */
+    data: XOR<ErrorUpdateInput, ErrorUncheckedUpdateInput>
+    /**
+     * Choose, which Error to update.
+     */
+    where: ErrorWhereUniqueInput
+  }
+
+  /**
+   * Error updateMany
+   */
+  export type ErrorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Errors.
+     */
+    data: XOR<ErrorUpdateManyMutationInput, ErrorUncheckedUpdateManyInput>
+    /**
+     * Filter which Errors to update
+     */
+    where?: ErrorWhereInput
+    /**
+     * Limit how many Errors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Error upsert
+   */
+  export type ErrorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Error to update in case it exists.
+     */
+    where: ErrorWhereUniqueInput
+    /**
+     * In case the Error found by the `where` argument doesn't exist, create a new Error with this data.
+     */
+    create: XOR<ErrorCreateInput, ErrorUncheckedCreateInput>
+    /**
+     * In case the Error was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ErrorUpdateInput, ErrorUncheckedUpdateInput>
+  }
+
+  /**
+   * Error delete
+   */
+  export type ErrorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+    /**
+     * Filter which Error to delete.
+     */
+    where: ErrorWhereUniqueInput
+  }
+
+  /**
+   * Error deleteMany
+   */
+  export type ErrorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Errors to delete
+     */
+    where?: ErrorWhereInput
+    /**
+     * Limit how many Errors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Error without action
+   */
+  export type ErrorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Error
+     */
+    select?: ErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Error
+     */
+    omit?: ErrorOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -6694,8 +7682,6 @@ export namespace Prisma {
     postcode: 'postcode',
     lat: 'lat',
     lng: 'lng',
-    descript: 'descript',
-    image: 'image',
     source: 'source',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -6722,6 +7708,18 @@ export namespace Prisma {
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+  export const ErrorScalarFieldEnum: {
+    id: 'id',
+    action: 'action',
+    context: 'context',
+    backCode: 'backCode',
+    error: 'error',
+    scope: 'scope'
+  };
+
+  export type ErrorScalarFieldEnum = (typeof ErrorScalarFieldEnum)[keyof typeof ErrorScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6791,8 +7789,6 @@ export namespace Prisma {
     address: 'address',
     detailAddress: 'detailAddress',
     postcode: 'postcode',
-    descript: 'descript',
-    image: 'image',
     source: 'source'
   };
 
@@ -6811,6 +7807,17 @@ export namespace Prisma {
   };
 
   export type CategoryOrderByRelevanceFieldEnum = (typeof CategoryOrderByRelevanceFieldEnum)[keyof typeof CategoryOrderByRelevanceFieldEnum]
+
+
+  export const ErrorOrderByRelevanceFieldEnum: {
+    action: 'action',
+    context: 'context',
+    backCode: 'backCode',
+    error: 'error',
+    scope: 'scope'
+  };
+
+  export type ErrorOrderByRelevanceFieldEnum = (typeof ErrorOrderByRelevanceFieldEnum)[keyof typeof ErrorOrderByRelevanceFieldEnum]
 
 
   /**
@@ -7085,8 +8092,6 @@ export namespace Prisma {
     postcode?: StringFilter<"Place"> | string
     lat?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
     lng?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
-    descript?: StringFilter<"Place"> | string
-    image?: StringNullableFilter<"Place"> | string | null
     source?: StringFilter<"Place"> | string
     createdAt?: DateTimeFilter<"Place"> | Date | string
     updatedAt?: DateTimeFilter<"Place"> | Date | string
@@ -7102,8 +8107,6 @@ export namespace Prisma {
     postcode?: SortOrder
     lat?: SortOrder
     lng?: SortOrder
-    descript?: SortOrder
-    image?: SortOrderInput | SortOrder
     source?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7114,23 +8117,21 @@ export namespace Prisma {
 
   export type PlaceWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    name?: string
     AND?: PlaceWhereInput | PlaceWhereInput[]
     OR?: PlaceWhereInput[]
     NOT?: PlaceWhereInput | PlaceWhereInput[]
-    name?: StringFilter<"Place"> | string
     address?: StringFilter<"Place"> | string
     detailAddress?: StringFilter<"Place"> | string
     postcode?: StringFilter<"Place"> | string
     lat?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
     lng?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
-    descript?: StringFilter<"Place"> | string
-    image?: StringNullableFilter<"Place"> | string | null
     source?: StringFilter<"Place"> | string
     createdAt?: DateTimeFilter<"Place"> | Date | string
     updatedAt?: DateTimeFilter<"Place"> | Date | string
     Tag?: TagListRelationFilter
     Plan?: PlanListRelationFilter
-  }, "id">
+  }, "id" | "name">
 
   export type PlaceOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7140,8 +8141,6 @@ export namespace Prisma {
     postcode?: SortOrder
     lat?: SortOrder
     lng?: SortOrder
-    descript?: SortOrder
-    image?: SortOrderInput | SortOrder
     source?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7163,8 +8162,6 @@ export namespace Prisma {
     postcode?: StringWithAggregatesFilter<"Place"> | string
     lat?: DecimalWithAggregatesFilter<"Place"> | Decimal | DecimalJsLike | number | string
     lng?: DecimalWithAggregatesFilter<"Place"> | Decimal | DecimalJsLike | number | string
-    descript?: StringWithAggregatesFilter<"Place"> | string
-    image?: StringNullableWithAggregatesFilter<"Place"> | string | null
     source?: StringWithAggregatesFilter<"Place"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Place"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Place"> | Date | string
@@ -7280,6 +8277,66 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Category"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+  }
+
+  export type ErrorWhereInput = {
+    AND?: ErrorWhereInput | ErrorWhereInput[]
+    OR?: ErrorWhereInput[]
+    NOT?: ErrorWhereInput | ErrorWhereInput[]
+    id?: IntFilter<"Error"> | number
+    action?: StringFilter<"Error"> | string
+    context?: StringFilter<"Error"> | string
+    backCode?: StringFilter<"Error"> | string
+    error?: StringFilter<"Error"> | string
+    scope?: StringFilter<"Error"> | string
+  }
+
+  export type ErrorOrderByWithRelationInput = {
+    id?: SortOrder
+    action?: SortOrder
+    context?: SortOrder
+    backCode?: SortOrder
+    error?: SortOrder
+    scope?: SortOrder
+    _relevance?: ErrorOrderByRelevanceInput
+  }
+
+  export type ErrorWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ErrorWhereInput | ErrorWhereInput[]
+    OR?: ErrorWhereInput[]
+    NOT?: ErrorWhereInput | ErrorWhereInput[]
+    action?: StringFilter<"Error"> | string
+    context?: StringFilter<"Error"> | string
+    backCode?: StringFilter<"Error"> | string
+    error?: StringFilter<"Error"> | string
+    scope?: StringFilter<"Error"> | string
+  }, "id">
+
+  export type ErrorOrderByWithAggregationInput = {
+    id?: SortOrder
+    action?: SortOrder
+    context?: SortOrder
+    backCode?: SortOrder
+    error?: SortOrder
+    scope?: SortOrder
+    _count?: ErrorCountOrderByAggregateInput
+    _avg?: ErrorAvgOrderByAggregateInput
+    _max?: ErrorMaxOrderByAggregateInput
+    _min?: ErrorMinOrderByAggregateInput
+    _sum?: ErrorSumOrderByAggregateInput
+  }
+
+  export type ErrorScalarWhereWithAggregatesInput = {
+    AND?: ErrorScalarWhereWithAggregatesInput | ErrorScalarWhereWithAggregatesInput[]
+    OR?: ErrorScalarWhereWithAggregatesInput[]
+    NOT?: ErrorScalarWhereWithAggregatesInput | ErrorScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Error"> | number
+    action?: StringWithAggregatesFilter<"Error"> | string
+    context?: StringWithAggregatesFilter<"Error"> | string
+    backCode?: StringWithAggregatesFilter<"Error"> | string
+    error?: StringWithAggregatesFilter<"Error"> | string
+    scope?: StringWithAggregatesFilter<"Error"> | string
   }
 
   export type UserCreateInput = {
@@ -7506,8 +8563,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7523,8 +8578,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7539,8 +8592,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7556,8 +8607,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7573,8 +8622,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7587,8 +8634,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7602,8 +8647,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7715,6 +8758,66 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ErrorCreateInput = {
+    action: string
+    context: string
+    backCode: string
+    error: string
+    scope: string
+  }
+
+  export type ErrorUncheckedCreateInput = {
+    id?: number
+    action: string
+    context: string
+    backCode: string
+    error: string
+    scope: string
+  }
+
+  export type ErrorUpdateInput = {
+    action?: StringFieldUpdateOperationsInput | string
+    context?: StringFieldUpdateOperationsInput | string
+    backCode?: StringFieldUpdateOperationsInput | string
+    error?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ErrorUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    context?: StringFieldUpdateOperationsInput | string
+    backCode?: StringFieldUpdateOperationsInput | string
+    error?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ErrorCreateManyInput = {
+    id?: number
+    action: string
+    context: string
+    backCode: string
+    error: string
+    scope: string
+  }
+
+  export type ErrorUpdateManyMutationInput = {
+    action?: StringFieldUpdateOperationsInput | string
+    context?: StringFieldUpdateOperationsInput | string
+    backCode?: StringFieldUpdateOperationsInput | string
+    error?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ErrorUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    action?: StringFieldUpdateOperationsInput | string
+    context?: StringFieldUpdateOperationsInput | string
+    backCode?: StringFieldUpdateOperationsInput | string
+    error?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -8086,8 +9189,6 @@ export namespace Prisma {
     postcode?: SortOrder
     lat?: SortOrder
     lng?: SortOrder
-    descript?: SortOrder
-    image?: SortOrder
     source?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8107,8 +9208,6 @@ export namespace Prisma {
     postcode?: SortOrder
     lat?: SortOrder
     lng?: SortOrder
-    descript?: SortOrder
-    image?: SortOrder
     source?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8122,8 +9221,6 @@ export namespace Prisma {
     postcode?: SortOrder
     lat?: SortOrder
     lng?: SortOrder
-    descript?: SortOrder
-    image?: SortOrder
     source?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8228,6 +9325,47 @@ export namespace Prisma {
   }
 
   export type CategorySumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ErrorOrderByRelevanceInput = {
+    fields: ErrorOrderByRelevanceFieldEnum | ErrorOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ErrorCountOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    context?: SortOrder
+    backCode?: SortOrder
+    error?: SortOrder
+    scope?: SortOrder
+  }
+
+  export type ErrorAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ErrorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    context?: SortOrder
+    backCode?: SortOrder
+    error?: SortOrder
+    scope?: SortOrder
+  }
+
+  export type ErrorMinOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    context?: SortOrder
+    backCode?: SortOrder
+    error?: SortOrder
+    scope?: SortOrder
+  }
+
+  export type ErrorSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
@@ -8942,8 +10080,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8958,8 +10094,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9066,8 +10200,6 @@ export namespace Prisma {
     postcode?: StringFilter<"Place"> | string
     lat?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
     lng?: DecimalFilter<"Place"> | Decimal | DecimalJsLike | number | string
-    descript?: StringFilter<"Place"> | string
-    image?: StringNullableFilter<"Place"> | string | null
     source?: StringFilter<"Place"> | string
     createdAt?: DateTimeFilter<"Place"> | Date | string
     updatedAt?: DateTimeFilter<"Place"> | Date | string
@@ -9196,8 +10328,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9212,8 +10342,6 @@ export namespace Prisma {
     postcode: string
     lat: Decimal | DecimalJsLike | number | string
     lng: Decimal | DecimalJsLike | number | string
-    descript: string
-    image?: string | null
     source: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9422,8 +10550,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9438,8 +10564,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9454,8 +10578,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9556,8 +10678,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9572,8 +10692,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9588,8 +10706,6 @@ export namespace Prisma {
     postcode?: StringFieldUpdateOperationsInput | string
     lat?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     lng?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    descript?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
     source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

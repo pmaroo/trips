@@ -82,6 +82,11 @@ export const createPlanModel = async (data: CreatePlan) => {
 export const getPlanUserByIdModel = async (data: DeletePlan) => {
   return prisma.plan.findMany({
     where: { UserId: data.id },
+    include: {
+      Place: true,
+      User: true,
+      Category: true,
+    },
   });
 };
 

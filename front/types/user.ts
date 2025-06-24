@@ -7,6 +7,7 @@ export interface UserDTO {
   email: string;
   userName: string;
   nickName: string;
+  mobile?: string;
   type: string;
   Plan?: PlanDTO[];
   isAdmin: boolean;

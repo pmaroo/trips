@@ -1,7 +1,7 @@
 "use client";
 
 import { DragHandle, DragTable } from "@components/admin/table";
-import { PlanDTO } from "../../../../types/plan";
+import { CreatePlan, PlanDTO } from "../../../../types/plan";
 import { useMemo, useState } from "react";
 import {
   ColumnDef,
@@ -13,34 +13,9 @@ import {
 import { useReactTable } from "@tanstack/react-table";
 import Components from "@components/shadcn";
 import { useForm } from "react-hook-form";
+import { useRouter } from "@node_modules/next/navigation";
 
-const data: PlanDTO[] = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  UserId: i + 1,
-  CategoryId: i + 1,
-  region: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  schedule: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  date: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  User: {
-    id: i + 1,
-    email: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
-    userName: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-    nickName: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-    type: `${i < 5 ? ["naver", "git", "google", "git", "google"][i] : "kakao"}`,
-    isAdmin: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
-    createdAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
-    updatedAt: `${i < 5 ? ["alice", "bob", "charlie", "david", "eve"][i] : "jack"}@email.com`,
-    isDelete: false,
-    reason: "",
-  },
-  Category: [],
-  Place: [],
-  traffic: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  createdAt: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-  updatedAt: i < 5 ? ["Alice", "Bob", "Charlie", "David", "Eve"][i] : "Jack",
-}));
-
-export default function ClientPage() {
+export default function ClientPage({ plan }) {
   const {
     Dialog,
     DialogContent,
@@ -68,8 +43,10 @@ export default function ClientPage() {
     Textarea,
   } = Components;
 
-  const [dataResult, setDataResult] = useState<PlanDTO[]>(data);
+  const [dataResult, setDataResult] = useState<PlanDTO[]>(plan);
   const columnHelper = createColumnHelper<PlanDTO>();
+
+  const router = useRouter();
 
   const planDTOForm = useForm<PlanDTO>({});
 
@@ -96,16 +73,32 @@ export default function ClientPage() {
       }),
       columnHelper.accessor("User", {
         header: "회원이름",
+        size: 30,
+        maxSize: 30,
+        minSize: 30,
+        enableColumnFilter: false,
+        cell: ({ row }) => row.original.User.userName,
+      }),
+      columnHelper.accessor("destination", {
+        header: "여행장소",
         size: 80,
         maxSize: 80,
         minSize: 80,
-        cell: ({ row }) => row.original.User.userName,
+        cell: ({ row }) => row.original.destination.name,
+      }),
+      columnHelper.accessor("start", {
+        header: "출발장소",
+        size: 80,
+        maxSize: 80,
+        minSize: 80,
+        cell: ({ row }) => row.original.start.name,
       }),
       columnHelper.accessor("Category", {
         header: "카테고리",
         size: 80,
         maxSize: 80,
         minSize: 80,
+        cell: ({ row }) => row.original.Category.name,
       }),
       columnHelper.accessor("createdAt", {
         header: "작성날짜",
@@ -151,9 +144,9 @@ export default function ClientPage() {
                     })}
                   >
                     <SheetHeader>
-                      <SheetTitle>회원정보</SheetTitle>
+                      <SheetTitle>일정정보</SheetTitle>
                       <SheetDescription>
-                        회원가입한 회원의 정보를 확인할 수 있습니다.
+                        회원이 생성한 일정을 확인할 수 있습니다.
                       </SheetDescription>
                     </SheetHeader>
 
@@ -181,6 +174,191 @@ export default function ClientPage() {
 
                     <FormField
                       control={planDTOForm.control}
+                      name="User"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>회원정보</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">
+                              {field.value.id} / {field.value.userName} /{" "}
+                              {field.value.mobile} / {field.value.type}
+                            </Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>카테고리</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="traffic"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>이동수단</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="date"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>날짜</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">
+                              {field.value[0].year}-{field.value[0].month}-
+                              {field.value[0].day} ~{" "}
+                              {field.value[field.value.length - 1].year}-
+                              {field.value[field.value.length - 1].month}-
+                              {field.value[field.value.length - 1].day}
+                            </Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="start"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>출발장소</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value.name}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="destination"
+                      render={({ field }) => (
+                        <FormItem
+                          className="
+                            mb-[10px]
+                            px-[20px]
+                          "
+                        >
+                          <FormLabel>여행장소</FormLabel>
+                          <FormControl
+                            className="
+                              ml-[10px]
+                            "
+                          >
+                            <Badge variant="outline">{field.value.name}</Badge>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
+                      name="days"
+                      render={({ field }) => (
+                        <>
+                          {field.value.map((data, index) => {
+                            return (
+                              <FormItem
+                                className="
+                                  mb-[10px]
+                                  px-[20px]
+                                "
+                                key={index}
+                              >
+                                <FormLabel>{index + 1}일차</FormLabel>
+                                {data.map((value, idx) => {
+                                  return (
+                                    <FormControl
+                                      className="flex flex-col items-start "
+                                      key={`${index}-${idx}`}
+                                    >
+                                      <Badge
+                                        variant="outline"
+                                        className="w-auto "
+                                      >
+                                        {value.category_group_name} /{" "}
+                                        {value.address_name} /{" "}
+                                        {value.place_name} / 이동시간:{" "}
+                                        {Math.floor(value.duration / 3600)}시간{" "}
+                                        {Math.floor(
+                                          (value.duration % 3600) / 60,
+                                        )}
+                                        분
+                                      </Badge>
+                                    </FormControl>
+                                  );
+                                })}
+                              </FormItem>
+                            );
+                          })}
+                        </>
+                      )}
+                    />
+
+                    <FormField
+                      control={planDTOForm.control}
                       name="createdAt"
                       render={({ field }) => (
                         <FormItem
@@ -189,7 +367,7 @@ export default function ClientPage() {
                             px-[20px]
                           "
                         >
-                          <FormLabel>회원가입날짜</FormLabel>
+                          <FormLabel>생성날짜</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]
@@ -214,77 +392,25 @@ export default function ClientPage() {
       columnHelper.display({
         id: "actions2",
         header: "",
-        size: 15,
-        maxSize: 15,
-        minSize: 15,
+        size: 30,
+        maxSize: 30,
+        minSize: 30,
         cell: ({ row }) => (
           <>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  className="
-                    text-[11px]
-                    w-[50px]
-                    h-[20px]
-                    p-[0]
-                  "
-                  variant="destructive"
-                  onClick={() => {
-                    planDTOForm.reset(row.original); // form 초기화
-                  }}
-                  tabIndex={-1}
-                >
-                  회원탈퇴
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>회원탈퇴</DialogTitle>
-                  <DialogDescription>
-                    회원탈퇴를 진행 후 동일한 계정은 사용할 수 없습니다.
-                  </DialogDescription>
-                </DialogHeader>
-                <Form {...planDTOForm}>
-                  <form
-                    onSubmit={planDTOForm.handleSubmit(onSubmit, (errors) => {
-                      console.log("유효성 에러 발생:", errors);
-                    })}
-                  >
-                    <FormField
-                      control={planDTOForm.control}
-                      name="id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>ID</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">{field.value}</Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <DialogFooter
-                      className="
-                        mt-[10px]
-                      "
-                    >
-                      <Button
-                        type="submit"
-                        className="
-                          w-full
-                        "
-                      >
-                        탈퇴하기
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
+            <Button
+              className="
+                text-[11px]
+                w-[80px]
+                h-[20px]
+                p-[0]
+              "
+              variant="destructive"
+              onClick={() => {
+                router.push(`/${row.original.id}`);
+              }}
+            >
+              상세보러가기
+            </Button>
           </>
         ),
       }),
@@ -313,13 +439,7 @@ export default function ClientPage() {
   return (
     <>
       <article
-        className="
-          flex
-          flex-col
-          items-center
-          justify-start
-          size-full
-        "
+        className="flex flex-col items-center justify-start  size-full"
       >
         <DragTable<PlanDTO>
           table={table}

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { imageUpload, latlongAPI } from "@lib/api/common.api";
 import { useImageState, useLatLongState } from "@store/commonStore";
 
-// 카테고리 삭제하기
 export const useImageUpload = (onSuccessCallback: () => void) => {
   const imageStore = useImageState((state) => state);
 

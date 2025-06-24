@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { CreateUser, JwtUserDTO, LoginUser } from "../types/user";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { createUserModel, emailCheckModel } from "../models/user.model";
-import { errorConsole } from "../utils/error";
+import { AppError, errorConsole } from "../utils/error";
 import { login } from "../service/login.service";
 import { generateToken } from "../service/jwt.service";
 import { LocalStorage } from "node-localstorage";
@@ -13,14 +13,30 @@ import axios from "axios";
 dotenv.config();
 
 // 완료 후 정보 넘겨주기
-export const successToken = (req: Request, res: Response) => {
-  const data = req.jwtUser;
-  res.json(data);
-  return;
+export const successToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = req.jwtUser;
+
+    if (!data) {
+      throw new Error("토큰 확인 유저 정보가 없습니다");
+    }
+
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
 };
 
 // 카카오로그인
-export const kakaoToken = async (req: Request, res: Response) => {
+export const kakaoToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { code, accessToken } = req.body;
   // query는 그냥 string으로만 타입정의 할수 없기때문에 as로 확신의 타입으로 정의
 
@@ -55,8 +71,8 @@ export const kakaoToken = async (req: Request, res: Response) => {
 
   if (!access_token) {
     console.error("Access token 발급 실패", tokenData);
-    res.status(401).json({ message: "토큰 발급 실패" });
-    return;
+
+    throw new Error("카카오 Access token 발급 실패");
   }
 
   // 2. 액세스 토큰으로 사용자 정보 요청
@@ -71,7 +87,7 @@ export const kakaoToken = async (req: Request, res: Response) => {
   const profile = await profileRes.json();
 
   if (!profile) {
-    return;
+    throw new Error("로그인에 실패했습니다. 카카오에서 정보 못받아옴");
   }
 
   // 회원가입한 유저인지 검증
@@ -97,7 +113,8 @@ export const kakaoToken = async (req: Request, res: Response) => {
       await createUserModel(createData);
     } catch (error) {
       errorConsole(error);
-      res.status(401).json({ message: "회원가입에 실패했습니다." });
+
+      throw new Error("카카오 회원가입에 실패했습니다.");
     }
   }
 
@@ -106,7 +123,7 @@ export const kakaoToken = async (req: Request, res: Response) => {
 
     if (typeof jwtData === "string") {
       res.status(401).json({ message: jwtData });
-      return;
+      throw new Error(jwtData);
     }
 
     const toeknData = await generateToken(jwtData);
@@ -115,14 +132,18 @@ export const kakaoToken = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "로그인에 실패했습니다." });
+    next(new AppError(401, "카카오 로그인에 실패했습니다.", { raw: error }));
   }
 
   return;
 };
 
 // 네이버 로그인
-export const naverLogin = async (req: Request, res: Response) => {
+export const naverLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { accessToken, refreshToken } = req.naverToken;
 
   try {
@@ -134,8 +155,8 @@ export const naverLogin = async (req: Request, res: Response) => {
 
     if (!result) {
       console.log("네이버에서 정보 못받아옴");
-      res.status(500).json({ message: "로그인에 실패했습니다." });
-      return;
+
+      throw new Error("로그인에 실패했습니다. 네이버에서 정보 못받아옴");
     }
 
     const loginResult: JwtUserDTO | string = await login({
@@ -164,8 +185,10 @@ export const naverLogin = async (req: Request, res: Response) => {
         await createUserModel(createData);
       } catch (error) {
         errorConsole(error);
-        res.status(401).json({ message: "회원가입에 실패했습니다." });
-        return;
+
+        next(
+          new AppError(401, "네이버 회원가입에 실패했습니다.", { raw: error })
+        );
       }
     }
 
@@ -174,7 +197,7 @@ export const naverLogin = async (req: Request, res: Response) => {
 
       if (typeof jwtData === "string") {
         res.status(401).json({ message: jwtData });
-        return;
+        throw new Error(jwtData);
       }
 
       const toeknData = await generateToken(jwtData);
@@ -184,17 +207,22 @@ export const naverLogin = async (req: Request, res: Response) => {
       return;
     } catch (error) {
       errorConsole(error);
-      res.status(401).json({ message: "로그인에 실패했습니다." });
-      return;
+
+      next(new AppError(401, "네이버 로그인에 실패했습니다.", { raw: error }));
     }
   } catch (error) {
     console.error("토큰 요청 실패", error);
-    res.status(500).json({ message: "토큰 요청 실패" });
+
+    throw new Error("네이버 토큰 요청 실패");
   }
 };
 
 // 구글로그인
-export const googleLogin = async (req: Request, res: Response) => {
+export const googleLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { accessToken } = req.body;
 
   try {
@@ -209,7 +237,7 @@ export const googleLogin = async (req: Request, res: Response) => {
       }
     );
 
-    if (!profileRes.ok) throw new Error("Failed to fetch user profile");
+    if (!profileRes.ok) throw new Error("구글 엑세스 토큰으로 정보요청 실패");
 
     const profile = await profileRes.json();
 
@@ -236,7 +264,8 @@ export const googleLogin = async (req: Request, res: Response) => {
         await createUserModel(createData);
       } catch (error) {
         console.error("회원가입 실패", error);
-        res.status(500).json({ message: "회원가입 실패" });
+
+        next(new AppError(401, "구글 회원가입 실패", { raw: error }));
       }
     }
 
@@ -249,8 +278,7 @@ export const googleLogin = async (req: Request, res: Response) => {
     const jwtData = await login(loginData);
 
     if (typeof jwtData === "string") {
-      res.status(401).json({ message: jwtData });
-      return;
+      throw new Error(`구글 : ${jwtData}`);
     }
 
     const toeknData = await generateToken(jwtData);
@@ -259,6 +287,6 @@ export const googleLogin = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     console.error("토큰 요청 실패", error);
-    res.status(500).json({ message: "토큰 요청 실패" });
+    next(new AppError(401, `구글 : 토큰 요청 실패`, { raw: error }));
   }
 };

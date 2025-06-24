@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { errorConsole } from "../utils/error";
+import { NextFunction, Request, Response } from "express";
+import { AppError, errorConsole } from "../utils/error";
 import {
   createPlaceModel,
   deletePlaceModel,
@@ -10,47 +10,56 @@ import {
 import { TagDTO } from "../types/tag";
 import { DeletePlace } from "../types/place";
 
-export const createTagPlus = async (req: Request, res: Response) => {
+export const createTagPlus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { placeData } = req.body;
 
   try {
     if (!placeData) {
-      res.status(401).json({ message: "장소 정보가 없습니다." });
-      return;
+      throw new Error("장소 정보가 없습니다.");
     }
 
     const data = await updatePlaceTagModel(placeData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "태그를 추가하는데 실패했습니다." });
+    next(new AppError(401, "태그를 추가하는데 실패했습니다.", { raw: error }));
   }
 };
 
-export const deletePlace = async (req: Request, res: Response) => {
+export const deletePlace = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const deleteData: DeletePlace = req.body;
 
   try {
     if (!deleteData) {
-      res.status(401).json({ message: "장소 정보가 없습니다." });
-      return;
+      throw new Error("장소 정보가 없습니다.");
     }
 
     const data = await deletePlaceModel(deleteData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "장소 삭제에 실패했습니다." });
+    next(new AppError(401, "태그를 삭제에 실패했습니다.", { raw: error }));
   }
 };
 
-export const updatePlace = async (req: Request, res: Response) => {
+export const updatePlace = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { placeData } = req.body;
 
   try {
     if (!placeData) {
-      res.status(401).json({ message: "장소 정보가 없습니다." });
-      return;
+      throw new Error("장소 정보가 없습니다.");
     }
     const result = {
       ...placeData,
@@ -62,17 +71,20 @@ export const updatePlace = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "장소 수정에 실패했습니다." });
+    next(new AppError(401, "태그를 수정에 실패했습니다.", { raw: error }));
   }
 };
 
-export const createPlace = async (req: Request, res: Response) => {
+export const createPlace = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { placeData } = req.body;
 
   try {
     if (!placeData) {
-      res.status(401).json({ message: "장소 정보가 없습니다." });
-      return;
+      throw new Error("장소 정보가 없습니다.");
     }
 
     const result = {
@@ -86,16 +98,20 @@ export const createPlace = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "장소 생성에 실패했습니다." });
+    next(new AppError(401, "태그를 생성에 실패했습니다.", { raw: error }));
   }
 };
 
-export const getAllPlace = async (req: Request, res: Response) => {
+export const getAllPlace = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const data = await getAllPlaceModel();
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "장소를 불러오는데 실패했습니다." });
+    next(new AppError(401, "태그를 불러오는데 실패했습니다.", { raw: error }));
   }
 };

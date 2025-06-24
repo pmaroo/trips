@@ -1,16 +1,22 @@
 import { z } from "zod";
 import { UserDTO } from "./user";
+import { CategoryDTO } from "./category";
 
 export interface PlanDTO {
-  id?: number;
-  UserId?: number;
-  CategoryId?: number; // 카테고리
-  category?: string;
-  destination?: Coordinate; // 지역
-  date?: PlanDateType[]; // 날짜
-  traffic?: string; // 교통수단
-  budget?: number; // 숙소가격
-  start?: Coordinate; // 출발주소
+  id: number;
+  UserId: number;
+  CategoryId: number; // 카테고리
+  category: string;
+  Category: { createdAt: string; updatedAt: string; name: string; id: number };
+  destination: Coordinate; // 지역
+  date: PlanDateType[]; // 날짜
+  traffic: string; // 교통수단
+  budget: number; // 숙소가격
+  start: Coordinate; // 출발주소
+  createdAt: string;
+  updatedAt: string;
+  User: UserDTO;
+  days: DayPlace[][];
 }
 
 export interface PlanDateType {

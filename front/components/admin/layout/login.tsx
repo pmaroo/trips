@@ -57,7 +57,7 @@ export default function Login({
   //////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (meStore.me) {
+    if (meStore.me.isAdmin) {
       setIsLogin(true);
     }
   }, [meStore.me]);

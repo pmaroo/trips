@@ -96,7 +96,6 @@ export const useLogin = (onSuccessCallback: () => void) => {
     mutationFn: (userData: CreateUser) => loginUser(userData),
     // Mutation 성공후 리렌더링 필요없이 백그라운드에서 데이터를 다시 가져옴
     onSuccess: async (data: UserDTO) => {
-      
       const jwtData: JwtUserDTO = {
         id: data.id,
         email: data.email,

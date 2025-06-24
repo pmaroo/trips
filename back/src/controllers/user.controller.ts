@@ -1,32 +1,31 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   createUserModel,
-  emailCheckModel,
   exitUserModel,
   getAllUsersModel,
   getUserByIdModel,
   logoutModel,
-  refreshTokenModel,
   updateUserModel,
 } from "../models/user.model";
-import { errorConsole } from "../utils/error";
+import { AppError, errorConsole } from "../utils/error";
 import {
   AdminLoginUser,
   CreateUser,
   ExitUser,
   JwtUserDTO,
-  LoginUser,
   LogoutUser,
   UpdateUser,
 } from "../types/user";
 import { PrismaClientKnownRequestError } from "../generated/prisma/runtime/library";
-import bcrypt from "bcrypt";
 import { generateToken } from "../service/jwt.service";
-import { LocalStorage } from "node-localstorage";
 import { login } from "../service/login.service";
 import { setAuthToken } from "../utils/token";
 
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const logoutData: LogoutUser = req.body;
 
   // 쿠키 삭제
@@ -47,31 +46,33 @@ export const logoutUser = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "로그아웃 할 수 없습니다." });
+
+    next(new AppError(401, "로그아웃 할 수 없습니다.", { raw: error }));
   }
 };
 
-export const adminLoginUser = async (req: Request, res: Response) => {
+export const adminLoginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const loginData: AdminLoginUser = req.body;
 
   try {
     if (!loginData) {
-      res.status(404).json({ message: "회원 정보가 없습니다." });
-      return;
+      throw new Error("회원 정보가 없습니다.");
     }
 
     const jwtData = await login(loginData);
 
     // 에러문구인지 판별
     if (typeof jwtData === "string") {
-      res.status(401).json({ message: jwtData });
-      return;
+      throw new Error(jwtData);
     }
 
     // 관리자 회원인지 판별
     if (!jwtData.isAdmin) {
-      res.status(401).json({ message: "접근 권한이 없는 계정입니다." });
-      return;
+      throw new Error("접근 권한이 없는 계정입니다.");
     }
 
     // 토큰발급
@@ -83,17 +84,20 @@ export const adminLoginUser = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "로그인 할 수 없습니다." });
+    next(new AppError(401, "로그인 할 수 없습니다.", { raw: error }));
   }
 };
 
-export const loginUserController = async (req: Request, res: Response) => {
+export const loginUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const loginData: CreateUser = req.body;
 
   try {
     if (!loginData) {
-      res.status(404).json({ message: "회원 정보가 없습니다." });
-      return;
+      throw new Error("회원 정보가 없습니다.");
     }
 
     if (!req.jwtUser) {
@@ -111,51 +115,60 @@ export const loginUserController = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "로그인 할 수 없습니다." });
+    next(new AppError(401, "로그인 할 수 없습니다.", { raw: error }));
   }
 };
 
-export const exitUser = async (req: Request, res: Response) => {
+export const exitUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const exitData: ExitUser = req.body;
 
   try {
     if (!exitData) {
-      res.status(404).json({ message: "회원 정보가 없습니다." });
-      return;
+      throw new Error("회원 정보가 없습니다.");
     }
 
     const data = await exitUserModel(exitData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "회원탈퇴에 실패했습니다." });
+    next(new AppError(401, "회원탈퇴에 실패했습니다.", { raw: error }));
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const updateData: UpdateUser = req.body;
 
   try {
     if (!updateData) {
-      res.status(404).json({ message: "회원 정보가 없습니다." });
-      return;
+      throw new Error("회원 정보가 없습니다.");
     }
 
     const data = await updateUserModel(updateData);
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "회원수정에 실패했습니다." });
+    next(new AppError(401, "회원수정에 실패했습니다.", { raw: error }));
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const createData: CreateUser = req.body;
 
   try {
     if (!createData) {
-      res.status(404).json({ message: "회원 정보가 없습니다." });
-      return;
+      throw new Error("회원 정보가 없습니다.");
     }
 
     const data = await createUserModel(createData);
@@ -167,24 +180,25 @@ export const createUser = async (req: Request, res: Response) => {
       if (error.code === "P2002") {
         // Unique constraint violation (예: 이메일 중복)
         if (error.meta?.target === "User_email_key") {
-          res.status(400).json({
-            message:
-              "이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요3.",
-          });
-          return;
+          throw new Error(
+            "이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요."
+          );
         }
       }
       // 기타 Prisma 에러 처리
-      res.status(500).json({ message: "데이터베이스 오류가 발생했습니다." });
 
-      return;
+      throw new Error("데이터베이스 오류가 발생했습니다.");
     }
 
-    res.status(401).json({ message: "회원가입에 실패했습니다." });
+    next(new AppError(401, "회원가입에 실패했습니다.", { raw: error }));
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
@@ -194,18 +208,21 @@ export const getUserById = async (req: Request, res: Response) => {
     // return res.status() 해버리면 undefined를 반환하는 거지만
     // Response로 반환한다고 해석
     if (!userId) {
-      res.status(404).json({ message: "id가 없습니다." });
-      return;
+      throw new Error("id가 없습니다.");
     }
     const data = await getUserByIdModel(userId);
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "회원 조회에 실패했습니다." });
+    next(new AppError(401, "회원 조회에 실패했습니다.", { raw: error }));
   }
 };
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { isAdmin } = req.body;
 
   try {
@@ -214,6 +231,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     errorConsole(error);
-    res.status(401).json({ message: "회원 조회에 실패했습니다." });
+    next(new AppError(401, "회원 조회에 실패했습니다.", { raw: error }));
   }
 };

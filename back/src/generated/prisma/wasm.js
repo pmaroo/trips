@@ -156,8 +156,6 @@ exports.Prisma.PlaceScalarFieldEnum = {
   postcode: 'postcode',
   lat: 'lat',
   lng: 'lng',
-  descript: 'descript',
-  image: 'image',
   source: 'source',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -175,6 +173,15 @@ exports.Prisma.CategoryScalarFieldEnum = {
   name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ErrorScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  context: 'context',
+  backCode: 'backCode',
+  error: 'error',
+  scope: 'scope'
 };
 
 exports.Prisma.SortOrder = {
@@ -223,8 +230,6 @@ exports.Prisma.PlaceOrderByRelevanceFieldEnum = {
   address: 'address',
   detailAddress: 'detailAddress',
   postcode: 'postcode',
-  descript: 'descript',
-  image: 'image',
   source: 'source'
 };
 
@@ -236,13 +241,22 @@ exports.Prisma.CategoryOrderByRelevanceFieldEnum = {
   name: 'name'
 };
 
+exports.Prisma.ErrorOrderByRelevanceFieldEnum = {
+  action: 'action',
+  context: 'context',
+  backCode: 'backCode',
+  error: 'error',
+  scope: 'scope'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
   Plan: 'Plan',
   Place: 'Place',
   Tag: 'Tag',
-  Category: 'Category'
+  Category: 'Category',
+  Error: 'Error'
 };
 
 /**

@@ -1,8 +1,20 @@
 "use client";
 
 import Components from "@components/shadcn";
-import { AlarmClock, Briefcase, Car, House, Plane } from "lucide-react";
+import {
+  AlarmClock,
+  Briefcase,
+  Car,
+  House,
+  Plane,
+  PlusCircle,
+} from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "@node_modules/next/navigation";
+import { useMeState } from "@store/commonStore";
+import { usePlanUserList } from "@hooks/reactQuery/usePlan";
+import { useEffect } from "react";
+import { usePlanUserStore } from "@store/planStore";
 
 export default function CleintPage() {
   const {
@@ -14,6 +26,48 @@ export default function CleintPage() {
     PaginationNext,
     PaginationPrevious,
   } = Components;
+  const router = useRouter();
+
+  const meStore = useMeState((state) => state);
+  const planUserStore = usePlanUserStore((state) => state);
+
+  const planUserList = usePlanUserList(() => {});
+
+  useEffect(() => {
+    if (meStore.me) {
+      planUserList.mutate({ id: meStore.me.id });
+    }
+  }, [meStore.me]);
+
+  useEffect(() => {
+    if (planUserStore.userPlan) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // deep clone
+      const datum = JSON.parse(JSON.stringify(planUserStore.userPlan));
+
+      datum.forEach((data, index) => {
+        data.date = data.date.map(({ year, month, day }) => {
+          const targetDate = new Date(`${year}-${month}-${day}`);
+          targetDate.setHours(0, 0, 0, 0);
+
+          const diff = targetDate.getTime() - today.getTime();
+          const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+          let label = "";
+          if (diffDays > 0) label = `D-${diffDays}`;
+          else if (diffDays === 0) label = "D-Day";
+          else label = `D+${Math.abs(diffDays)}`;
+
+          return { year, month, day, dDay: label };
+        });
+      });
+
+      planUserStore.userPlan = datum;
+    }
+  }, [planUserStore.userPlan]);
+
   return (
     <>
       <article
@@ -55,7 +109,7 @@ export default function CleintPage() {
             mb-[50px]
           "
         >
-          환영합니다, 박은비님
+          환영합니다, {meStore && meStore.me.userName}님
         </p>
         <ul
           className="
@@ -68,226 +122,250 @@ export default function CleintPage() {
             sm:w-[1000px]
           "
         >
-          {Array.from({ length: 8 }).map((_, index) => (
-            <motion.li
-              initial={{ opacity: 0, y: 10 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-              }}
+          <motion.li
+            initial={{ opacity: 0, y: 10 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 0,
+            }}
+            className="
+              w-[calc(100%/2-15px)]
+              mx-[7.5px]
+              mb-[15px]
+              sm:w-[calc(100%/4-15px)]
+            "
+          >
+            <motion.div
               className="
-                w-[calc(100%/2-15px)]
-                mx-[7.5px]
-                mb-[15px]
-                sm:w-[calc(100%/4-15px)]
+                flex
+                flex-col
+                items-center
+                justify-center
+                w-[240px]
+                h-[300px]
+                rounded-[10px]
+                relative
+                overflow-hidden
+                border
+                border-[--lightGrey]
+                shadow-lg
+                duration-500
+                cursor-pointer
+                hover:bg-[--lightGrey]
               "
-              key={index}
+              onClick={() => router.push(`/`)}
             >
-              <motion.div
+              <PlusCircle />
+              <p
                 className="
-                  w-full
-                  h-[300px]
-                  rounded-[10px]
-                  relative
-                  overflow-hidden
-                  border
-                  border-[--lightGrey]
-                  shadow-lg
-                  bg-[url(/daejeon.png)]
-                  cursor-pointer
+                  mt-[10px]
+                  text-[--darkGrey]
+                  font-[700]
                 "
               >
-                <div
+                일정 추가
+              </p>
+            </motion.div>
+          </motion.li>
+          {planUserStore.userPlan &&
+            planUserStore.userPlan.map((data, index) => (
+              <motion.li
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.5,
+                  delay: (index + 1) * 0.1,
+                }}
+                className="
+                  w-[calc(100%/2-15px)]
+                  mx-[7.5px]
+                  mb-[15px]
+                  sm:w-[calc(100%/4-15px)]
+                "
+                onClick={() => router.push(`/${data.id}`)}
+                key={index}
+              >
+                <motion.div
                   className="
-                    flex
-                    flex-col
-                    items-start
-                    justify-start
-                    bg-[rgba(0,0,0,0.3)]
-                    size-full
-                    p-[20px]
-                    duration-500
-                    hover:bg-[rgba(0,0,0,0.6)]
+                    w-full
+                    h-[300px]
+                    rounded-[10px]
+                    relative
+                    overflow-hidden
+                    border
+                    border-[--lightGrey]
+                    shadow-lg
+                    bg-[url(/daejeon.png)]
+                    cursor-pointer
                   "
                 >
                   <div
                     className="
                       flex
                       flex-col
-                      items-center
-                      justify-center
-                      px-[10px]
-                      size-auto
-                      text-[hsl(var(--background))]
-                      font-[700]
-                      bg-[--main]
-                      rounded-[5px]
-                      mb-[10px]
-                    "
-                  >
-                    D-5
-                  </div>
-                  <ul
-                    className="
-                      flex
-                      flex-row
-                      items-center
-                      justify-start
-                      mb-[10px]
-                    "
-                  >
-                    <li
-                      className="
-                        mr-[5px]
-                        text-[hsl(var(--background))]
-                      "
-                    >
-                      <Plane />
-                    </li>
-                    <li>
-                      <h1
-                        className="
-                          text-[20px]
-                          text-[--lightGrey2]
-                          font-[700]
-                          duration-500
-                          hover:text-[hsl(var(--background))]
-                        "
-                      >
-                        대전광역시
-                      </h1>
-                    </li>
-                  </ul>
-                  <ul
-                    className="
-                      flex
-                      flex-row
-                      items-center
-                      justify-start
-                      mb-[5px]
-                    "
-                  >
-                    <li
-                      className="
-                        mr-[5px]
-                        text-[hsl(var(--background))]
-                      "
-                    >
-                      <Briefcase />
-                    </li>
-                    <li>
-                      <h1
-                        className="
-                          text-[14px]
-                          text-[--lightGrey2]
-                          duration-500
-                          hover:text-[hsl(var(--background))]
-                        "
-                      >
-                        커플여행
-                      </h1>
-                    </li>
-                  </ul>
-                  <ul
-                    className="
-                      flex
-                      flex-row
-                      items-center
-                      justify-start
-                      mb-[5px]
-                    "
-                  >
-                    <li
-                      className="
-                        mr-[5px]
-                        text-[hsl(var(--background))]
-                      "
-                    >
-                      <Car />
-                    </li>
-                    <li>
-                      <h1
-                        className="
-                          text-[14px]
-                          text-[--lightGrey2]
-                          duration-500
-                          hover:text-[hsl(var(--background))]
-                        "
-                      >
-                        차량
-                      </h1>
-                    </li>
-                  </ul>
-                  <ul
-                    className="
-                      flex
-                      flex-row
                       items-start
                       justify-start
-                      mb-[5px]
+                      bg-[rgba(0,0,0,0.3)]
+                      size-full
+                      p-[20px]
+                      duration-500
+                      hover:bg-[rgba(0,0,0,0.6)]
                     "
                   >
-                    <li
+                    <div
                       className="
-                        mr-[5px]
-                        mt-[3px]
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        px-[10px]
+                        size-auto
                         text-[hsl(var(--background))]
+                        font-[700]
+                        bg-[--main]
+                        rounded-[5px]
+                        mb-[10px]
                       "
                     >
-                      <AlarmClock />
-                    </li>
-                    <li>
-                      <h1
-                        className="
-                          text-[14px]
-                          text-[--lightGrey2]
-                          duration-500
-                          hover:text-[hsl(var(--background))]
-                        "
-                      >
-                        2025년1월25일
-                        <br />~ 2025년2월20일
-                      </h1>
-                    </li>
-                  </ul>
-                  <ul
-                    className="
-                      flex
-                      flex-row
-                      items-center
-                      justify-start
-                      mb-[5px]
-                    "
-                  >
-                    <li
+                      {data.date[0].dDay}
+                    </div>
+                    <ul
                       className="
-                        mr-[5px]
-                        text-[hsl(var(--background))]
+                        flex
+                        flex-row
+                        items-center
+                        justify-start
+                        mb-[10px]
                       "
                     >
-                      <House />
-                    </li>
-                    <li>
-                      <h1
+                      <li
                         className="
-                          text-[14px]
-                          text-[--lightGrey2]
-                          duration-500
-                          hover:text-[hsl(var(--background))]
+                          mr-[5px]
+                          text-[hsl(var(--background))]
                         "
                       >
-                        숙소 ~ 50,000원
-                      </h1>
-                    </li>
-                  </ul>
-                </div>
-              </motion.div>
-            </motion.li>
-          ))}
+                        <Plane />
+                      </li>
+                      <li>
+                        <h1
+                          className="
+                            text-[20px]
+                            text-[--lightGrey2]
+                            font-[700]
+                            duration-500
+                            hover:text-[hsl(var(--background))]
+                          "
+                        >
+                          {data.destination.name}
+                        </h1>
+                      </li>
+                    </ul>
+                    <ul
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-start
+                        mb-[5px]
+                      "
+                    >
+                      <li
+                        className="
+                          mr-[5px]
+                          text-[hsl(var(--background))]
+                        "
+                      >
+                        <Briefcase />
+                      </li>
+                      <li>
+                        <h1
+                          className="
+                            text-[14px]
+                            text-[--lightGrey2]
+                            duration-500
+                            hover:text-[hsl(var(--background))]
+                          "
+                        >
+                          {data.Category.name}
+                        </h1>
+                      </li>
+                    </ul>
+                    <ul
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-start
+                        mb-[5px]
+                      "
+                    >
+                      <li
+                        className="
+                          mr-[5px]
+                          text-[hsl(var(--background))]
+                        "
+                      >
+                        <Car />
+                      </li>
+                      <li>
+                        <h1
+                          className="
+                            text-[14px]
+                            text-[--lightGrey2]
+                            duration-500
+                            hover:text-[hsl(var(--background))]
+                          "
+                        >
+                          {data.traffic}
+                        </h1>
+                      </li>
+                    </ul>
+                    <ul
+                      className="
+                        flex
+                        flex-row
+                        items-start
+                        justify-start
+                        mb-[5px]
+                      "
+                    >
+                      <li
+                        className="
+                          mr-[5px]
+                          mt-[3px]
+                          text-[hsl(var(--background))]
+                        "
+                      >
+                        <AlarmClock />
+                      </li>
+                      <li>
+                        <h1
+                          className="
+                            text-[14px]
+                            text-[--lightGrey2]
+                            duration-500
+                            hover:text-[hsl(var(--background))]
+                          "
+                        >
+                          {data.date[0].year}년{data.date[0].month}월
+                          {data.date[0].day}일
+                          <br />~ {data.date[data.date.length - 1].year}년
+                          {data.date[data.date.length - 1].month}월
+                          {data.date[data.date.length - 1].day}일
+                        </h1>
+                      </li>
+                    </ul>
+                  </div>
+                </motion.div>
+              </motion.li>
+            ))}
         </ul>
         <Pagination
           className="

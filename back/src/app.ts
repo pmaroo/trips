@@ -12,6 +12,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { errorConsole } from "./utils/error";
 import cookieParser from "cookie-parser";
+import { logErrorToDB } from "./models/auth.model";
 
 const app: express.Application = express();
 
@@ -55,13 +56,25 @@ app.use("/api/place", placeRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/logic", logicRouter);
 
+function identifyFeature(path: string): string {
+  return `${path.startsWith}`;
+}
+
 // 에러 핸들링
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  errorConsole(err);
+app.use(async (err: Error, req: Request, res: Response, next: NextFunction) => {
+  const errorLog = {
+    action: err.stack?.split("\n")[1]?.trim() ?? "unknown",
+    context: identifyFeature(req.path),
+    backCode: req.originalUrl,
+    error: err.message,
+    scope: "BE",
+  };
+
+  await logErrorToDB(errorLog); // 비동기 저장
 
   res.status(500).json({
-    message: err.message + "errr",
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    message: err.message,
+    ...(process.env.NODE_ENV === "development" ? { stack: err.stack } : {}),
   });
 });
 

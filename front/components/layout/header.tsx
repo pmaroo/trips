@@ -2,11 +2,17 @@
 
 import Components from "@components/shadcn";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { LayoutGrid, Moon, Sun } from "lucide-react";
+import { useRouter } from "@node_modules/next/navigation";
+import { useMeState } from "@store/commonStore";
 
 export default function Header() {
   const { Button } = Components;
   const { theme, setTheme } = useTheme();
+
+  const router = useRouter();
+
+  const meStore = useMeState((state) => state);
 
   const themeHandler = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -28,7 +34,14 @@ export default function Header() {
           w-auto
         "
       >
-        <Button variant="outline" size="icon" onClick={themeHandler}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={themeHandler}
+          className="
+            mr-[10px]
+          "
+        >
           {theme === "dark" ? (
             <Sun
               className="
@@ -43,6 +56,16 @@ export default function Header() {
             />
           )}
         </Button>
+
+        {meStore.me && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.push(`/mypage`)}
+          >
+            <LayoutGrid />
+          </Button>
+        )}
       </article>
     </>
   );

@@ -90,9 +90,7 @@ export default function Main(data: {
   // HANDLER
   //////////////////////////////////////////////////////////////
 
-  const { Kakao, google } = window;
-
-  console.log(google);
+  const { Kakao } = window;
 
   const kakaoLogin = () => {
     // 1. 카카오 요청
@@ -188,21 +186,14 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-              "
+              className="flex flex-row items-center justify-start "
             >
               <motion.div
                 className="
@@ -446,9 +437,7 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>

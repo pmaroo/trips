@@ -55,14 +55,12 @@ model Plan {
 // 유명한 장소
 model Place {
   id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(700)
+  name          String   @unique @db.VarChar(700)
   address       String   @db.VarChar(700)
   detailAddress String   @db.VarChar(700)
   postcode      String   @db.VarChar(100)
   lat           Decimal  @db.Decimal(10, 7)
   lng           Decimal  @db.Decimal(10, 7)
-  descript      String   @db.Text
-  image         String?  @db.Text
   source        String   @db.VarChar(100) //AI 출처
   Tag           Tag[]    @relation("PlaceTag")
   Plan          Plan[]   @relation("PlacePlan")
@@ -90,4 +88,14 @@ model Category {
   Plan      Plan[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// 에러로그
+model Error {
+  id       Int    @id @default(autoincrement())
+  action   String @db.VarChar(700)
+  context  String @db.VarChar(700)
+  backCode String @db.VarChar(700)
+  error    String @db.VarChar(700)
+  scope    String @db.VarChar(700)
 }
