@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "production") {
     // 보안 설정, 로그 최소화
     app.use((0, helmet_1.default)()); // 보안 관련 HTTP 헤더 설정
     app.use((0, morgan_1.default)(`combined`));
-    app.use((0, cors_1.default)({ origin: "https://your-production-frontend.com", credentials: true })); // 실제 도메인으로 CORS 설정
+    app.use((0, cors_1.default)({ origin: "https://trips-ebon.vercel.app", credentials: true })); // 실제 도메인으로 CORS 설정
     app.use((0, express_rate_limit_1.default)({
         windowMs: 15 * 60 * 1000, // 15분
         max: 100, // 각 IP당 100 요청 허용
