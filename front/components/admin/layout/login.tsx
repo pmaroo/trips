@@ -56,11 +56,11 @@ export default function Login({
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    if (meStore.me.isAdmin) {
-      setIsLogin(true);
-    }
-  }, [meStore.me]);
+  // useEffect(() => {
+  //   if (meStore.me.isAdmin) {
+  //     setIsLogin(true);
+  //   }
+  // }, [meStore.me]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
@@ -106,16 +106,29 @@ export default function Login({
         }}
       >
         <div
-          className="flex items-center justify-center w-full p-6  min-h-svh md:p-10"
+          className="
+            flex
+            items-center
+            justify-center
+            w-full
+            p-6
+            min-h-svh
+            md:p-10
+          "
         >
           <div
-            className="w-full max-w-sm "
+            className="
+              w-full
+              max-w-sm
+            "
           >
             <div className={cn("flex flex-col gap-6", className)} {...props}>
               <Card>
                 <CardHeader>
                   <CardTitle
-                    className="text-2xl "
+                    className="
+                      text-2xl
+                    "
                   >
                     Login
                   </CardTitle>
