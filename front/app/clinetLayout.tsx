@@ -119,7 +119,7 @@ export default function ClientLayout({
     <>
       <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
         {path.includes("admin") ? (
-          meStore.me && meStore.me.isAdmin ? (
+          meStore.me ? (
             <SidebarProvider>
               <Layout />
               <SidebarInset>
