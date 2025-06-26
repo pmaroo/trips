@@ -19,7 +19,7 @@ export default async function Page() {
   });
 
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api/user", // api 주소
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/user`, // api 주소
     headers: { "content-Type": "application/json" },
     withCredentials: true, // ✅ 쿠키 포함 요청
   });

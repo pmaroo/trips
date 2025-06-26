@@ -1,13 +1,9 @@
-import { notFound } from "next/navigation";
 import ClientPage from "./clientPage";
-import { NextApiRequest, NextApiResponse } from "next";
-import { cookies } from "next/headers";
 import axios from "@node_modules/axios";
-import { CategoryDTO, UpdateCategory } from "@/types/category";
-// import { useRouter } from "@node_modules/next/router";
+import { CategoryDTO } from "@/types/category";
 
 // posts는 빌드시점에 getStaticProps()에 의해 채워짐
-export default async function Page(req: NextApiRequest, res: NextApiResponse) {
+export default async function Page() {
   // const router = useRouter();
 
   // fallback:true로 해뒀기때문에 router에서 isFallback의 값을 가져올 수 있음
@@ -24,7 +20,7 @@ export default async function Page(req: NextApiRequest, res: NextApiResponse) {
   // const res = await fetch("", { cache: "force-cache" });
   // const post = await res.json();
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api", // api 주소
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`, // api 주소
     headers: { "content-Type": "application/json" },
     withCredentials: true, // ✅ 쿠키 포함 요청
   });
@@ -42,11 +38,6 @@ export default async function Page(req: NextApiRequest, res: NextApiResponse) {
     </>
   );
 }
-
-type Posts = {
-  name: string;
-  count: number;
-};
 
 // 정적생성페이지
 // getStaticPaths는 pageRouter에서 사용 가능
@@ -76,33 +67,33 @@ type Posts = {
 // 해당 params는 getStaticPaths에서 보낸 params, 즉 paths이다.
 // generateStaticParams : app router에서 사용시
 // app router에서 paths의 역할 담당
-export const generateStaticParams = async ({ params }) => {
-  const res = await fetch("");
-  const posts = await res.json();
+// export const generateStaticParams = async ({ params }) => {
+//   const res = await fetch("");
+//   const posts = await res.json();
 
-  // 해당 getStaticProps에서 Redirect도 설정 가능
-  // 해당 부분 page Router에서 사용
-  // if (!posts) {
-  //   // 404페이지 리턴
-  //   return {
-  //     notfound: true,
-  //     redirect: {
-  //       desctination: "/",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+//   // 해당 getStaticProps에서 Redirect도 설정 가능
+//   // 해당 부분 page Router에서 사용
+//   // if (!posts) {
+//   //   // 404페이지 리턴
+//   //   return {
+//   //     notfound: true,
+//   //     redirect: {
+//   //       desctination: "/",
+//   //       permanent: false,
+//   //     },
+//   //   };
+//   // }
 
-  // 해당 return된 걸 page에서 받아서 최소한의 랜더링을 해준다.
-  return {
-    props: {
-      posts,
-    },
-    // 요청이 들어올때 최대 10초마다 한번 페이지를 재생성
-    revalidate: 10,
-  };
-  // satisfies : 뒤에오는 타입을 미리 밸리데이팅하라고 강제(prevalidating)
-};
+//   // 해당 return된 걸 page에서 받아서 최소한의 랜더링을 해준다.
+//   return {
+//     props: {
+//       posts,
+//     },
+//     // 요청이 들어올때 최대 10초마다 한번 페이지를 재생성
+//     revalidate: 10,
+//   };
+//   // satisfies : 뒤에오는 타입을 미리 밸리데이팅하라고 강제(prevalidating)
+// };
 
 // 주의점
 // app은 서버에서 렌더링 되는 서버 컴포넌트이기 때문에

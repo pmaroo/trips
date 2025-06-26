@@ -62,7 +62,7 @@ export default function Step1(data: { regionList: RegionType[] }) {
     lng: number;
   }) => {
     const result = { ...data, name: region + " " + data.name };
-    await planStore.setPlan({ destination: result });
+    await planStore.setPlan({ destination: result, UserId: meStore.me.id });
     stepStore.setStep(1);
   };
 

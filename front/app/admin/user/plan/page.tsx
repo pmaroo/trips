@@ -3,7 +3,7 @@ import ClientPage from "./clientPage";
 
 export default async function Page() {
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api/plan", // api 주소
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/plan`, // api 주소
     headers: {
       "Content-Type": "application/json",
     },

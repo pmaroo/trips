@@ -2,7 +2,7 @@ import { CreateTag, DeleteTag, UpdateTag } from "../../types/tag";
 import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: "http://localhost:8080/api/tag", // api 주소
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/tag`, // api 주소
   headers: { "content-Type": "application/json" },
   withCredentials: true, // ✅ 쿠키 포함 요청
 });

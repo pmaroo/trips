@@ -68,7 +68,7 @@ export const useCreateCategory = (onSuccessCallback: () => void) => {
 
 // 카테고리 가져오기
 export const useCategoryList = () => {
-  return useQuery<CategoryDTO[]>({
+  return useQuery<CategoryDTO>({
     queryKey: ["categoryList"],
     queryFn: () => categoryList(),
   });

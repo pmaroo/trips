@@ -189,7 +189,7 @@ export default function CleintPage() {
                   mb-[15px]
                   sm:w-[calc(100%/4-15px)]
                 "
-                onClick={() => router.push(`/${data.id}`)}
+                onClick={() => router.push(`/complete/${data.id}`)}
                 key={index}
               >
                 <motion.div

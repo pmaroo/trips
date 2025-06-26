@@ -38,7 +38,7 @@ export default async function RootLayout({
   const refreshToken = cookieStore.get("refresh")?.value;
 
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api/auth", // api 주소
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/auth`, // api 주소
     headers: {
       "Content-Type": "application/json",
       Cookie: `jwt=${accessToken}; refresh=${refreshToken}`,
@@ -72,6 +72,11 @@ export default async function RootLayout({
         </Providers>
         <Toaster />
         <Leins />
+
+        {/* <script
+          type="text/javascript"
+          src="//dapi.kakao.com/v2/maps/sdk.js?appkey=66560f77cf5a1dac46c7395a202f8825"
+        ></script> */}
 
         <script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"

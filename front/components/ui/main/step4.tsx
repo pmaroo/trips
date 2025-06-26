@@ -9,6 +9,8 @@ import Car from "@components/svg/car";
 import Bus from "@components/svg/bus";
 import useDeviceSize from "@hooks/useDeviceSize";
 import { usePlanStore } from "@store/planStore";
+import { useCreatePlan } from "@hooks/reactQuery/usePlan";
+import { useRouter } from "@node_modules/next/navigation";
 
 export default function Step4() {
   const { Button } = Components;
@@ -20,12 +22,16 @@ export default function Step4() {
   // HOOK
   //////////////////////////////////////////////////////////////
   const { isDesktop, isTablet, isMobile } = useDeviceSize();
+  const router = useRouter();
   //////////////////////////////////////////////////////////////
   // STORE
   //////////////////////////////////////////////////////////////
 
   const stepStore = useStepStore();
   const planStore = usePlanStore((state) => state);
+  const createPlan = useCreatePlan(() => {
+    router.push(`/complete/${String(createPlan.data.id)}`);
+  });
 
   //////////////////////////////////////////////////////////////
   // FORM
@@ -44,7 +50,8 @@ export default function Step4() {
     await planStore.setPlan({
       traffic: data,
     });
-    stepStore.setStep(5);
+    createPlan.mutate({ ...planStore.plan, traffic: data });
+    stepStore.setStep(6);
   };
   //////////////////////////////////////////////////////////////
   //  TABLE
@@ -108,14 +115,7 @@ export default function Step4() {
       </motion.p>
 
       <motion.ul
-        className="
-          flex
-          flex-row
-          items-center
-          w-full
-          flex-wrap
-          justify-between
-        "
+        className="flex flex-row flex-wrap items-center justify-between w-full "
       >
         <li
           className="

@@ -87,7 +87,7 @@ export const useCreatePlan = (onSuccessCallback: () => void) => {
     onSuccess: async (data) => {
       resultPlan.setPlan(data);
       // toast("완성");
-      router.push(`/${data.id}`);
+      router.push(`/complete/${data.id}`);
       onSuccessCallback?.();
     },
     onError: (error: any) => {

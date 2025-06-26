@@ -92,12 +92,19 @@ export default function Main(data: {
 
   const { Kakao } = window;
 
-  const kakaoLogin = () => {
+  const kakaoLogin = async () => {
+    const REST_API_KEY = "26df7dfd151672851ce1a3808d2441e6";
+    const REDIRECT_URI = "http://localhost:3000/kakao";
+
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+
+    window.location.href = kakaoAuthURL;
     // 1. 카카오 요청
-    Kakao.Auth.authorize({
-      redirectUri: "http://localhost:3000/kakao",
-      scope: "profile_nickname,account_email,name,phone_number",
-    });
+    // Kakao.Auth.authorize({
+    //   redirectUri: "http://localhost:3000/kakao",
+    //   scope: "profile_nickname,account_email,name,phone_number",
+    //   prompt: "login",
+    // });
   };
 
   //////////////////////////////////////////////////////////////

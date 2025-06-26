@@ -317,54 +317,81 @@ export default function ClientPage({ planData }) {
     }
   }, [resultPlanStore.plan]);
 
-  // useEffect(() => {
-  //   const container = document.getElementById("map");
-  //   const options = {
-  //     center: new kakao.maps.LatLng(37.5665, 126.978),
-  //     level: 5,
-  //   };
-  //   const map = new kakao.maps.Map(container, options);
+  // const { kakao } = window;
 
-  //   // 첫 번째 선 (빨간색)
-  //   const path1 = [
-  //     new kakao.maps.LatLng(37.5665, 126.978), // 서울시청
-  //     new kakao.maps.LatLng(37.57, 126.983), // 광화문
-  //   ];
+  console.log(resultPlanStore);
 
-  //   const polyline1 = new kakao.maps.Polyline({
-  //     path: path1,
-  //     strokeWeight: 5,
-  //     strokeColor: "#FF0000", // 빨간색
-  //     strokeOpacity: 0.8,
-  //     strokeStyle: "solid",
-  //   });
+  useEffect(() => {
+    if (resultPlanStore.plan) {
+      const script = document.createElement("script");
+      script.src =
+        "https://dapi.kakao.com/v2/maps/sdk.js?appkey=66560f77cf5a1dac46c7395a202f8825&autoload=false";
+      script.async = true;
+      script.onload = () => {
+        // ✅ 이 시점에서만 window.kakao 접근 가능
+        window.kakao.maps.load(() => {
+          const container = document.getElementById("map");
+          const options = {
+            center: new window.kakao.maps.LatLng(
+              resultPlanStore.plan.destination.lat,
+              resultPlanStore.plan.destination.lng,
+            ),
+            level: 11,
+          };
+          const map = new window.kakao.maps.Map(container, options);
 
-  //   polyline1.setMap(map);
+          // 일차별 라인
 
-  //   // 두 번째 선 (파란색)
-  //   const path2 = [
-  //     new kakao.maps.LatLng(37.57, 126.983), // 광화문
-  //     new kakao.maps.LatLng(37.5744, 126.9575), // 독립문
-  //   ];
+          for (let i = 0; i < resultPlanStore.plan.days.length; i++) {
+            const path = [];
+            const contents = [];
+            const line = [`var(--main)`, `var(--main2)`, `var(--main3)`];
 
-  //   const polyline2 = new kakao.maps.Polyline({
-  //     path: path2,
-  //     strokeWeight: 5,
-  //     strokeColor: "#0000FF", // 파란색
-  //     strokeOpacity: 0.8,
-  //     strokeStyle: "solid",
-  //   });
+            if (i === 0) {
+              path.push(
+                new window.kakao.maps.LatLng(
+                  resultPlanStore.plan.start.lat,
+                  resultPlanStore.plan.start.lng,
+                ),
+              );
 
-  //   polyline2.setMap(map);
+              contents.push("집");
+            }
 
-  //   // 마커들 (선택)
-  //   [...path1, path2[1]].forEach((pos) => {
-  //     new kakao.maps.Marker({
-  //       position: pos,
-  //       map,
-  //     });
-  //   });
-  // }, []);
+            resultPlanStore.plan.days[i].map((data) => {
+              contents.push(data.place_name);
+              path.push(
+                new window.kakao.maps.LatLng(
+                  data.y ? data.y : resultPlanStore.plan.start.lat,
+                  data.x ? data.x : resultPlanStore.plan.start.lng,
+                ),
+              );
+            });
+
+            const polyline = new window.kakao.maps.Polyline({
+              path: path,
+              strokeWeight: 10,
+              strokeColor: line[i],
+              strokeOpacity: 1,
+              strokeStyle: "solid",
+            });
+
+            polyline.setMap(map);
+
+            path.forEach((pos) => {
+              new window.kakao.maps.Marker({
+                position: pos,
+                map,
+              });
+            });
+          }
+        });
+      };
+
+      document.head.appendChild(script);
+    }
+  }, [resultPlanStore.plan]);
+
   //////////////////////////////////////////////////////////////
   // TOGGLE
   //////////////////////////////////////////////////////////////
@@ -1315,9 +1342,14 @@ export default function ClientPage({ planData }) {
                                       text-[14px]
                                       ml-[5px]
                                       text-[grey]
+                                      cursor-pointer
+                                      hover:text-[--main]
                                     "
+                                    onClick={() => {
+                                      window.open(value.place_url);
+                                    }}
                                   >
-                                    {value.display_sitename}
+                                    카카오맵으로 확인하기
                                   </p>
                                 </div>
                               </div>
