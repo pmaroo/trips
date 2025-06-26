@@ -114,7 +114,8 @@ export default function ClientLayout({
     return null;
   }
 
-  console.log(meStore.me);
+  console.log(meStore.me, "ME");
+  console.log("배포됐는지확인");
   return (
     <>
       <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
