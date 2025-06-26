@@ -1,5 +1,6 @@
 import axios from "axios";
 import { errorConsole } from "../utils/error";
+import { logErrorToDB } from "../models/auth.model";
 
 interface KakaoResult {
   address_name: string;
@@ -68,6 +69,16 @@ async function getKakaoKeywordSearch(
 
   if (response.data.documents.length === 0) {
     console.log("막혔음");
+
+    const errorDB = {
+      action: "관광지 가져오기 실패",
+      context: `${response.data.documents}`,
+      backCode: "/auth/logic",
+      error: "관광지 가져오기 실패",
+      scope: "BE",
+    };
+
+    await logErrorToDB(errorDB);
     return [];
   }
 
@@ -120,49 +131,106 @@ async function getKakaoKeywordSearch(
 // 카카오보빌리티 일 10,000건
 // 차량일때만
 async function getDistance(
-  startName: string | null,
+  startName: string,
   startLat: string,
   startLng: string,
-
   endName: string,
   endLat: string,
-  endLng: string
+  endLng: string,
+  traffic: string
 ) {
-  const baseUrl = "https://apis-navi.kakaomobility.com/v1/directions";
+  let distance = null;
+  let duration = null;
 
-  const params: any = {
-    origin: startName
-      ? `${startLng},${startLat},name=${startName}`
-      : `${startLng},${startLat}`,
-    destination: `${endLng},${endLat},name=${endName}`,
-    priority: "TIME",
-    roadevent: 0,
-  };
+  if (traffic === "차량") {
+    const baseUrl = "https://apis-navi.kakaomobility.com/v1/directions";
 
-  const response = await axios.get(baseUrl, {
-    headers: {
-      Authorization: `KakaoAK ${process.env.KAKAO_REST_API}`,
-      "Content-Type": "application/json",
-    },
-    params,
-  });
+    const params: any = {
+      origin: startName
+        ? `${startLng},${startLat},name=${startName}`
+        : `${startLng},${startLat}`,
+      destination: `${endLng},${endLat},name=${endName}`,
+      priority: "TIME",
+      roadevent: 0,
+    };
 
-  if (!response.data.routes || !response.data.routes[0]) {
-    console.log("유효한 경로를 찾을 수 없습니다.");
-  }
+    const response = await axios.get(baseUrl, {
+      headers: {
+        Authorization: `KakaoAK ${process.env.KAKAO_REST_API}`,
+        "Content-Type": "application/json",
+      },
+      params,
+    });
 
-  if (!response.data.routes[0].summary) {
-    console.log("거리가 안나옴 여기에요!");
+    if (!response.data.routes || !response.data.routes[0]) {
+      const errorDB = {
+        action: "경로찾기",
+        context: `${response.data.routes}`,
+        backCode: "/auth/logic",
+        error: "유효한 경로를 찾을 수 없습니다.",
+        scope: "BE",
+      };
+
+      await logErrorToDB(errorDB);
+      console.log("유효한 경로를 찾을 수 없습니다.");
+    }
+
+    if (!response.data.routes[0].summary) {
+      const errorDB = {
+        action: "경로찾기",
+        context: `${response.data.routes[0].summary}`,
+        backCode: "/auth/logic",
+        error: "거리가 안나옴 여기에요!",
+        scope: "BE",
+      };
+
+      await logErrorToDB(errorDB);
+      console.log("거리가 안나옴 여기에요!");
+    }
+
+    distance = response.data.routes[0].summary
+      ? response.data.routes[0].summary.distance
+      : 0;
+    duration = response.data.routes[0].summary
+      ? response.data.routes[0].summary.duration
+      : 0;
+  } else {
+    const mode = "transit"; // driving, walking, bicycling, transit
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(
+      startName
+    )}&destinations=${encodeURIComponent(
+      endName
+    )}&mode=${mode}&language=ko&key=${apiKey}`;
+    const res = await axios.get(url);
+
+    if (!res.data) {
+      const errorDB = {
+        action: "경로찾기",
+        context: `${res.data}`,
+        backCode: "/auth/logic",
+        error: "구글 경로 찾는 중 실패",
+        scope: "BE",
+      };
+
+      await logErrorToDB(errorDB);
+      console.log("구글 경로 찾는 중 실패");
+    }
+
+    const data = res.data;
+
+    distance = data.rows[0].elements[0].distance
+      ? data.rows[0].elements[0].distance.value
+      : 0;
+    duration = data.rows[0].elements[0].duration
+      ? data.rows[0].elements[0].duration.value
+      : 0;
   }
 
   return {
     place_name: endName, // 관광지명소
-    distance: response.data.routes[0].summary
-      ? response.data.routes[0].summary.distance
-      : 0,
-    duration: response.data.routes[0].summary
-      ? response.data.routes[0].summary.duration
-      : 0,
+    distance: distance,
+    duration: duration,
   };
 }
 
@@ -205,7 +273,9 @@ async function getFirstDay(
   destinationLng: string,
   firstTouristSortDistance: KakaoResult[],
   originLat: string,
-  originLng: string
+  originLng: string,
+  originName: string,
+  traffic: string
 ) {
   // 장소
   let onePlace = null;
@@ -233,15 +303,14 @@ async function getFirstDay(
       1
     );
 
-    errorConsole(firstFood);
-
     oneDistance = await getDistance(
-      null,
+      originName,
       originLat,
       originLng,
       firstFood[0].place_name,
       firstFood[0].y,
-      firstFood[0].x
+      firstFood[0].x,
+      traffic
     );
 
     // 1일차 첫 관광 = touristAllSortDistance[1]
@@ -251,7 +320,8 @@ async function getFirstDay(
       firstFood[0].x,
       touristAllSortDistance[1].place_name,
       touristAllSortDistance[1].y,
-      touristAllSortDistance[1].x
+      touristAllSortDistance[1].x,
+      traffic
     );
 
     // 1일차 두번째 관광 = touristAllSortDistance[2]
@@ -261,7 +331,8 @@ async function getFirstDay(
       touristAllSortDistance[1].x,
       touristAllSortDistance[2].place_name,
       touristAllSortDistance[2].y,
-      touristAllSortDistance[2].x
+      touristAllSortDistance[2].x,
+      traffic
     );
 
     // 1일차 마지막 음식
@@ -280,7 +351,8 @@ async function getFirstDay(
       touristAllSortDistance[2].x,
       nMiusFood[0].place_name,
       nMiusFood[0].y,
-      nMiusFood[0].x
+      nMiusFood[0].x,
+      traffic
     );
 
     // 1일차 숙소
@@ -299,7 +371,8 @@ async function getFirstDay(
       nMiusFood[0].x,
       nMiusStay[0].place_name,
       nMiusStay[0].y,
-      nMiusStay[0].x
+      nMiusStay[0].x,
+      traffic
     );
 
     onePlace = await {
@@ -341,12 +414,13 @@ async function getFirstDay(
     );
 
     oneDistance = await getDistance(
-      null,
+      originName,
       originLat,
       originLng,
       firstFood[0].place_name,
       firstFood[0].y,
-      firstFood[0].x
+      firstFood[0].x,
+      traffic
     );
     // 1일차 첫 관광 = touristAllSortDistance[1]
     twoDistance = await getDistance(
@@ -355,7 +429,8 @@ async function getFirstDay(
       firstFood[0].x,
       touristAllSortDistance[1].place_name,
       touristAllSortDistance[1].y,
-      touristAllSortDistance[1].x
+      touristAllSortDistance[1].x,
+      traffic
     );
     // 1일차 두번째 관광 = firstTouristSortDistance[0]
     threeDistance = await getDistance(
@@ -364,7 +439,8 @@ async function getFirstDay(
       firstTouristSortDistance[0].x,
       touristAllSortDistance[2].place_name,
       touristAllSortDistance[2].y,
-      touristAllSortDistance[2].x
+      touristAllSortDistance[2].x,
+      traffic
     );
 
     // 1일차 마지막 음식점
@@ -384,7 +460,8 @@ async function getFirstDay(
       firstTouristSortDistance[0].x,
       day1LastFood[0].place_name,
       day1LastFood[0].y,
-      day1LastFood[0].x
+      day1LastFood[0].x,
+      traffic
     );
 
     // 1일차 마지막 숙소
@@ -403,7 +480,8 @@ async function getFirstDay(
       day1LastFood[0].x,
       day1LastStay[0].place_name,
       day1LastStay[0].y,
-      day1LastStay[0].x
+      day1LastStay[0].x,
+      traffic
     );
 
     onePlace = await {
@@ -439,7 +517,8 @@ async function getFirstDay(
 // n일차
 async function getNDay(
   firstStayDistance: DistnaceDTO[],
-  remainFirstStayDistance: KakaoResult[]
+  remainFirstStayDistance: KakaoResult[],
+  traffic: string
 ) {
   // 장소
   let onePlace = null;
@@ -482,7 +561,8 @@ async function getNDay(
     firstStaySortDistance[0].x,
     nFirstFood[0].place_name,
     nFirstFood[0].y,
-    nFirstFood[0].x
+    nFirstFood[0].x,
+    traffic
   );
 
   // n일째 첫 음식점 => n일째 두번째 관광지 거리
@@ -492,7 +572,8 @@ async function getNDay(
     nFirstFood[0].x,
     firstStaySortDistance[1].place_name,
     firstStaySortDistance[1].y,
-    firstStaySortDistance[1].x
+    firstStaySortDistance[1].x,
+    traffic
   );
 
   // n일째 두번째 관광지 => n일째 세번째 관광지 거리
@@ -502,7 +583,8 @@ async function getNDay(
     firstStaySortDistance[1].x,
     firstStaySortDistance[2].place_name,
     firstStaySortDistance[2].y,
-    firstStaySortDistance[2].x
+    firstStaySortDistance[2].x,
+    traffic
   );
 
   // 마지막 음식점
@@ -522,7 +604,8 @@ async function getNDay(
     firstStaySortDistance[2].x,
     nLastFood[0].place_name,
     nLastFood[0].y,
-    nLastFood[0].x
+    nLastFood[0].x,
+    traffic
   );
 
   // 숙소
@@ -542,7 +625,8 @@ async function getNDay(
     nLastFood[0].x,
     nLastStay[0].place_name,
     nLastStay[0].y,
-    nLastStay[0].x
+    nLastStay[0].x,
+    traffic
   );
 
   onePlace = await firstStaySortDistance[0];
@@ -580,7 +664,8 @@ async function getNMinusDay(
   destinationLat: string,
   destinationLng: string,
   remainFirstStayDistance: KakaoResult[],
-  day1LastStay: KakaoResult // 전날숙소
+  day1LastStay: KakaoResult, // 전날숙소,
+  traffic: string
 ) {
   // 장소
   let onePlace = null;
@@ -606,7 +691,8 @@ async function getNMinusDay(
         day1LastStay.x,
         place.place_name,
         place.y,
-        place.x
+        place.x,
+        traffic
       )
     )
   );
@@ -637,7 +723,8 @@ async function getNMinusDay(
     firstStaySortDistance[0].x,
     nFirstFood[0].place_name,
     nFirstFood[0].y,
-    nFirstFood[0].x
+    nFirstFood[0].x,
+    traffic
   );
 
   // n-1일째 첫 음식점 => n-1일째 두번째 관광지 거리
@@ -647,7 +734,8 @@ async function getNMinusDay(
     nFirstFood[0].x,
     firstStaySortDistance[1].place_name,
     firstStaySortDistance[1].y,
-    firstStaySortDistance[1].x
+    firstStaySortDistance[1].x,
+    traffic
   );
 
   // n-1일째 두번째 관광지 => n-1일째 세번째 관광지 거리
@@ -657,7 +745,8 @@ async function getNMinusDay(
     firstStaySortDistance[1].x,
     firstStaySortDistance[2].place_name,
     firstStaySortDistance[2].y,
-    firstStaySortDistance[2].x
+    firstStaySortDistance[2].x,
+    traffic
   );
 
   // N-1일차 핫플 근처 음식점
@@ -677,7 +766,8 @@ async function getNMinusDay(
     firstStaySortDistance[2].x,
     nMiusFood[0].place_name,
     nMiusFood[0].y,
-    nMiusFood[0].x
+    nMiusFood[0].x,
+    traffic
   );
 
   // N-1일차 숙소
@@ -697,7 +787,8 @@ async function getNMinusDay(
     nMiusFood[0].x,
     nMiusStay[0].place_name,
     nMiusStay[0].y,
-    nMiusStay[0].x
+    nMiusStay[0].x,
+    traffic
   );
 
   onePlace = await firstStaySortDistance[0];
@@ -735,7 +826,8 @@ async function getLastDay(
   touristAllSortDistance: KakaoResult[],
   nMinusStay: KakaoResult,
   originLat: string,
-  originLng: string
+  originLng: string,
+  traffic: string
 ) {
   // 장소
   let onePlace = null;
@@ -753,7 +845,8 @@ async function getLastDay(
     nMinusStay.x,
     touristAllSortDistance[0].place_name,
     touristAllSortDistance[0].y,
-    touristAllSortDistance[0].x
+    touristAllSortDistance[0].x,
+    traffic
   );
   // 마지막 음식점
   const lastFood = await getKakaoKeywordSearch(
@@ -771,7 +864,8 @@ async function getLastDay(
     touristAllSortDistance[0].x,
     lastFood[0].place_name,
     lastFood[0].y,
-    lastFood[0].x
+    lastFood[0].x,
+    traffic
   );
   // 마지막 첫 관광지 => 마지막 음식점
   threeDistance = await getDistance(
@@ -780,7 +874,8 @@ async function getLastDay(
     lastFood[0].x,
     "집",
     originLat,
-    originLng
+    originLng,
+    traffic
   );
 
   onePlace = await {
@@ -825,6 +920,7 @@ export async function logic(data: any) {
   // https://console.cloud.google.com/apis/dashboard?inv=1&invt=Abyjyg&project=secret-helper-460706-b7&pageState=(%22duration%22:(%22groupValue%22:%22PT1H%22,%22customValue%22:null))
 
   // 출발장소 경도위도
+  const originName = `${data.start.name}`;
   const originLat = `${data.start.lat}`;
   const originLng = `${data.start.lng}`;
 
@@ -832,6 +928,7 @@ export async function logic(data: any) {
   const destinationLat = `${data.destination.lat}`;
   const destinationLng = `${data.destination.lng}`;
 
+  const traffic = `${data.traffic}`;
   // 여행 일정
   // ex ) 1박2일 = 2 , 2박3일 = 3
   // 실제 여행일정 일차
@@ -928,6 +1025,15 @@ export async function logic(data: any) {
   );
 
   if (!touristPlaces?.length) {
+    const errorDB = {
+      action: "최초 관광지 뽑기",
+      context: `${touristPlaces}`,
+      backCode: "/auth/logic",
+      error: "관광지 뽑기 실패",
+      scope: "BE",
+    };
+
+    await logErrorToDB(errorDB);
     errorConsole("관광지 뽑기 실패");
     return;
   }
@@ -936,17 +1042,27 @@ export async function logic(data: any) {
   const touristAllDistances: DistnaceDTO[] = await Promise.all(
     touristPlaces.map((place) =>
       getDistance(
-        null,
+        originName,
         originLat,
         originLng,
         place.place_name,
         place.y,
-        place.x
+        place.x,
+        traffic
       )
     )
   );
 
   if (!touristAllDistances?.[0]) {
+    const errorDB = {
+      action: "최초 거리 계산",
+      context: `${touristAllDistances}`,
+      backCode: "/auth/logic",
+      error: "거리계산에서 실패",
+      scope: "BE",
+    };
+
+    await logErrorToDB(errorDB);
     errorConsole("거리계산에서 실패");
     return;
   }
@@ -960,6 +1076,15 @@ export async function logic(data: any) {
   );
 
   if (touristAllSortDistance.length < 3) {
+    const errorDB = {
+      action: "모든 관광지 가까운 거리순으로 배열 정리 실패",
+      context: `${touristAllSortDistance}`,
+      backCode: "/auth/logic",
+      error: "배열 정리 실패",
+      scope: "BE",
+    };
+
+    await logErrorToDB(errorDB);
     errorConsole("배열 정리 실패");
     return;
   }
@@ -978,7 +1103,8 @@ export async function logic(data: any) {
         touristAllSortDistance[1].x,
         place.place_name,
         place.y,
-        place.x
+        place.x,
+        traffic
       )
     )
   );
@@ -1003,7 +1129,9 @@ export async function logic(data: any) {
     destinationLng,
     firstTouristSortDistance,
     originLat,
-    originLng
+    originLng,
+    originName,
+    traffic
   );
 
   // 1일차 추가
@@ -1014,8 +1142,6 @@ export async function logic(data: any) {
 
   // 2박 3일부터
   if (firstTouristSortDistance.length > 1) {
-    console.log("여기는 1박 2일은 나오면 안됨");
-
     // 첫날 두번째 관광지 제외한 배열
     const remainFirstStayDistance: KakaoResult[] =
       await firstTouristSortDistance.slice(1);
@@ -1029,7 +1155,8 @@ export async function logic(data: any) {
           firstDay[4].x,
           place.place_name,
           place.y,
-          place.x
+          place.x,
+          traffic
         )
       )
     );
@@ -1038,7 +1165,11 @@ export async function logic(data: any) {
       // 3박4일
       // 1일차 - n일차 - n-1일차 - 마지막
       // N일차 구하기
-      const nDay = await getNDay(firstStayDistance, remainFirstStayDistance);
+      const nDay = await getNDay(
+        firstStayDistance,
+        remainFirstStayDistance,
+        traffic
+      );
 
       // n일차 추가
       await days.push(nDay);
@@ -1057,7 +1188,8 @@ export async function logic(data: any) {
                 nDay[5].x,
                 place.place_name,
                 place.y,
-                place.x
+                place.x,
+                traffic
               )
             )
           );
@@ -1065,7 +1197,8 @@ export async function logic(data: any) {
           // N일차 구하기
           const nDays = await getNDay(
             firstStayDistance,
-            remainFirstStayDistance
+            remainFirstStayDistance,
+            traffic
           );
 
           // n일차 추가
@@ -1077,7 +1210,8 @@ export async function logic(data: any) {
         destinationLat,
         destinationLng,
         remainFirstStayDistance,
-        nDay[5]
+        nDay[5],
+        traffic
       );
 
       // n일차 추가
@@ -1092,7 +1226,8 @@ export async function logic(data: any) {
         destinationLat,
         destinationLng,
         remainFirstStayDistance,
-        firstDay[4]
+        firstDay[4],
+        traffic
       );
 
       // n일차 추가
@@ -1107,7 +1242,8 @@ export async function logic(data: any) {
     touristAllSortDistance,
     nMinusStay,
     originLat,
-    originLng
+    originLng,
+    traffic
   );
 
   // 마지막 추가

@@ -61,6 +61,8 @@ export const findLogic = async (
     }
 
     const logicResult = await logic(data);
+    console.log(logicResult, "reesult");
+
     const result = await createPlanModel(logicResult);
     res.json(result);
   } catch (error) {
