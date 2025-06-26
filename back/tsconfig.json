@@ -12,7 +12,7 @@
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "target": "es2019" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "libReplacement": true,                           /* Enable lib replacement. */
@@ -112,6 +112,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
+    "server.ts",
     "src/**/*", // 프로젝트의 소스 코드 경로
     "src/types/**/*.d.ts" // 타입 정의 파일 경로 추가
   ]

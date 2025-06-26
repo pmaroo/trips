@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node ./server.ts",
+    "start": "node ./server.js",
     "dev": "NODE_ENV=development nodemon ./server.ts"
   },
   "author": "",
