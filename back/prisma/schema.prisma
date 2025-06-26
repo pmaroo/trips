@@ -63,7 +63,6 @@ model Place {
   postcode        String      @db.VarChar(100)
   lat             Decimal     @db.Decimal(10,7)
   lng             Decimal     @db.Decimal(10,7)
-  source          String      @db.VarChar(100) //AI 출처
   Tag             Tag[]       @relation("PlaceTag")
   Plan            Plan[]      @relation("PlacePlan")
   createdAt       DateTime    @default(now())

@@ -11,7 +11,6 @@ export interface PlaceDTO {
   lng: number;
   descript: string;
   image?: string;
-  source: string;
   Tag: TagDTO[];
   Plan: PlanDTO[];
   createdAt: Date;
@@ -27,7 +26,6 @@ export interface CreatePlace {
   lng: number;
   descript: string;
   image?: string;
-  source: string;
 }
 
 export interface UpdatePlace {
@@ -40,7 +38,6 @@ export interface UpdatePlace {
   lng: number;
   descript: string;
   image?: string;
-  source: string;
 }
 
 export interface DeletePlace {

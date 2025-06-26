@@ -156,7 +156,6 @@ exports.Prisma.PlaceScalarFieldEnum = {
   postcode: 'postcode',
   lat: 'lat',
   lng: 'lng',
-  source: 'source',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -229,8 +228,7 @@ exports.Prisma.PlaceOrderByRelevanceFieldEnum = {
   name: 'name',
   address: 'address',
   detailAddress: 'detailAddress',
-  postcode: 'postcode',
-  source: 'source'
+  postcode: 'postcode'
 };
 
 exports.Prisma.TagOrderByRelevanceFieldEnum = {

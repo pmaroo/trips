@@ -12,7 +12,6 @@ export interface PlaceDTO {
   lng: string;
   descript: string;
   image?: string;
-  source: string;
   Tag: TagDTO[];
   // Plan: PlanDTO[];
   createdAt: Date;
@@ -28,7 +27,6 @@ export interface CreatePlace {
   lng: string;
   descript: string;
   image?: string;
-  source: string;
   Tag: { tag: string }[];
 }
 
@@ -42,7 +40,6 @@ export interface UpdatePlace {
   lng: string;
   descript: string;
   image?: string;
-  source: string;
 }
 
 export interface DeletePlace {
@@ -65,7 +62,6 @@ export const placeDTOSchema = z.object({
   lng: z.string(),
   descript: z.string().min(1, "내용은 필수입니다."),
   image: z.string(),
-  source: z.string(),
   createdAt: z.date(),
 });
 
@@ -88,7 +84,6 @@ export const updatePlaceSchema = z.object({
   lng: z.string(),
   descript: z.string().min(1, "내용은 필수입니다."),
   image: z.string().optional(),
-  source: z.string(),
 });
 
 export const createPlaceTagSchema = z.object({

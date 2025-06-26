@@ -232,7 +232,6 @@ export default function ClientPage(data) {
       lng: data.lng,
       descript: data.descript,
       image: data.image,
-      source: data.source,
     };
 
     updatePlace.mutate(placeData);
@@ -248,7 +247,6 @@ export default function ClientPage(data) {
       lng: data.lng,
       descript: data.descript,
       image: data.image,
-      source: data.source,
       Tag: tagDatum,
     };
 
