@@ -56,11 +56,11 @@ export default function Login({
   // USEEFFECT
   //////////////////////////////////////////////////////////////
 
-  // useEffect(() => {
-  //   if (meStore.me.isAdmin) {
-  //     setIsLogin(true);
-  //   }
-  // }, [meStore.me]);
+  useEffect(() => {
+    if (meStore.me && meStore.me.isAdmin) {
+      setIsLogin(true);
+    }
+  }, [meStore.me]);
 
   //////////////////////////////////////////////////////////////
   // TOGGLE
