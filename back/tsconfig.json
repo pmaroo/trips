@@ -10,7 +10,7 @@
     // "disableSourceOfProjectReferenceRedirect": true,  /* Disable preferring source files instead of declaration files when referencing composite projects. */
     // "disableSolutionSearching": true,                 /* Opt a project out of multi-project reference checking when editing. */
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     /* Language and Environment */
     "target": "es2019" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
@@ -113,6 +113,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
+    "server.ts",
     "src/**/*", // 프로젝트의 소스 코드 경로
     "src/types/**/*.d.ts" // 타입 정의 파일 경로 추가
   ],
