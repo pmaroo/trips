@@ -536,10 +536,8 @@ export default function ClientPage(data) {
                   "
                   variant="destructive"
                   onClick={(e) => {
-                    placeDTOForm.reset({
-                      ...row.original,
-                      image: "",
-                      createdAt: new Date(row.original.createdAt),
+                    createPlaceTagForm.reset({
+                      id: String(row.original.id),
                     });
                   }}
                   tabIndex={-1}
@@ -554,9 +552,9 @@ export default function ClientPage(data) {
                     장소를 삭제하면 회원의 일정에서 안보이게 됩니다.
                   </DialogDescription>
                 </DialogHeader>
-                <Form {...placeDTOForm}>
+                <Form {...createPlaceTagForm}>
                   <form
-                    onSubmit={placeDTOForm.handleSubmit(
+                    onSubmit={createPlaceTagForm.handleSubmit(
                       deletePlaceHandler,
                       (errors) => {
                         console.log("유효성 에러 발생:", errors);
@@ -564,27 +562,11 @@ export default function ClientPage(data) {
                     )}
                   >
                     <FormField
-                      control={placeDTOForm.control}
+                      control={createPlaceTagForm.control}
                       name="id"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>ID</FormLabel>
-                          <FormControl
-                            className="
-                              ml-[10px]
-                            "
-                          >
-                            <Badge variant="outline">{field.value}</Badge>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={placeDTOForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>장소명</FormLabel>
                           <FormControl
                             className="
                               ml-[10px]

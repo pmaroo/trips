@@ -41,7 +41,7 @@ export interface UpdatePlace {
 }
 
 export interface DeletePlace {
-  id: number;
+  id: string;
 }
 
 export interface UpdatePlaceTag {

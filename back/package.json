@@ -4,8 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node ./server.js",
-    "dev": "NODE_ENV=development nodemon ./server.ts"
+    "start": "NODE_ENV=production node ./dist/server.js",
+    "dev": "NODE_ENV=development nodemon ./server.ts",
+    "build": "tsc && npm run copy",
+    "copy": "cp -r src/generated dist/generated"
   },
   "author": "",
   "license": "ISC",

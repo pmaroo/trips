@@ -8,7 +8,7 @@ import {
 
 export const deletePlaceModel = async (data: DeletePlace) => {
   return prisma.place.delete({
-    where: { id: data.id },
+    where: { id: parseInt(data.id) },
   });
 };
 

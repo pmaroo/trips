@@ -113,6 +113,9 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
 
+  console.log(meStore.me);
+  console.log(loginUser.data);
+
   if (meStore.me && !loginUser.data) {
     return;
   }
@@ -193,14 +196,21 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="flex flex-row items-center justify-start "
+              className="
+                flex
+                flex-row
+                items-center
+                justify-start
+              "
             >
               <motion.div
                 className="
@@ -444,7 +454,9 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>
