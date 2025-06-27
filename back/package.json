@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node ./dist/server.js",
     "dev": "NODE_ENV=development nodemon ./server.ts",
     "build": "tsc && npm run copy",
-    "copy": "cp -r src/generated dist/generated"
+    "copy": "cp -r src/generated dist/src/generated"
   },
   "author": "",
   "license": "ISC",
