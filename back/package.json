@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node ./dist/server.js",
     "dev": "NODE_ENV=development nodemon ./server.ts",
-    "build": "tsc && npm run copy",
+    "build": "prisma generate && tsc && npm run copy",
     "copy": "cp -r src/generated dist/src/generated"
   },
   "author": "",
