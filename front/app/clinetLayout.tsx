@@ -115,12 +115,11 @@ export default function ClientLayout({
   }
 
   console.log(meStore.me, "ME");
-  console.log("배포됐는지확인");
   return (
     <>
       <ThemeProvider attribute={"class"} defaultTheme="light" enableSystem>
         {path.includes("admin") ? (
-          meStore.me ? (
+          meStore.me && meStore.me.isAdmin ? (
             <SidebarProvider>
               <Layout />
               <SidebarInset>
@@ -137,41 +136,25 @@ export default function ClientLayout({
                   "
                 >
                   <div
-                    className="
-                      flex
-                      items-center
-                      gap-2
-                      px-4
-                    "
+                    className="flex items-center gap-2 px-4 "
                   >
                     <SidebarTrigger
-                      className="
-                        -ml-1
-                      "
+                      className="-ml-1 "
                     />
                     <Separator
                       orientation="vertical"
-                      className="
-                        h-4
-                        mr-2
-                      "
+                      className="h-4 mr-2 "
                     />
                     <Breadcrumb>
                       <BreadcrumbList>
                         <BreadcrumbItem
-                          className="
-                            hidden
-                            md:block
-                          "
+                          className="hidden  md:block"
                         >
                           {url.title}
                         </BreadcrumbItem>
                         {path !== "/admin" && (
                           <BreadcrumbSeparator
-                            className="
-                              hidden
-                              md:block
-                            "
+                            className="hidden  md:block"
                           />
                         )}
                         <BreadcrumbItem>
@@ -201,9 +184,7 @@ export default function ClientLayout({
               <Header />
             </header>
             <section
-              className="
-                overflow-hidden
-              "
+              className="overflow-hidden "
             >
               {children}
             </section>

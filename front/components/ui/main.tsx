@@ -6,10 +6,8 @@ import { KakaoButton } from "./login/kakao";
 import { Naver } from "./login/naver";
 import { Google } from "./login/google";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useMeState } from "@store/commonStore";
-import axios from "axios";
-import { useKakaoStore } from "@store/loginStore";
 import {
   useAdminLoginUser,
   useAdminUser,
@@ -23,12 +21,7 @@ import {
   Plane,
   PlusCircle,
 } from "lucide-react";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "@node_modules/next/navigation";
+
 import { usePlanStore } from "@store/planStore";
 
 export default function Main(data: {
@@ -94,7 +87,8 @@ export default function Main(data: {
 
   const kakaoLogin = async () => {
     const REST_API_KEY = "26df7dfd151672851ce1a3808d2441e6";
-    const REDIRECT_URI = "http://localhost:3000/kakao";
+    // const REDIRECT_URI = "http://localhost:3000/kakao";
+    const REDIRECT_URI = "https://trips-ebon.vercel.app/kakao";
 
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
 
@@ -112,9 +106,6 @@ export default function Main(data: {
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
-
-  console.log(meStore.me);
-  console.log(loginUser.data);
 
   if (meStore.me && !loginUser.data) {
     return;
@@ -196,21 +187,14 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="
-                flex
-                flex-row
-                items-center
-                justify-start
-              "
+              className="flex flex-row items-center justify-start "
             >
               <motion.div
                 className="
@@ -454,9 +438,7 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="
-                  text-center
-                "
+                className="text-center "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>

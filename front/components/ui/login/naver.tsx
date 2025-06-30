@@ -10,20 +10,29 @@ export function Naver() {
 
   useEffect(() => {
     const { naver_id_login } = window;
+    // const login = new naver_id_login(
+    //   "n3PeuCW9wnyTixQ4nRtv",
+    //   "http://localhost:3000/naver",
+    // );
     const login = new naver_id_login(
       "n3PeuCW9wnyTixQ4nRtv",
-      "http://localhost:3000/naver",
+      "https://trips-ebon.vercel.app/naver",
     );
 
     const state = login.getUniqState(); // CSRF 방지용 state
     login.setState(state);
-    login.setDomain("http://localhost:3000");
+    login.setDomain("https://trips-ebon.vercel.app");
+    // login.setDomain("http://localhost:3000");
     stateRef.current = state;
   }, []);
 
   const handleClick = () => {
     const clientId = "n3PeuCW9wnyTixQ4nRtv";
-    const redirectUri = encodeURIComponent("http://localhost:3000/naver");
+    // const clientId = "n3PeuCW9wnyTixQ4nRtv";
+    const redirectUri = encodeURIComponent(
+      "https://trips-ebon.vercel.app/naver",
+    );
+    // const redirectUri = encodeURIComponent("http://localhost:3000/naver");
     const state = stateRef.current;
 
     const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
