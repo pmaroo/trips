@@ -15,6 +15,7 @@ import { useMeState } from "@store/commonStore";
 import { usePlanUserList } from "@hooks/reactQuery/usePlan";
 import { useEffect } from "react";
 import { usePlanUserStore } from "@store/planStore";
+import { Logo } from "@components/svg/logo";
 
 export default function CleintPage() {
   const {
@@ -202,21 +203,36 @@ export default function CleintPage() {
                     border
                     border-[--lightGrey]
                     shadow-lg
-                    bg-[url(/daejeon.png)]
                     cursor-pointer
                   "
                 >
                   <div
                     className="
                       flex
+                      justify-center
+                      w-full
+                      h-full
+                      items-end
+                      absolute
+                      top-0
+                      left-0
+                      z-[-1]
+                      pb-[30px]
+                    "
+                  >
+                    <Logo width={`100px`} height={`60px`} />
+                  </div>
+                  <div
+                    className="
+                      flex
                       flex-col
                       items-start
                       justify-start
-                      bg-[rgba(0,0,0,0.3)]
+                      bg-[rgba(0,0,0,0.5)]
                       size-full
                       p-[20px]
                       duration-500
-                      hover:bg-[rgba(0,0,0,0.6)]
+                      hover:bg-[rgba(0,0,0,0.8)]
                     "
                   >
                     <div

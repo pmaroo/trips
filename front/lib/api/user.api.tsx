@@ -41,11 +41,6 @@ export const adminLoginUser = async (userData: LoginUser) => {
   return data;
 };
 
-export const loginUser = async (userData: CreateUser) => {
-  const { data } = await apiClient.post("/login", userData);
-  return data;
-};
-
 export const logoutUser = async (userData: LogoutUser) => {
   const { data } = await apiClient.post("/logout", userData);
   return data;

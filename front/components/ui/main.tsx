@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 
 import { usePlanStore } from "@store/planStore";
+import { Logo } from "@components/svg/logo";
+import { useRouter } from "@node_modules/next/navigation";
 
 export default function Main(data: {
   isStart: boolean;
@@ -56,6 +58,7 @@ export default function Main(data: {
   // HOOK
   //////////////////////////////////////////////////////////////
 
+  const router = useRouter();
   const loginUser = useLoginUser(
     meStore.me && meStore.me.id ? meStore.me.id.toString() : null,
   );
@@ -87,8 +90,8 @@ export default function Main(data: {
 
   const kakaoLogin = async () => {
     const REST_API_KEY = "26df7dfd151672851ce1a3808d2441e6";
-    // const REDIRECT_URI = "http://localhost:3000/kakao";
-    const REDIRECT_URI = "https://trips-ebon.vercel.app/kakao";
+    const REDIRECT_URI = "http://localhost:3000/kakao";
+    // const REDIRECT_URI = "https://trips-ebon.vercel.app/kakao";
 
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
 
@@ -187,14 +190,21 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 일정을 선택해주세요.
               </DialogTitle>
             </DialogHeader>
 
             <div
-              className="flex flex-row items-center justify-start "
+              className="
+                flex
+                flex-row
+                items-center
+                justify-start
+              "
             >
               <motion.div
                 className="
@@ -255,6 +265,7 @@ export default function Main(data: {
                           cursor-pointer
                           group
                         "
+                        onClick={() => router.push(`/complete/${data.id}`)}
                       >
                         <motion.div
                           className={`
@@ -268,6 +279,22 @@ export default function Main(data: {
                             shadow-lg
                         `}
                         >
+                          <div
+                            className="
+                              flex
+                              justify-center
+                              w-full
+                              h-full
+                              items-end
+                              absolute
+                              top-0
+                              left-0
+                              z-[-1]
+                              pb-[30px]
+                            "
+                          >
+                            <Logo width={`100px`} height={`60px`} />
+                          </div>
                           <div
                             className="
                               flex
@@ -438,7 +465,9 @@ export default function Main(data: {
               "
             >
               <DialogTitle
-                className="text-center "
+                className="
+                  text-center
+                "
               >
                 로그인 후 이용 가능합니다
               </DialogTitle>

@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { LayoutGrid, Moon, Sun } from "lucide-react";
 import { useRouter } from "@node_modules/next/navigation";
 import { useMeState } from "@store/commonStore";
+import { Logo } from "@components/svg/logo";
 
 export default function Header() {
   const { Button } = Components;
@@ -25,7 +26,7 @@ export default function Header() {
           flex
           flex-row
           items-center
-          justify-end
+          justify-between
           z-[1000]
           fixed
           top-[10px]
@@ -34,38 +35,48 @@ export default function Header() {
           w-auto
         "
       >
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={themeHandler}
+        <div
           className="
+            flex
+            flex-row
+            w-auto
             mr-[10px]
           "
         >
-          {theme === "dark" ? (
-            <Sun
-              className="
-                text-[hsl(var(--foreground))]
-              "
-            />
-          ) : (
-            <Moon
-              className="
-                text-[hsl(var(--foreground))]
-              "
-            />
-          )}
-        </Button>
-
-        {meStore.me && (
           <Button
             variant="outline"
             size="icon"
-            onClick={() => router.push(`/mypage`)}
+            onClick={themeHandler}
+            className="
+              mr-[10px]
+            "
           >
-            <LayoutGrid />
+            {theme === "dark" ? (
+              <Sun
+                className="
+                  text-[hsl(var(--foreground))]
+                "
+              />
+            ) : (
+              <Moon
+                className="
+                  text-[hsl(var(--foreground))]
+                "
+              />
+            )}
           </Button>
-        )}
+
+          {meStore.me && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => router.push(`/mypage`)}
+            >
+              <LayoutGrid />
+            </Button>
+          )}
+        </div>
+        <Logo width={`60px`} height={`60px`} />
       </article>
     </>
   );

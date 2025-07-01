@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 // pages/auth/kakao/callback.tsx
 import { useEffect } from "react";
 import axios from "@node_modules/axios";
-import { useLogin } from "@hooks/reactQuery/useUser";
+import { useKakaoLogin } from "@hooks/reactQuery/useUser";
 import { CreateUser } from "@/types/user";
 
 export default function KakaoCallback() {
@@ -13,19 +13,19 @@ export default function KakaoCallback() {
 
   const { Kakao } = window;
 
-  const login = useLogin(() => {
+  const login = useKakaoLogin(() => {
     router.push("/");
   });
 
-  console.log("??");
+  console.log(login);
 
   useEffect(() => {
     if (searchParams.get("code")) {
       let code = searchParams.get("code");
       let grantType = "authorization_code";
       let clientId = "26df7dfd151672851ce1a3808d2441e6";
-      // const redirectUrl = "http://localhost:3000/kakao";
-      const redirectUrl = "https://trips-ebon.vercel.app/kakao";
+      const redirectUrl = "http://localhost:3000/kakao";
+      // const redirectUrl = "https://trips-ebon.vercel.app/kakao";
 
       // 2. 받아온 code로 토큰 요청
       axios

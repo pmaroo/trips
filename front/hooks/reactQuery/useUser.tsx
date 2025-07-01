@@ -6,7 +6,6 @@ import {
   createAdminUser,
   exitUser,
   getUser,
-  loginUser,
   logoutUser,
   updateUser,
 } from "@lib/api/user.api";
@@ -22,6 +21,7 @@ import {
 } from "../../types/user";
 import { toast } from "sonner";
 import { useMeState } from "@store/commonStore";
+import { kakaoLoginAPI } from "@lib/api/login.api";
 
 // useQuery : R 정보를 불러올때 (자동실행) 캐시초기화/갱신할때
 // useMutation : CUD 정보를 보낼때 (수동실행)
@@ -89,11 +89,11 @@ export const useExitUser = (onSuccessCallback: () => void) => {
 };
 
 // 회원로그인
-export const useLogin = (onSuccessCallback: () => void) => {
+export const useKakaoLogin = (onSuccessCallback: () => void) => {
   const meStore = useMeState((state) => state);
 
   return useMutation({
-    mutationFn: (userData: CreateUser) => loginUser(userData),
+    mutationFn: (userData: CreateUser) => kakaoLoginAPI(userData),
     // Mutation 성공후 리렌더링 필요없이 백그라운드에서 데이터를 다시 가져옴
     onSuccess: async (data: UserDTO) => {
       const jwtData: JwtUserDTO = {

@@ -51,6 +51,7 @@ import Leins from "@lib/lenis";
 import { CreatePlan, DayPlace, PlanListById } from "@/types/plan";
 import useInput from "@hooks/useInput";
 import { useKeywordForm } from "@hooks/form/usePlanForm";
+import { useMeState } from "@store/commonStore";
 
 const SortableItem = ({
   id,
@@ -89,7 +90,13 @@ const SortableItem = ({
         ref={setNodeRef}
         style={style}
         {...attributes}
-        className="flex flex-col items-start justify-center w-full "
+        className="
+          flex
+          flex-col
+          items-start
+          justify-center
+          w-full
+        "
       >
         <li
           className="
@@ -161,7 +168,7 @@ const SortableItem = ({
                     mr-[5px]
                 `}
                 >
-                  {data.name === "집" ? "" : data.category_group_name}
+                  {data.name === "집" ? "" : data.category_group_name}{" "}
                   <span
                     className="
                       text-[14px]
@@ -175,7 +182,11 @@ const SortableItem = ({
               </div>
             </div>
             <div
-              className="flex flex-row w-auto "
+              className="
+                flex
+                flex-row
+                w-auto
+              "
             >
               <p
                 {...listeners}
@@ -278,6 +289,7 @@ export default function ClientPage({ planData }) {
   // STORE
   //////////////////////////////////////////////////////////////
 
+  const meStore = useMeState((state) => state);
   const findPlaceStore = useFindPlaceStore((state) => state);
   const resultPlanStore = useResultPlan((state) => state);
 
@@ -333,10 +345,10 @@ export default function ClientPage({ planData }) {
           const container = document.getElementById("map");
           const options = {
             center: new window.kakao.maps.LatLng(
-              resultPlanStore.plan.destination.lat,
-              resultPlanStore.plan.destination.lng,
+              resultPlanStore.plan.days[0][0].y,
+              resultPlanStore.plan.days[0][0].x,
             ),
-            level: 11,
+            level: 5,
           };
           const map = new window.kakao.maps.Map(container, options);
 
@@ -505,7 +517,15 @@ export default function ClientPage({ planData }) {
         "
       >
         <ul
-          className="relative flex flex-row flex-wrap items-center justify-end  size-full"
+          className="
+            flex
+            flex-row
+            items-center
+            relative
+            flex-wrap
+            justify-end
+            size-full
+          "
         >
           <motion.li
             initial={{ left: `-300px` }}
@@ -582,7 +602,12 @@ export default function ClientPage({ planData }) {
                   onSubmit={keywordForm.handleSubmit((e) => {
                     findPlaceHandler(e);
                   })}
-                  className="flex flex-row w-full space-x-2 "
+                  className="
+                    flex
+                    flex-row
+                    w-full
+                    space-x-2
+                  "
                 >
                   <FormField
                     control={keywordForm.control}
@@ -590,7 +615,9 @@ export default function ClientPage({ planData }) {
                     render={({ field }) => {
                       return (
                         <FormItem
-                          className="w-full "
+                          className="
+                            w-full
+                          "
                         >
                           <FormControl>
                             <Input
@@ -628,7 +655,13 @@ export default function ClientPage({ planData }) {
                     "
                   >
                     <div
-                      className="flex flex-row items-center justify-between w-full "
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        w-full
+                        justify-between
+                      "
                     >
                       <div
                         className="
@@ -731,10 +764,22 @@ export default function ClientPage({ planData }) {
               "
             >
               <li
-                className="flex flex-col items-start justify-start  sm:flex-row sm:items-center"
+                className="
+                  flex
+                  flex-col
+                  items-start
+                  justify-start
+                  sm:flex-row
+                  sm:items-center
+                "
               >
                 <div
-                  className="flex flex-row items-center justify-center "
+                  className="
+                    flex
+                    flex-row
+                    items-center
+                    justify-center
+                  "
                 >
                   <div
                     className="
@@ -770,41 +815,50 @@ export default function ClientPage({ planData }) {
                   {planData && planData.date[1].day}일
                 </div>
               </li>
-              {isUpdate ? (
-                <motion.li
-                  initial={{
-                    y: 0,
-                    rotate: `0deg`,
-                  }}
-                  whileHover={{
-                    y: -5,
-                    transition: {
-                      duration: 0.5,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                    },
-                  }}
-                  className="cursor-pointer "
-                  onClick={updateHandler}
-                >
-                  <CheckCircle />
-                </motion.li>
+              {(resultPlanStore.plan && resultPlanStore.plan.UserId) ===
+              (meStore.me && meStore.me.id) ? (
+                isUpdate ? (
+                  <motion.li
+                    initial={{
+                      y: 0,
+                      rotate: `0deg`,
+                    }}
+                    whileHover={{
+                      y: -5,
+                      transition: {
+                        duration: 0.5,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      },
+                    }}
+                    className="
+                      cursor-pointer
+                    "
+                    onClick={updateHandler}
+                  >
+                    <CheckCircle />
+                  </motion.li>
+                ) : (
+                  <motion.li
+                    initial={{
+                      rotate: `0deg`,
+                    }}
+                    whileHover={{
+                      rotate: `90deg`,
+                      transition: {
+                        duration: 0.5,
+                      },
+                    }}
+                    className="
+                      cursor-pointer
+                    "
+                    onClick={updateToggle}
+                  >
+                    <Settings />
+                  </motion.li>
+                )
               ) : (
-                <motion.li
-                  initial={{
-                    rotate: `0deg`,
-                  }}
-                  whileHover={{
-                    rotate: `90deg`,
-                    transition: {
-                      duration: 0.5,
-                    },
-                  }}
-                  className="cursor-pointer "
-                  onClick={updateToggle}
-                >
-                  <Settings />
-                </motion.li>
+                ""
               )}
             </ul>
             <ul
@@ -836,7 +890,13 @@ export default function ClientPage({ planData }) {
               <HashTag title={planData && planData.category} type={1} />
             </ul>
             <ul
-              className="flex flex-row items-center justify-start w-full "
+              className="
+                flex
+                flex-row
+                items-center
+                justify-start
+                w-full
+              "
             >
               <li>
                 <Button
@@ -871,7 +931,9 @@ export default function ClientPage({ planData }) {
             {items.map((data, index) => {
               return (
                 <div
-                  className="w-full "
+                  className="
+                    w-full
+                  "
                   key={index}
                 >
                   <ul
@@ -886,7 +948,12 @@ export default function ClientPage({ planData }) {
                     "
                   >
                     <li
-                      className="flex flex-row items-center justify-center "
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-center
+                      "
                     >
                       <p
                         className="
@@ -972,7 +1039,13 @@ export default function ClientPage({ planData }) {
                       `}
                   >
                     <li
-                      className="flex flex-row items-center justify-start w-full "
+                      className="
+                        flex
+                        flex-row
+                        items-center
+                        justify-start
+                        w-full
+                      "
                     >
                       <div
                         className="
@@ -1148,7 +1221,13 @@ export default function ClientPage({ planData }) {
                             </div>
                           </li>
                           <li
-                            className="flex flex-row items-center justify-start w-full "
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              justify-start
+                              w-full
+                            "
                           >
                             <div
                               className="
@@ -1200,7 +1279,13 @@ export default function ClientPage({ planData }) {
                       ) : (
                         <ul
                           key={`${idx}-${index}`}
-                          className="flex flex-col items-start justify-center w-full "
+                          className="
+                            flex
+                            flex-col
+                            items-start
+                            justify-center
+                            w-full
+                          "
                         >
                           <li
                             className="
@@ -1260,7 +1345,14 @@ export default function ClientPage({ planData }) {
                             ></div>
                           </li>
                           <li
-                            className="relative flex flex-row items-center justify-end w-full "
+                            className="
+                              flex
+                              flex-row
+                              items-center
+                              w-full
+                              relative
+                              justify-end
+                            "
                           >
                             <div
                               className={`
@@ -1329,7 +1421,12 @@ export default function ClientPage({ planData }) {
                                   {value.address_name}
                                 </p>
                                 <div
-                                  className="flex flex-row items-center justify-start "
+                                  className="
+                                    flex
+                                    flex-row
+                                    items-center
+                                    justify-start
+                                  "
                                 >
                                   <Star
                                     className="

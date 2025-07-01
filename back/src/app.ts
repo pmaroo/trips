@@ -25,8 +25,8 @@ if (process.env.NODE_ENV === "production") {
   app.use(helmet()); // 보안 관련 HTTP 헤더 설정
   app.use(morgan(`combined`));
 
-  app.use(cors({ origin: "https://trips-ebon.vercel.app", credentials: true })); // 실제 도메인으로 CORS 설정
-  // app.use(cors({ origin: "http://localhost:3000", credentials: true })); // 실제 도메인으로 CORS 설정
+  // app.use(cors({ origin: "https://trips-ebon.vercel.app", credentials: true })); // 실제 도메인으로 CORS 설정
+  app.use(cors({ origin: "http://localhost:3000", credentials: true })); // 실제 도메인으로 CORS 설정
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15분
