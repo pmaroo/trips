@@ -49,3 +49,7 @@ export interface UpdatePlaceTag {
   name: string;
   Tag: { tag: string }[];
 }
+
+export interface FindPlaceDTO {
+  address: string;
+}

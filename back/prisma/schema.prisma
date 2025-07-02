@@ -99,4 +99,6 @@ model Error{
   backCode      String        @db.VarChar(700) // 백 위치
   error         String        @db.VarChar(700) // 에러로그
   scope         String        @db.VarChar(700) // 영역
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

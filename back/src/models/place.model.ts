@@ -2,6 +2,7 @@ import prisma from "../config/db";
 import {
   CreatePlace,
   DeletePlace,
+  FindPlaceDTO,
   UpdatePlace,
   UpdatePlaceTag,
 } from "../types/place";
@@ -35,6 +36,16 @@ export const updatePlaceModel = async (data: UpdatePlace) => {
 export const createPlaceModel = async (data: CreatePlace) => {
   return prisma.place.create({
     data,
+  });
+};
+
+export const getPlaceModel = async (data: FindPlaceDTO) => {
+  return prisma.place.findMany({
+    where: { address: { contains: data.address } },
+    include: {
+      Tag: true,
+      Plan: true,
+    },
   });
 };
 

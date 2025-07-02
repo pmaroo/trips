@@ -52,6 +52,7 @@ import { CreatePlan, DayPlace, PlanListById } from "@/types/plan";
 import useInput from "@hooks/useInput";
 import { useKeywordForm } from "@hooks/form/usePlanForm";
 import { useMeState } from "@store/commonStore";
+import { usePlaceFindList } from "@hooks/reactQuery/usePlace";
 
 const SortableItem = ({
   id,
@@ -284,6 +285,7 @@ export default function ClientPage({ planData }) {
     setIsUpdate(false);
     setIsAddress(false);
   });
+  const placeFindList = usePlaceFindList(() => {});
 
   //////////////////////////////////////////////////////////////
   // STORE
@@ -414,6 +416,10 @@ export default function ClientPage({ planData }) {
   };
 
   const updateToggle = () => {
+    if (!isUpdate) {
+      placeFindList.mutate(resultPlanStore.plan.destination.name);
+    }
+
     setIsUpdate(!isUpdate);
     setIsAddress(false);
   };

@@ -51,6 +51,10 @@ export interface CreatePlaceTag {
   Tag: { tag: string }[];
 }
 
+export interface FindPlaceDTO {
+  address: string;
+}
+
 // SCHEMA
 export const placeDTOSchema = z.object({
   id: z.number(),

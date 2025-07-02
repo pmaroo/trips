@@ -4,6 +4,7 @@ import {
   createTagPlus,
   deletePlace,
   getAllPlace,
+  getPlace,
   updatePlace,
 } from "../controllers/plcae.controller";
 
@@ -20,6 +21,9 @@ router.post("/update", updatePlace);
 
 // 장소생성
 router.post("/create", createPlace);
+
+// 장소리스트
+router.post("/find", getPlace);
 
 // 장소리스트
 router.post("/", getAllPlace);

@@ -2,6 +2,7 @@ import {
   CreatePlace,
   CreatePlaceTag,
   DeletePlace,
+  FindPlaceDTO,
   UpdatePlace,
 } from "@/types/place";
 import axios from "axios";
@@ -11,6 +12,11 @@ export const apiClient = axios.create({
   headers: { "content-Type": "application/json" },
   withCredentials: true, // ✅ 쿠키 포함 요청
 });
+
+export const placeFindListAPI = async (placeData: FindPlaceDTO) => {
+  const { data } = await apiClient.post("/find", { placeData });
+  return data;
+};
 
 export const placeList = async () => {
   const { data } = await apiClient.post("/");

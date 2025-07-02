@@ -7,6 +7,7 @@ import {
   CreatePlace,
   CreatePlaceTag,
   DeletePlace,
+  FindPlaceDTO,
   PlaceDTO,
   UpdatePlace,
 } from "@/types/place";
@@ -14,6 +15,7 @@ import {
   createPlace,
   createPlaceTag,
   deletePlace,
+  placeFindListAPI,
   placeList,
   updatePlace,
 } from "@lib/api/place.api";
@@ -77,7 +79,7 @@ export const useCreatePlace = (onSuccessCallback: () => void) => {
     mutationFn: (placeData: CreatePlace) => createPlace(placeData),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["placeList"] });
-      toast("카테고리를 생성했습니다.");
+      toast("장소를 생성했습니다.");
       onSuccessCallback?.();
     },
     onError: (error: any) => {
@@ -91,5 +93,18 @@ export const usePlaceList = () => {
   return useQuery<PlaceDTO[]>({
     queryKey: ["placeList"],
     queryFn: () => placeList(),
+  });
+};
+
+// 장소 가져오기
+export const usePlaceFindList = (onSuccessCallback: () => void) => {
+  return useMutation({
+    mutationFn: (placeData: FindPlaceDTO) => placeFindListAPI(placeData),
+    onSuccess: async () => {
+      onSuccessCallback?.();
+    },
+    onError: (error: any) => {
+      toast(error?.response.data.message);
+    },
   });
 };

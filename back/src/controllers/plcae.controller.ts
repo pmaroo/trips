@@ -4,6 +4,7 @@ import {
   createPlaceModel,
   deletePlaceModel,
   getAllPlaceModel,
+  getPlaceModel,
   updatePlaceModel,
   updatePlaceTagModel,
 } from "../models/place.model";
@@ -109,6 +110,22 @@ export const getAllPlace = async (
 ) => {
   try {
     const data = await getAllPlaceModel();
+    res.json(data);
+  } catch (error) {
+    errorConsole(error);
+    next(new AppError(401, "태그를 불러오는데 실패했습니다.", { raw: error }));
+  }
+};
+
+export const getPlace = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { address } = req.body;
+
+  try {
+    const data = await getPlaceModel(address);
     res.json(data);
   } catch (error) {
     errorConsole(error);
